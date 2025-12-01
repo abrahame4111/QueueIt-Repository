@@ -332,13 +332,183 @@ async def control_playback(request: PlaybackControl, admin: bool = Depends(verif
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
+@api_router.get("/spotify/auth-url")
+async def get_spotify_auth_url(admin: bool = Depends(verify_admin)):
+    """Generate Spotify OAuth URL"""
+    scope = "user-read-playback-state user-modify-playback-state streaming user-read-currently-playing"
+    
+    auth_url = f"https://accounts.spotify.com/authorize?" + \
+        f"client_id={spotify_client_id}&" + \
+        f"response_type=code&" + \
+        f"redirect_uri={redirect_uri}&" + \
+        f"scope={scope}"
+    
+    return {"auth_url": auth_url}
+
+@api_router.post("/spotify/callback")
+async def spotify_callback(code: str, admin: bool = Depends(verify_admin)):
+    """Handle Spotify OAuth callback"""
+    import requests
+    
+    token_url = "https://accounts.spotify.com/api/token"
+    
+    response = requests.post(token_url, data={
+        'grant_type': 'authorization_code',
+        'code': code,
+        'redirect_uri': redirect_uri,
+        'client_id': spotify_client_id,
+        'client_secret': spotify_client_secret
+    })
+    
+    if response.status_code == 200:
+        token_data = response.json()
+        # Store token (use admin token as key)
+        admin_token = admin if isinstance(admin, str) else "default"
+        user_tokens[admin_token] = {
+            'access_token': token_data['access_token'],
+            'refresh_token': token_data.get('refresh_token'),
+            'expires_at': datetime.now(timezone.utc).timestamp() + token_data['expires_in']
+        }
+        return {"success": True, "access_token": token_data['access_token']}
+    else:
+        raise HTTPException(status_code=400, detail="Failed to get access token")
+
 @api_router.get("/spotify/token")
-async def get_spotify_token(admin: bool = Depends(verify_admin)):
-    """Get Spotify credentials for Web Playback SDK"""
-    return {
-        "client_id": os.environ.get('SPOTIFY_CLIENT_ID'),
-        "client_secret": os.environ.get('SPOTIFY_CLIENT_SECRET')
+async def get_spotify_token(authorization: Optional[str] = Header(None)):
+    """Get stored Spotify access token"""
+    if not authorization:
+        return {"has_token": False}
+    
+    admin_token = authorization.replace("Bearer ", "")
+    token_data = user_tokens.get(admin_token)
+    
+    if token_data:
+        # Check if token expired
+        if token_data['expires_at'] < datetime.now(timezone.utc).timestamp():
+            # Refresh token
+            if token_data.get('refresh_token'):
+                import requests
+                response = requests.post("https://accounts.spotify.com/api/token", data={
+                    'grant_type': 'refresh_token',
+                    'refresh_token': token_data['refresh_token'],
+                    'client_id': spotify_client_id,
+                    'client_secret': spotify_client_secret
+                })
+                
+                if response.status_code == 200:
+                    new_token_data = response.json()
+                    user_tokens[admin_token]['access_token'] = new_token_data['access_token']
+                    user_tokens[admin_token]['expires_at'] = datetime.now(timezone.utc).timestamp() + new_token_data['expires_in']
+                    return {"has_token": True, "access_token": new_token_data['access_token']}
+        
+        return {"has_token": True, "access_token": token_data['access_token']}
+    
+    return {"has_token": False}
+
+@api_router.post("/spotify/play")
+async def spotify_play_track(request: PlaybackRequest, authorization: Optional[str] = Header(None)):
+    """Play a track on user's Spotify"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    admin_token = authorization.replace("Bearer ", "")
+    token_data = user_tokens.get(admin_token)
+    
+    if not token_data:
+        raise HTTPException(status_code=401, detail="No Spotify token found")
+    
+    import requests
+    
+    play_url = "https://api.spotify.com/v1/me/player/play"
+    headers = {
+        'Authorization': f"Bearer {token_data['access_token']}",
+        'Content-Type': 'application/json'
     }
+    
+    body = {"uris": [request.track_uri]}
+    if request.device_id:
+        play_url += f"?device_id={request.device_id}"
+    
+    response = requests.put(play_url, headers=headers, json=body)
+    
+    if response.status_code in [200, 204]:
+        return {"success": True}
+    elif response.status_code == 404:
+        raise HTTPException(status_code=404, detail="No active device found. Please open Spotify on your device.")
+    else:
+        raise HTTPException(status_code=response.status_code, detail=response.text)
+
+@api_router.post("/spotify/pause")
+async def spotify_pause(authorization: Optional[str] = Header(None)):
+    """Pause Spotify playback"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    admin_token = authorization.replace("Bearer ", "")
+    token_data = user_tokens.get(admin_token)
+    
+    if not token_data:
+        raise HTTPException(status_code=401, detail="No Spotify token found")
+    
+    import requests
+    
+    response = requests.put(
+        "https://api.spotify.com/v1/me/player/pause",
+        headers={'Authorization': f"Bearer {token_data['access_token']}"}
+    )
+    
+    if response.status_code in [200, 204]:
+        return {"success": True}
+    else:
+        raise HTTPException(status_code=response.status_code, detail="Failed to pause")
+
+@api_router.post("/spotify/resume")
+async def spotify_resume(authorization: Optional[str] = Header(None)):
+    """Resume Spotify playback"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    admin_token = authorization.replace("Bearer ", "")
+    token_data = user_tokens.get(admin_token)
+    
+    if not token_data:
+        raise HTTPException(status_code=401, detail="No Spotify token found")
+    
+    import requests
+    
+    response = requests.put(
+        "https://api.spotify.com/v1/me/player/play",
+        headers={'Authorization': f"Bearer {token_data['access_token']}"}
+    )
+    
+    if response.status_code in [200, 204]:
+        return {"success": True}
+    else:
+        raise HTTPException(status_code=response.status_code, detail="Failed to resume")
+
+@api_router.get("/spotify/devices")
+async def get_spotify_devices(authorization: Optional[str] = Header(None)):
+    """Get available Spotify devices"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    admin_token = authorization.replace("Bearer ", "")
+    token_data = user_tokens.get(admin_token)
+    
+    if not token_data:
+        raise HTTPException(status_code=401, detail="No Spotify token found")
+    
+    import requests
+    
+    response = requests.get(
+        "https://api.spotify.com/v1/me/player/devices",
+        headers={'Authorization': f"Bearer {token_data['access_token']}"}
+    )
+    
+    if response.status_code == 200:
+        return response.json()
+    else:
+        return {"devices": []}
 
 # Include router
 app.include_router(api_router)
