@@ -11,9 +11,11 @@
 3. Click **"Settings"** or **"Edit Settings"**
 4. Add the following to **Redirect URIs**:
    ```
-   http://localhost:3000/admin
+   http://127.0.0.1:3000/admin
    ```
-   For production, add your production URL:
+   **Important**: Spotify requires explicit IPv4 loopback address (127.0.0.1) - "localhost" is NOT allowed
+   
+   For production, add your production URL with HTTPS:
    ```
    https://your-domain.com/admin
    ```
