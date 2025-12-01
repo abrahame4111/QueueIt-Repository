@@ -1,13 +1,13 @@
-import { useState, useEffect, useRef } from 'react';
-import { Play, Pause, SkipForward, Volume2, VolumeX } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { Play, Pause, Music2 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Slider } from '@/components/ui/slider';
 import { toast } from 'sonner';
+import axios from 'axios';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const SpotifyPlayer = ({ currentSong, onSongEnd, clientId }) => {
+const SpotifyPlayer = ({ currentSong, token, spotifyToken, onRefreshSpotifyToken }) => {
   const [player, setPlayer] = useState(null);
   const [deviceId, setDeviceId] = useState(null);
   const [isPlaying, setIsPlaying] = useState(false);
