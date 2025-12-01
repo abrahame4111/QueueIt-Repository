@@ -115,7 +115,7 @@ const AdminDashboard = () => {
         setToken(response.data.token);
         localStorage.setItem('admin_token', response.data.token);
         setIsAuthenticated(true);
-        fetchSpotifyCredentials(response.data.token);
+        checkSpotifyToken(response.data.token);
         toast.success('Login successful');
       }
     } catch (error) {
