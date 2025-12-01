@@ -125,28 +125,37 @@ async def search_songs(q: str):
 
 @api_router.get("/songs/playlists")
 async def get_playlists():
-    # Return some popular Indian/Party playlists for the hostel
-    playlists = [
-        {
-            "id": "37i9dQZF1DX0XUsuxWHRQd",
-            "name": "RapCaviar",
-            "description": "New music from Kendrick Lamar, Future, Drake and more",
-            "image": "https://i.scdn.co/image/ab67706f00000002c6af5ffa661a365b39c35897"
-        },
-        {
-            "id": "37i9dQZF1DXcBWIGoYBM5M",
-            "name": "Today's Top Hits",
-            "description": "Ed Sheeran is on top of the Hottest 50!",
-            "image": "https://i.scdn.co/image/ab67706f00000002f9a8d84b8e4b3dcd3ee8e4db"
-        },
-        {
-            "id": "37i9dQZF1DX4SBhb3fqCJd",
-            "name": "Desi Indie",
-            "description": "The best of Indian independent music",
-            "image": "https://i.scdn.co/image/ab67706f00000002c2c0fcf2b7dc20ab90a41e84"
-        }
-    ]
-    return {"playlists": playlists}
+    if not sp:
+        return {"playlists": []}
+    
+    try:
+        # Search for popular party/hostel playlists
+        results = sp.search(q='party hits', type='playlist', limit=3)
+        playlists = []
+        
+        for item in results['playlists']['items']:
+            if not item:
+                continue
+            playlist = {
+                "id": item['id'],
+                "name": item['name'],
+                "description": item.get('description', ''),
+                "image": item['images'][0]['url'] if item.get('images') else 'https://via.placeholder.com/300'
+            }
+            playlists.append(playlist)
+        
+        return {"playlists": playlists}
+    except Exception as e:
+        # Return fallback playlists if search fails
+        playlists = [
+            {
+                "id": "5xS3Gi0fA3Uo6RScucyct6",
+                "name": "Party Songs",
+                "description": "2010-2025 Party Hits",
+                "image": "https://via.placeholder.com/300"
+            }
+        ]
+        return {"playlists": playlists}
 
 @api_router.get("/songs/playlist/{playlist_id}")
 async def get_playlist_tracks(playlist_id: str):
