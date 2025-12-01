@@ -175,6 +175,10 @@ async def get_playlist_tracks(playlist_id: str):
             songs.append(song)
         
         return {"songs": songs}
+    except spotipy.exceptions.SpotifyException as e:
+        if e.http_status == 404:
+            raise HTTPException(status_code=404, detail="Playlist not found")
+        raise HTTPException(status_code=500, detail=str(e))
     except Exception as e:
         raise HTTPException(status_code=500, detail=str(e))
 
