@@ -27,10 +27,15 @@ Your backend `.env` already has:
 ```env
 SPOTIFY_CLIENT_ID="df14f22ccdc24f0ea4ed90e1e993e35d"
 SPOTIFY_CLIENT_SECRET="c3fdb4704ab54b03b9bf5d9e70048e48"
-SPOTIFY_REDIRECT_URI="http://localhost:3000/admin"
+SPOTIFY_REDIRECT_URI="http://127.0.0.1:3000/admin"
 ```
 
-For production, update `SPOTIFY_REDIRECT_URI` to your production URL.
+**Note**: We use `127.0.0.1` instead of `localhost` because Spotify requires explicit IPv4 loopback address for HTTP redirect URIs.
+
+For production, update `SPOTIFY_REDIRECT_URI` to your production URL with HTTPS:
+```env
+SPOTIFY_REDIRECT_URI="https://your-domain.com/admin"
+```
 
 ## Step 3: Login Flow
 
