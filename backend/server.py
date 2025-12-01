@@ -20,9 +20,10 @@ mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
 db = client[os.environ['DB_NAME']]
 
-# Spotify setup
+# Spotify setup for search (client credentials)
 spotify_client_id = os.environ.get('SPOTIFY_CLIENT_ID')
 spotify_client_secret = os.environ.get('SPOTIFY_CLIENT_SECRET')
+redirect_uri = os.environ.get('SPOTIFY_REDIRECT_URI', 'http://localhost:3000/admin')
 
 if spotify_client_id and spotify_client_secret:
     auth_manager = SpotifyClientCredentials(
@@ -32,6 +33,9 @@ if spotify_client_id and spotify_client_secret:
     sp = spotipy.Spotify(auth_manager=auth_manager)
 else:
     sp = None
+
+# Store user tokens temporarily (in production, use Redis or database)
+user_tokens = {}
 
 # Create the main app
 app = FastAPI()
