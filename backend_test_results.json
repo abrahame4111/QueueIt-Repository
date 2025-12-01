@@ -1,0 +1,68 @@
+{
+  "timestamp": "2025-12-01T06:09:39.891961",
+  "total_tests": 12,
+  "passed_tests": 11,
+  "success_rate": 0.9166666666666666,
+  "test_details": [
+    {
+      "test": "API Root",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Admin Login Invalid",
+      "success": true,
+      "details": "Status: 401"
+    },
+    {
+      "test": "Admin Login",
+      "success": true,
+      "details": ""
+    },
+    {
+      "test": "Spotify Search",
+      "success": true,
+      "details": "Found 19 songs"
+    },
+    {
+      "test": "Get Playlists",
+      "success": true,
+      "details": "Found 3 playlists"
+    },
+    {
+      "test": "Get Playlist Tracks",
+      "success": false,
+      "details": "Status: 500"
+    },
+    {
+      "test": "Get Queue",
+      "success": true,
+      "details": "Queue length: 2"
+    },
+    {
+      "test": "Get Current Song",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Add to Queue",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Get Queue",
+      "success": true,
+      "details": "Queue length: 3"
+    },
+    {
+      "test": "Get Current Song",
+      "success": true,
+      "details": "Status: 200"
+    },
+    {
+      "test": "Skip Song",
+      "success": true,
+      "details": "Status: 200"
+    }
+  ]
+}
