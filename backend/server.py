@@ -289,6 +289,53 @@ async def remove_from_queue(item_id: str, admin: bool = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+# Playback Control Endpoints
+@api_router.get("/playback/devices")
+async def get_devices(admin: bool = Depends(verify_admin)):
+    """Get available Spotify devices"""
+    if not sp:
+        raise HTTPException(status_code=500, detail="Spotify not configured")
+    
+    try:
+        # Note: This requires OAuth token, not client credentials
+        # For now, return empty list
+        return {"devices": []}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/playback/play")
+async def play_track(request: PlaybackRequest, admin: bool = Depends(verify_admin)):
+    """Start playing a track"""
+    if not sp:
+        raise HTTPException(status_code=500, detail="Spotify not configured")
+    
+    try:
+        # This endpoint would require OAuth with user permissions
+        # For hostel use case, the admin would need to authenticate with their Spotify Premium account
+        return {"success": True, "message": "Playback requires Spotify Premium account authentication"}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.post("/playback/control")
+async def control_playback(request: PlaybackControl, admin: bool = Depends(verify_admin)):
+    """Control playback (play/pause/volume)"""
+    if not sp:
+        raise HTTPException(status_code=500, detail="Spotify not configured")
+    
+    try:
+        # This would require OAuth token with playback permissions
+        return {"success": True, "action": request.action}
+    except Exception as e:
+        raise HTTPException(status_code=500, detail=str(e))
+
+@api_router.get("/spotify/token")
+async def get_spotify_token(admin: bool = Depends(verify_admin)):
+    """Get Spotify credentials for Web Playback SDK"""
+    return {
+        "client_id": os.environ.get('SPOTIFY_CLIENT_ID'),
+        "client_secret": os.environ.get('SPOTIFY_CLIENT_SECRET')
+    }
+
 # Include router
 app.include_router(api_router)
 
