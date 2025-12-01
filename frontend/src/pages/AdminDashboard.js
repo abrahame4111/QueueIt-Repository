@@ -18,6 +18,7 @@ const AdminDashboard = () => {
   const [currentSong, setCurrentSong] = useState(null);
   const [queue, setQueue] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [spotifyClientId, setSpotifyClientId] = useState(null);
 
   useEffect(() => {
     // Check for saved token
