@@ -70,6 +70,15 @@ class AdminResponse(BaseModel):
     success: bool
     token: Optional[str] = None
 
+class PlaybackRequest(BaseModel):
+    track_uri: str
+    device_id: Optional[str] = None
+
+class PlaybackControl(BaseModel):
+    action: str  # play, pause, next, previous, volume
+    device_id: Optional[str] = None
+    volume: Optional[int] = None
+
 # Admin authentication
 async def verify_admin(authorization: Optional[str] = Header(None)):
     if not authorization:
