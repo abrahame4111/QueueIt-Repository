@@ -297,19 +297,19 @@ const AdminDashboard = () => {
         </Card>
       </div>
 
-      {/* Spotify Player Controls */}
-      {spotifyClientId && (
-        <div className="mb-8">
-          <SpotifyPlayer 
-            currentSong={currentSong}
-            onSongEnd={handleSkip}
-            clientId={spotifyClientId}
-          />
-        </div>
-      )}
+      {/* Spotify Player */}
+      <div className="mb-8">
+        <SpotifyPlayer 
+          currentSong={currentSong}
+          token={token}
+          spotifyToken={spotifyToken}
+          onSpotifyLogin={handleSpotifyLogin}
+          onPlayNext={handleSkip}
+        />
+      </div>
 
-      {/* Currently Playing */}
-      {currentSong && (
+      {/* Currently Playing - Only show if not using Spotify player */}
+      {currentSong && !spotifyToken && (
         <Card className="bg-surface border-primary/30 mb-8" data-testid="current-song-card">
           <CardHeader>
             <CardTitle className="uppercase tracking-wider text-primary flex items-center gap-2">
