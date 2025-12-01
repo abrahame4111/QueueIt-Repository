@@ -256,6 +256,17 @@ const AdminDashboard = () => {
         </Card>
       </div>
 
+      {/* Spotify Player Controls */}
+      {spotifyClientId && (
+        <div className="mb-8">
+          <SpotifyPlayer 
+            currentSong={currentSong}
+            onSongEnd={handleSkip}
+            clientId={spotifyClientId}
+          />
+        </div>
+      )}
+
       {/* Currently Playing */}
       {currentSong && (
         <Card className="bg-surface border-primary/30 mb-8" data-testid="current-song-card">
