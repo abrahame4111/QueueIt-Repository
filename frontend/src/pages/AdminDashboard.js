@@ -27,18 +27,59 @@ const AdminDashboard = () => {
       setToken(savedToken);
       setIsAuthenticated(true);
       fetchData();
-      fetchSpotifyCredentials(savedToken);
+      checkSpotifyToken(savedToken);
+    }
+
+    // Handle OAuth callback
+    const urlParams = new URLSearchParams(window.location.search);
+    const code = urlParams.get('code');
+    if (code && savedToken) {
+      handleSpotifyCallback(code, savedToken);
     }
   }, []);
 
-  const fetchSpotifyCredentials = async (authToken) => {
+  const checkSpotifyToken = async (authToken) => {
     try {
       const response = await axios.get(`${API}/spotify/token`, {
         headers: { Authorization: `Bearer ${authToken}` }
       });
-      setSpotifyClientId(response.data.client_id);
+      if (response.data.has_token) {
+        setSpotifyToken(response.data.access_token);
+      }
     } catch (error) {
-      console.error('Error fetching Spotify credentials:', error);
+      console.error('Error checking Spotify token:', error);
+    }
+  };
+
+  const handleSpotifyLogin = async () => {
+    try {
+      const response = await axios.get(`${API}/spotify/auth-url`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      window.location.href = response.data.auth_url;
+    } catch (error) {
+      toast.error('Failed to initiate Spotify login');
+      console.error('Spotify login error:', error);
+    }
+  };
+
+  const handleSpotifyCallback = async (code, authToken) => {
+    try {
+      const response = await axios.post(
+        `${API}/spotify/callback?code=${code}`,
+        {},
+        { headers: { Authorization: `Bearer ${authToken}` } }
+      );
+      
+      if (response.data.success) {
+        setSpotifyToken(response.data.access_token);
+        toast.success('Connected to Spotify!');
+        // Clean up URL
+        window.history.replaceState({}, document.title, '/admin');
+      }
+    } catch (error) {
+      toast.error('Failed to connect to Spotify');
+      console.error('Spotify callback error:', error);
     }
   };
 
