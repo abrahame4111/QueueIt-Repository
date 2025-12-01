@@ -7,247 +7,177 @@ import axios from 'axios';
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
-const SpotifyPlayer = ({ currentSong, token, spotifyToken, onRefreshSpotifyToken }) => {
-  const [player, setPlayer] = useState(null);
-  const [deviceId, setDeviceId] = useState(null);
+const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPlayNext }) => {
   const [isPlaying, setIsPlaying] = useState(false);
-  const [volume, setVolume] = useState(50);
-  const [isMuted, setIsMuted] = useState(false);
-  const [currentPosition, setCurrentPosition] = useState(0);
-  const [duration, setDuration] = useState(0);
-  const [isReady, setIsReady] = useState(false);
-  const playerCheckInterval = useRef(null);
+  const [devices, setDevices] = useState([]);
 
   useEffect(() => {
-    if (!clientId) return;
+    if (spotifyToken) {
+      fetchDevices();
+      // Poll playback state every 2 seconds
+      const interval = setInterval(() => {
+        checkPlaybackState();
+      }, 2000);
+      return () => clearInterval(interval);
+    }
+  }, [spotifyToken]);
 
-    // Load Spotify Web Playback SDK
-    const script = document.createElement('script');
-    script.src = 'https://sdk.scdn.co/spotify-player.js';
-    script.async = true;
-    document.body.appendChild(script);
+  useEffect(() => {
+    if (currentSong && spotifyToken && devices.length > 0) {
+      playCurrentSong();
+    }
+  }, [currentSong?.id, spotifyToken]);
 
-    window.onSpotifyWebPlaybackSDKReady = () => {
-      initializePlayer();
-    };
-
-    return () => {
-      if (player) {
-        player.disconnect();
-      }
-      if (playerCheckInterval.current) {
-        clearInterval(playerCheckInterval.current);
-      }
-    };
-  }, [clientId]);
-
-  const initializePlayer = () => {
-    // For demo purposes, create a mock player
-    // In production, this would use actual Spotify OAuth token
-    const mockPlayer = {
-      connect: () => {
-        console.log('Mock player connected');
-        setIsReady(true);
-        setDeviceId('mock-device-id');
-        return Promise.resolve(true);
-      },
-      disconnect: () => console.log('Mock player disconnected'),
-      addListener: (event, callback) => {
-        console.log(`Added listener for ${event}`);
-      },
-      togglePlay: () => {
-        setIsPlaying(!isPlaying);
-        return Promise.resolve();
-      },
-      pause: () => {
-        setIsPlaying(false);
-        return Promise.resolve();
-      },
-      resume: () => {
-        setIsPlaying(true);
-        return Promise.resolve();
-      },
-      setVolume: (vol) => {
-        setVolume(vol * 100);
-        return Promise.resolve();
-      },
-      getCurrentState: () => {
-        return Promise.resolve({
-          position: currentPosition,
-          duration: duration,
-          paused: !isPlaying
-        });
-      }
-    };
-
-    setPlayer(mockPlayer);
-    mockPlayer.connect();
+  const fetchDevices = async () => {
+    try {
+      const response = await axios.get(`${API}/spotify/devices`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      setDevices(response.data.devices || []);
+    } catch (error) {
+      console.error('Error fetching devices:', error);
+    }
   };
 
-  useEffect(() => {
-    if (currentSong && isReady && player) {
-      // In production, this would play the song via Spotify
-      setDuration(currentSong.song.duration_ms);
-      setCurrentPosition(0);
-      setIsPlaying(true);
-      
-      // Simulate playback progress
-      playerCheckInterval.current = setInterval(() => {
-        setCurrentPosition(prev => {
-          const next = prev + 1000;
-          if (next >= currentSong.song.duration_ms) {
-            clearInterval(playerCheckInterval.current);
-            onSongEnd && onSongEnd();
-            return 0;
-          }
-          return next;
-        });
-      }, 1000);
-    }
+  const checkPlaybackState = async () => {
+    // This would check if song ended and call onPlayNext
+    // For now, we rely on manual skip
+  };
 
-    return () => {
-      if (playerCheckInterval.current) {
-        clearInterval(playerCheckInterval.current);
+  const playCurrentSong = async () => {
+    if (!currentSong) return;
+
+    try {
+      await axios.post(
+        `${API}/spotify/play`,
+        { track_uri: currentSong.song.spotify_uri },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+      setIsPlaying(true);
+      toast.success('Now playing on Spotify');
+    } catch (error) {
+      if (error.response?.status === 404) {
+        toast.error('No active Spotify device found. Please open Spotify on your laptop or phone.');
+      } else {
+        console.error('Playback error:', error);
+        toast.error('Failed to start playback');
       }
-    };
-  }, [currentSong, isReady]);
+    }
+  };
 
   const handlePlayPause = async () => {
-    if (!player) return;
-    
     try {
       if (isPlaying) {
-        await player.pause();
+        await axios.post(
+          `${API}/spotify/pause`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setIsPlaying(false);
       } else {
-        await player.resume();
+        await axios.post(
+          `${API}/spotify/resume`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        setIsPlaying(true);
       }
-      setIsPlaying(!isPlaying);
     } catch (error) {
-      console.error('Playback error:', error);
+      console.error('Playback control error:', error);
       toast.error('Playback control failed');
     }
   };
 
-  const handleVolumeChange = async (value) => {
-    if (!player) return;
-    
-    const newVolume = value[0];
-    setVolume(newVolume);
-    
-    try {
-      await player.setVolume(newVolume / 100);
-    } catch (error) {
-      console.error('Volume error:', error);
-    }
-  };
-
-  const handleMuteToggle = () => {
-    if (isMuted) {
-      setVolume(50);
-      setIsMuted(false);
-    } else {
-      setVolume(0);
-      setIsMuted(true);
-    }
-  };
-
-  const formatTime = (ms) => {
-    const totalSeconds = Math.floor(ms / 1000);
-    const minutes = Math.floor(totalSeconds / 60);
-    const seconds = totalSeconds % 60;
-    return `${minutes}:${seconds.toString().padStart(2, '0')}`;
-  };
-
-  const progressPercentage = duration > 0 ? (currentPosition / duration) * 100 : 0;
-
-  if (!isReady) {
+  if (!spotifyToken) {
     return (
-      <div className="glass-panel p-6 rounded-xl" data-testid="spotify-player-loading">
-        <div className="text-center text-neutral-500">
-          <div className="animate-pulse">Initializing Spotify Player...</div>
-          <p className="text-xs mt-2">Note: Full playback requires Spotify Premium</p>
-        </div>
+      <div className="bg-surface border border-primary/30 rounded-xl p-8 text-center" data-testid="spotify-connect">
+        <Music2 className="w-16 h-16 mx-auto mb-4 text-primary" />
+        <h3 className="text-2xl font-heading font-bold text-white mb-2">
+          Connect to Spotify
+        </h3>
+        <p className="text-neutral-500 mb-6">
+          Login with your Spotify Premium account to control playback on your laptop or Bluetooth speaker.
+        </p>
+        <Button
+          onClick={onSpotifyLogin}
+          className="neon-button h-14 px-8"
+          data-testid="spotify-login-button"
+        >
+          <span className="flex items-center gap-3">
+            <Music2 className="w-5 h-5" />
+            LOGIN WITH SPOTIFY
+          </span>
+        </Button>
+        <p className="text-xs text-neutral-600 mt-4">
+          Requires Spotify Premium for playback control
+        </p>
+      </div>
+    );
+  }
+
+  if (!currentSong) {
+    return (
+      <div className="bg-surface border border-white/10 rounded-xl p-6 text-center" data-testid="no-song-playing">
+        <p className="text-neutral-500">No song in queue. Waiting for requests...</p>
       </div>
     );
   }
 
   return (
-    <div className="glass-panel p-6 rounded-xl space-y-4" data-testid="spotify-player">
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2">
-          <div className="w-3 h-3 rounded-full bg-primary animate-pulse" />
-          <span className="text-sm text-neutral-500 uppercase tracking-wider">
-            Spotify Player {isPlaying ? 'Playing' : 'Paused'}
-          </span>
+    <div className="song-card" data-testid="now-playing-card">
+      <div className="flex gap-4 items-center">
+        <div className="relative w-20 h-20 flex-shrink-0">
+          <img
+            src={currentSong.song.album_art || 'https://via.placeholder.com/80'}
+            alt={currentSong.song.album}
+            className="w-full h-full object-cover rounded-lg"
+          />
+          <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center">
+            <Button
+              onClick={handlePlayPause}
+              size="sm"
+              className="w-10 h-10 rounded-full bg-primary hover:bg-primary/80 text-black p-0"
+              data-testid="play-pause-button"
+            >
+              {isPlaying ? (
+                <Pause className="w-5 h-5" fill="currentColor" />
+              ) : (
+                <Play className="w-5 h-5 ml-0.5" fill="currentColor" />
+              )}
+            </Button>
+          </div>
         </div>
-        {deviceId && (
-          <span className="text-xs text-neutral-500 font-mono">Device: {deviceId}</span>
+        
+        <div className="flex-1 min-w-0">
+          <div className="flex items-center gap-2 mb-1">
+            <div className="w-2 h-2 rounded-full bg-primary animate-pulse" />
+            <span className="text-xs text-primary uppercase tracking-wider font-bold">NOW PLAYING</span>
+          </div>
+          <h3 className="text-xl font-heading font-bold text-white truncate">
+            {currentSong.song.name}
+          </h3>
+          <p className="text-neutral-500 truncate">{currentSong.song.artist}</p>
+          <p className="text-xs text-neutral-600 mt-1">
+            Requested by {currentSong.requested_by || 'Guest'}
+          </p>
+        </div>
+
+        {devices.length > 0 && (
+          <div className="text-right">
+            <p className="text-xs text-neutral-500 mb-1">Playing on</p>
+            <p className="text-sm text-white font-semibold">{devices[0].name}</p>
+            <p className="text-xs text-primary">{devices[0].type}</p>
+          </div>
         )}
       </div>
 
-      {/* Progress Bar */}
-      <div className="space-y-2">
-        <div className="relative h-2 bg-white/10 rounded-full overflow-hidden">
-          <div 
-            className="absolute h-full bg-primary transition-all duration-1000"
-            style={{ width: `${progressPercentage}%` }}
-          />
+      {devices.length === 0 && (
+        <div className="mt-4 pt-4 border-t border-white/10">
+          <p className="text-xs text-orange-500 text-center">
+            ⚠️ No active Spotify device detected. Please open Spotify on your laptop or phone.
+          </p>
         </div>
-        <div className="flex justify-between text-xs text-neutral-500 font-mono">
-          <span>{formatTime(currentPosition)}</span>
-          <span>{formatTime(duration)}</span>
-        </div>
-      </div>
-
-      {/* Playback Controls */}
-      <div className="flex items-center justify-between gap-4">
-        <div className="flex items-center gap-3">
-          <Button
-            onClick={handlePlayPause}
-            size="lg"
-            className="w-14 h-14 rounded-full bg-primary hover:bg-primary/80 text-black"
-            data-testid="play-pause-button"
-          >
-            {isPlaying ? (
-              <Pause className="w-6 h-6" fill="currentColor" />
-            ) : (
-              <Play className="w-6 h-6" fill="currentColor" />
-            )}
-          </Button>
-        </div>
-
-        {/* Volume Control */}
-        <div className="flex items-center gap-3 flex-1 max-w-xs">
-          <Button
-            onClick={handleMuteToggle}
-            variant="ghost"
-            size="sm"
-            className="text-white hover:bg-white/10"
-            data-testid="mute-button"
-          >
-            {isMuted || volume === 0 ? (
-              <VolumeX className="w-5 h-5" />
-            ) : (
-              <Volume2 className="w-5 h-5" />
-            )}
-          </Button>
-          <Slider
-            value={[volume]}
-            onValueChange={handleVolumeChange}
-            max={100}
-            step={1}
-            className="flex-1"
-            data-testid="volume-slider"
-          />
-          <span className="text-xs text-neutral-500 font-mono w-10 text-right">
-            {Math.round(volume)}%
-          </span>
-        </div>
-      </div>
-
-      <div className="text-xs text-neutral-500 text-center pt-2 border-t border-white/10">
-        💡 This is a demo player. Connect your Spotify Premium account for actual playback.
-      </div>
+      )}
     </div>
   );
 };
