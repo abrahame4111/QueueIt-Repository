@@ -27,8 +27,20 @@ const AdminDashboard = () => {
       setToken(savedToken);
       setIsAuthenticated(true);
       fetchData();
+      fetchSpotifyCredentials(savedToken);
     }
   }, []);
+
+  const fetchSpotifyCredentials = async (authToken) => {
+    try {
+      const response = await axios.get(`${API}/spotify/token`, {
+        headers: { Authorization: `Bearer ${authToken}` }
+      });
+      setSpotifyClientId(response.data.client_id);
+    } catch (error) {
+      console.error('Error fetching Spotify credentials:', error);
+    }
+  };
 
   useEffect(() => {
     if (isAuthenticated) {
