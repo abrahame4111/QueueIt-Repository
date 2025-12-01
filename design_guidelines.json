@@ -1,0 +1,155 @@
+{
+  "identity": {
+    "persona": "E1: The Anti-AI Designer",
+    "mission": "Create a raw, electric, and immersive music experience for a Goa hostel. Reject generic SaaS aesthetics. Embrace the chaos of a party.",
+    "archetype": "Electric & Neon (Archetype 2)",
+    "vibe": "Cyberpunk meets Tropical Nightlife. Dark, glowing, loud.",
+    "principles": [
+      "Fusion over Imitation: Mix brutalist typography with neon rave aesthetics.",
+      "Emotion First: Every interaction should feel like a beat drop.",
+      "Content is King: The album art and song titles are the heroes.",
+      "Contrast: Deep void blacks vs. blinding neons."
+    ]
+  },
+  "typography": {
+    "fonts": {
+      "heading": {
+        "family": "Syne",
+        "weights": ["700", "800"],
+        "usage": "Page titles, Hero sections, 'Now Playing' song titles",
+        "fallback": "sans-serif"
+      },
+      "body": {
+        "family": "Manrope",
+        "weights": ["400", "500", "600"],
+        "usage": "General UI text, descriptions, lyrics",
+        "fallback": "sans-serif"
+      },
+      "mono": {
+        "family": "JetBrains Mono",
+        "weights": ["400"],
+        "usage": "Timestamps, Queue numbers, Track IDs",
+        "fallback": "monospace"
+      }
+    },
+    "rules": [
+      "Headings must be TIGHT (tracking-tighter).",
+      "Overlines/Labels must be WIDE (tracking-widest) and Uppercase.",
+      "Never use Inter for headings."
+    ]
+  },
+  "colors": {
+    "palette": {
+      "background": {
+        "default": "#050505",
+        "paper": "#0A0A0A",
+        "surface": "#121212"
+      },
+      "primary": {
+        "default": "#00F0FF",
+        "foreground": "#000000",
+        "glow": "0 0 20px rgba(0, 240, 255, 0.5)"
+      },
+      "secondary": {
+        "default": "#FF00FF",
+        "foreground": "#FFFFFF",
+        "glow": "0 0 20px rgba(255, 0, 255, 0.5)"
+      },
+      "accent": {
+        "success": "#39FF14",
+        "warning": "#FFD700",
+        "error": "#FF003C"
+      },
+      "neutral": {
+        "100": "#FFFFFF",
+        "200": "#E5E5E5",
+        "500": "#737373",
+        "800": "#262626",
+        "900": "#171717"
+      }
+    },
+    "gradients": {
+      "hero": "linear-gradient(180deg, rgba(0,240,255,0.1) 0%, rgba(5,5,5,0) 100%)",
+      "card": "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)"
+    }
+  },
+  "layout": {
+    "spacing": {
+      "base": "0.25rem",
+      "container_padding": "p-6 md:p-12",
+      "section_gap": "gap-12 md:gap-24"
+    },
+    "grids": {
+      "customer_mobile": "grid-cols-1 gap-4",
+      "admin_dashboard": "grid-cols-1 md:grid-cols-4 gap-6 (The Control Room Grid)"
+    },
+    "containers": {
+      "card": "rounded-xl border border-white/10 bg-black/40 backdrop-blur-md",
+      "glass_panel": "bg-black/60 backdrop-blur-xl border-t border-white/10"
+    }
+  },
+  "components": {
+    "buttons": {
+      "primary": "bg-primary text-primary-foreground font-bold uppercase tracking-wider hover:shadow-[0_0_20px_rgba(0,240,255,0.6)] transition-all duration-300 rounded-none skew-x-[-10deg]",
+      "secondary": "border border-white/20 hover:border-white text-white hover:bg-white/5 transition-all duration-300 rounded-none skew-x-[-10deg]",
+      "icon": "p-3 rounded-full hover:bg-white/10 transition-colors"
+    },
+    "inputs": {
+      "search": "bg-white/5 border-none text-white placeholder:text-white/30 focus:ring-1 focus:ring-primary rounded-full px-6 py-4 text-lg"
+    },
+    "cards": {
+      "song": "group relative overflow-hidden rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5 hover:border-primary/50",
+      "queue_item": "flex items-center gap-4 p-4 border-b border-white/5 last:border-0"
+    },
+    "navigation": {
+      "bottom_bar": "fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-xl border-t border-white/10 p-4 z-50"
+    }
+  },
+  "assets": {
+    "images": {
+      "hero_bg": "https://images.unsplash.com/photo-1748302591722-a6c0567b1fd0?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "party_crowd": "https://images.pexels.com/photos/1692695/pexels-photo-1692695.jpeg",
+      "abstract_neon": "https://images.unsplash.com/photo-1706148817964-08251bc8cf8c?crop=entropy&cs=srgb&fm=jpg&q=85",
+      "texture_pattern": "https://images.unsplash.com/photo-1643634253140-56872e2f2fa3?crop=entropy&cs=srgb&fm=jpg&q=85"
+    },
+    "icons": {
+      "library": "lucide-react",
+      "style": "Stroke width 1.5px, sharp edges where possible"
+    }
+  },
+  "motion": {
+    "transitions": {
+      "default": "transition-all duration-300 ease-out",
+      "hover": "transform hover:-translate-y-1 hover:scale-[1.02]"
+    },
+    "animations": {
+      "fade_in": "animate-in fade-in duration-500",
+      "slide_up": "animate-in slide-in-from-bottom-4 duration-500",
+      "pulse_glow": "animate-pulse"
+    }
+  },
+  "tech_stack": {
+    "frontend": "React, Tailwind CSS, Framer Motion, Lucide React, Sonner (Toast)",
+    "backend": "FastAPI, MongoDB",
+    "libraries": [
+      "clsx",
+      "tailwind-merge",
+      "framer-motion",
+      "lucide-react",
+      "sonner",
+      "react-fast-marquee"
+    ]
+  },
+  "universal_guidelines": [
+    "DO NOT use gradients for text unless it's a massive headline.",
+    "DO NOT use 'Inter' font. Use 'Syne' for headers and 'Manrope' for body.",
+    "Always add 'data-testid' to interactive elements.",
+    "Use 'sonner' for toasts.",
+    "Dark mode is the ONLY mode. No light mode toggle.",
+    "Spacing should be generous (p-6, p-8) even on mobile cards.",
+    "Glassmorphism must have a 1px border (border-white/10) to define edges.",
+    "Primary actions (Request Song) must be bold and neon.",
+    "Admin dashboard should look like a spaceship control panel (dense, data-heavy, dark)."
+  ],
+  "instructions_to_main_agent": "You are building a 'Hostel Music Queue' app. It needs to feel like a party. \n\n1. **Setup Fonts**: Import 'Syne', 'Manrope', and 'JetBrains Mono' from Google Fonts in `index.css`.\n2. **Theme Config**: Update `tailwind.config.js` with the Neon palette defined in `colors`.\n3. **Layouts**: \n   - **Customer View**: Mobile-first. Hero section with 'abstract_neon' image. Search bar floats. Song list uses 'cards.song' style. Bottom player bar is 'glass_panel'.\n   - **Admin View**: Desktop-first. Sidebar nav. 'Control Room' grid for the queue. High density.\n4. **Components**: \n   - Use `shadcn/ui` for complex logic (Dialogs, Dropdowns) but STRIP their default styling and apply the 'Electric & Neon' styles.\n   - Create a `SongCard` component that handles the 'Request' action with a neon glow effect.\n   - Create a `QueueList` component that auto-animates new additions.\n5. **Spotify Integration**: Mock the data for now, but design the UI to handle 'Album Art', 'Track Title', 'Artist', and 'Duration'.\n6. **Testing**: Ensure all buttons have `data-testid`."
+}
