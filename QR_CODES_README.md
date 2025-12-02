@@ -2,7 +2,7 @@
 
 ## 📱 Generated QR Codes
 
-All QR codes link to: **https://beachside-beats.preview.emergentagent.com/**
+All QR codes link to: **https://queueit.preview.emergentagent.com/**
 
 ### Files Created:
 
@@ -89,7 +89,7 @@ All QR codes link to: **https://beachside-beats.preview.emergentagent.com/**
 1. **Test on Your Phone:**
    - Open camera app
    - Point at QR code on your computer screen
-   - Should open: https://beachside-beats.preview.emergentagent.com/
+   - Should open: https://queueit.preview.emergentagent.com/
    - Verify you can search and request songs
 
 2. **Test Different Phones:**
@@ -158,7 +158,7 @@ If you want to generate new QR codes (e.g., for different events):
 python3 << 'EOF'
 import qrcode
 
-url = "https://beachside-beats.preview.emergentagent.com/"
+url = "https://queueit.preview.emergentagent.com/"
 qr = qrcode.QRCode(error_correction=qrcode.constants.ERROR_CORRECT_H)
 qr.add_data(url)
 qr.make(fit=True)
