@@ -279,10 +279,13 @@ async def skip_song(admin: bool = Depends(verify_admin)):
     current = await db.queue.find_one({"status": "playing"})
     
     if current:
+        logger.info(f"Skip: Marking as played - {current.get('song', {}).get('name')} (ID: {current.get('id')})")
         await db.queue.update_one(
             {"_id": current['_id']},
             {"$set": {"status": "played"}}
         )
+    else:
+        logger.info("Skip: No current song playing")
     
     # Get next queued song
     next_song = await db.queue.find_one(
@@ -291,13 +294,21 @@ async def skip_song(admin: bool = Depends(verify_admin)):
     )
     
     if next_song:
+        logger.info(f"Skip: Setting as playing - {next_song.get('song', {}).get('name')} (ID: {next_song.get('id')})")
         await db.queue.update_one(
             {"_id": next_song['_id']},
             {"$set": {"status": "playing"}}
         )
         next_song['_id'] = str(next_song['_id'])
+        
+        # Verify the update was successful
+        verify = await db.queue.find_one({"status": "playing"})
+        if verify:
+            logger.info(f"Skip: Verified current song is now - {verify.get('song', {}).get('name')} (ID: {verify.get('id')})")
+        
         return {"success": True, "next_song": next_song}
     
+    logger.info("Skip: No more songs in queue")
     return {"success": True, "next_song": None}
 
 @api_router.post("/queue/clear")
