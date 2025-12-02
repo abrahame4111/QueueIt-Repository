@@ -117,32 +117,36 @@ const CustomerHome = () => {
     <div 
       className="song-card group"
       data-testid={`song-card-${song.id}`}
+      style={{ 
+        display: 'grid',
+        gridTemplateColumns: '40px 1fr 56px',
+        gap: '8px',
+        alignItems: 'center',
+        width: '100%'
+      }}
     >
-      <div className="flex items-center gap-2 sm:gap-3">
-        {/* Album Art */}
-        <div className="w-10 h-10 sm:w-16 sm:h-16 flex-shrink-0">
-          <img
-            src={song.album_art || 'https://via.placeholder.com/64'}
-            alt={song.album}
-            className="w-full h-full object-cover rounded"
-          />
-        </div>
-        
-        {/* Song Info - takes remaining space minus button width */}
-        <div className="flex-1 min-w-0 pr-2">
-          <h3 className="text-white font-semibold text-sm sm:text-base truncate leading-tight">{song.name}</h3>
-          <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
-        </div>
-        
-        {/* ADD Button - fixed width, always visible */}
-        <Button
-          onClick={() => addToQueue(song)}
-          className="neon-button h-8 w-14 sm:h-9 sm:w-auto sm:px-4 text-[10px] sm:text-xs font-bold flex-shrink-0"
-          data-testid={`add-to-queue-${song.id}`}
-        >
-          ADD
-        </Button>
+      {/* Album Art */}
+      <img
+        src={song.album_art || 'https://via.placeholder.com/64'}
+        alt={song.album}
+        style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover' }}
+      />
+      
+      {/* Song Info */}
+      <div style={{ minWidth: 0, overflow: 'hidden' }}>
+        <h3 className="text-white font-semibold text-sm truncate leading-tight">{song.name}</h3>
+        <p className="text-neutral-500 text-xs truncate">{song.artist}</p>
       </div>
+      
+      {/* ADD Button */}
+      <Button
+        onClick={() => addToQueue(song)}
+        className="neon-button text-[10px] font-bold"
+        style={{ height: '32px', padding: '0 4px', whiteSpace: 'nowrap' }}
+        data-testid={`add-to-queue-${song.id}`}
+      >
+        ADD
+      </Button>
     </div>
   );
 
