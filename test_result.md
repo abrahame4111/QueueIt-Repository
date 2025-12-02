@@ -98,6 +98,127 @@
 
 
 
+
+#====================================================================================================
+# Testing Data - Main Agent and testing sub agent both should log testing data below this section
+#====================================================================================================
+
+user_problem_statement: "Build a music queueing system for a hostel where customers can request songs via QR code, and admin can control playback via Spotify. The system had a critical bug where songs would glitch to the previous track instead of advancing properly."
+
+backend:
+  - task: "Spotify OAuth Integration"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Spotify OAuth flow with token persistence in MongoDB working correctly"
+
+  - task: "Queue Management (Add, Skip, Clear)"
+    implemented: true
+    working: true
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Queue operations working. Skip endpoint advances queue correctly in database."
+
+  - task: "Spotify Playback Control"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Backend endpoints for play/pause/resume working. Requires Spotify Premium account for full testing."
+
+frontend:
+  - task: "Customer Portal - Song Search and Request"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/CustomerHome.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Customer can search and add songs to queue successfully"
+
+  - task: "Admin Dashboard - Queue Display"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AdminDashboard.js"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Admin dashboard displays queue and stats correctly"
+
+  - task: "Spotify Player - Playback Logic (CRITICAL BUG FIX)"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/components/SpotifyPlayer.js"
+    stuck_count: 3
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "user"
+        comment: "User reported: Songs glitch to previous track instead of advancing properly. Auto-advance broken."
+      - working: false
+        agent: "main"
+        comment: "Attempted fix #1: Rewrote SpotifyPlayer component. Did not resolve issue."
+      - working: false
+        agent: "user"
+        comment: "User confirmed bug still exists after first fix attempt"
+      - working: "NA"
+        agent: "main"
+        comment: "FIX ATTEMPT #2: Identified root cause as race condition. Removed duplicate auto-play logic from AdminDashboard.handleSkip (lines 145-158). Now only SpotifyPlayer's useEffect handles auto-play based on currentSong.id changes. Improved auto-advance timing (triggers 2s before end instead of 3s). Added detailed logging. Reduced retry attempts from 2 to 1 to prevent loops. Added isTransitioning check to track mismatch detection."
+
+  - task: "Admin Controls - Skip and Clear"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/pages/AdminDashboard.js"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: true
+        agent: "main"
+        comment: "Skip button simplified - now just calls backend /api/queue/skip and fetchData(). SpotifyPlayer handles actual playback."
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 1
+  run_ui: true
+
+test_plan:
+  current_focus:
+    - "Spotify Player - Playback Logic (CRITICAL BUG FIX)"
+    - "Admin Controls - Skip and Clear"
+  stuck_tasks:
+    - "Spotify Player - Playback Logic (CRITICAL BUG FIX)"
+  test_all: false
+  test_priority: "stuck_first"
+
+agent_communication:
+  - agent: "main"
+    message: "Fixed critical playback race condition bug. Root cause: AdminDashboard.handleSkip was manually calling /api/spotify/play AFTER updating the queue, while SpotifyPlayer.useEffect ALSO auto-played when currentSong changed. This created competing play commands. Solution: Removed duplicate play logic from handleSkip - it now ONLY advances queue and fetches data. SpotifyPlayer's useEffect is the single source of truth for playback. Also improved auto-advance timing and reduced aggressive retries. TESTING REQUIRED: This fix needs real Spotify Premium account testing to verify: 1) Skip button advances correctly, 2) Auto-advance works when song ends, 3) No glitching to previous tracks, 4) Multiple consecutive skips work properly."
+
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
