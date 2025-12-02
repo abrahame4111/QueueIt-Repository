@@ -163,20 +163,20 @@ const CustomerHome = () => {
 
       {/* Currently Playing */}
       {currentSong && (
-        <div className="glass-panel mx-4 mt-6 p-6 rounded-xl" data-testid="current-playing">
+        <div className="glass-panel mx-3 sm:mx-4 mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl" data-testid="current-playing">
           <div className="flex items-center gap-2 mb-3">
-            <Play className="w-5 h-5 text-primary animate-pulse" />
-            <span className="text-primary uppercase tracking-wider text-sm font-bold">Now Playing</span>
+            <Play className="w-4 h-4 sm:w-5 sm:h-5 text-primary animate-pulse" />
+            <span className="text-primary uppercase tracking-wider text-xs sm:text-sm font-bold">Now Playing</span>
           </div>
-          <div className="flex gap-4 items-center">
+          <div className="flex gap-3 sm:gap-4 items-center">
             <img
               src={currentSong.song.album_art || 'https://via.placeholder.com/80'}
               alt={currentSong.song.album}
-              className="w-20 h-20 rounded-lg"
+              className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg flex-shrink-0"
             />
-            <div className="flex-1">
-              <h2 className="text-2xl font-heading font-bold text-white">{currentSong.song.name}</h2>
-              <p className="text-neutral-500">{currentSong.song.artist}</p>
+            <div className="flex-1 min-w-0">
+              <h2 className="text-lg sm:text-2xl font-heading font-bold text-white truncate">{currentSong.song.name}</h2>
+              <p className="text-neutral-500 text-sm sm:text-base truncate">{currentSong.song.artist}</p>
             </div>
           </div>
         </div>
