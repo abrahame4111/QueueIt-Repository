@@ -213,24 +213,24 @@ const CustomerHome = () => {
           </TabsList>
 
           {/* Search Tab */}
-          <TabsContent value="search" className="mt-6">
-            <div className="flex gap-2 mb-6">
+          <TabsContent value="search" className="mt-4 sm:mt-6">
+            <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-6">
               <Input
                 type="text"
                 placeholder="Search for songs..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 onKeyPress={(e) => e.key === 'Enter' && searchSongs()}
-                className="bg-white/5 border-none text-white placeholder:text-white/30 focus:ring-1 focus:ring-primary rounded-full px-6 py-6 text-lg"
+                className="bg-white/5 border-none text-white placeholder:text-white/30 focus:ring-1 focus:ring-primary rounded-full px-4 sm:px-6 py-4 sm:py-6 text-base sm:text-lg"
                 data-testid="search-input"
               />
               <Button
                 onClick={searchSongs}
                 disabled={loading}
-                className="neon-button px-8"
+                className="neon-button px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
                 data-testid="search-button"
               >
-                <span>{loading ? 'SEARCHING...' : 'SEARCH'}</span>
+                <span className="text-sm sm:text-base">{loading ? 'SEARCHING...' : 'SEARCH'}</span>
               </Button>
             </div>
 
