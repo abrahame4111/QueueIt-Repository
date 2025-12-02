@@ -183,32 +183,32 @@ const CustomerHome = () => {
       )}
 
       {/* Main Content */}
-      <div className="px-4 mt-6">
+      <div className="px-3 sm:px-4 mt-4 sm:mt-6">
         <Tabs defaultValue="search" className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-surface border border-white/10">
             <TabsTrigger 
               value="search" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-black"
+              className="data-[state=active]:bg-primary data-[state=active]:text-black text-xs sm:text-sm py-2 sm:py-3"
               data-testid="tab-search"
             >
-              <Search className="w-4 h-4 mr-2" />
-              SEARCH
+              <Search className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+              <span className="hidden sm:inline">SEARCH</span>
             </TabsTrigger>
             <TabsTrigger 
               value="playlists" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-black"
+              className="data-[state=active]:bg-primary data-[state=active]:text-black text-xs sm:text-sm py-2 sm:py-3"
               data-testid="tab-playlists"
             >
-              <Music className="w-4 h-4 mr-2" />
-              PLAYLISTS
+              <Music className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+              <span className="hidden sm:inline">PLAYLISTS</span>
             </TabsTrigger>
             <TabsTrigger 
               value="queue" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-black"
+              className="data-[state=active]:bg-primary data-[state=active]:text-black text-xs sm:text-sm py-2 sm:py-3"
               data-testid="tab-queue"
             >
-              <List className="w-4 h-4 mr-2" />
-              QUEUE
+              <List className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
+              <span className="hidden sm:inline">QUEUE</span>
             </TabsTrigger>
           </TabsList>
 
