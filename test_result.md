@@ -241,10 +241,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Production validation complete"
-  stuck_tasks: []
+    - "Mobile Layout - ADD Button Visibility (320px viewport)"
+  stuck_tasks:
+    - "Mobile Layout - ADD Button Visibility (320px viewport)"
   test_all: false
-  test_priority: "production_ready"
+  test_priority: "critical_first"
 
 agent_communication:
   - agent: "main"
