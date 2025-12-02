@@ -115,30 +115,31 @@ const CustomerHome = () => {
 
   const SongCard = ({ song }) => (
     <div 
-      className="song-card group relative overflow-hidden"
+      className="song-card group"
       data-testid={`song-card-${song.id}`}
     >
-      <div className="flex gap-2 sm:gap-3 items-center pr-14 sm:pr-16">
-        <div className="relative w-11 h-11 sm:w-16 sm:h-16 flex-shrink-0">
-          <img
-            src={song.album_art || 'https://via.placeholder.com/64'}
-            alt={song.album}
-            className="w-full h-full object-cover rounded"
-          />
+      <div className="flex gap-2 sm:gap-3 items-center justify-between">
+        <div className="flex gap-2 sm:gap-3 items-center flex-1 min-w-0">
+          <div className="relative w-11 h-11 sm:w-16 sm:h-16 flex-shrink-0">
+            <img
+              src={song.album_art || 'https://via.placeholder.com/64'}
+              alt={song.album}
+              className="w-full h-full object-cover rounded"
+            />
+          </div>
+          <div className="flex-1 min-w-0 overflow-hidden">
+            <h3 className="text-white font-semibold text-sm sm:text-base truncate">{song.name}</h3>
+            <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
+          </div>
         </div>
-        <div className="flex-1 min-w-0 overflow-hidden">
-          <h3 className="text-white font-semibold text-sm sm:text-base truncate">{song.name}</h3>
-          <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
-        </div>
+        <Button
+          onClick={() => addToQueue(song)}
+          className="neon-button h-7 w-11 sm:h-9 sm:w-14 text-[10px] sm:text-xs p-0 flex-shrink-0"
+          data-testid={`add-to-queue-${song.id}`}
+        >
+          <span>ADD</span>
+        </Button>
       </div>
-      {/* Button at absolute right */}
-      <Button
-        onClick={() => addToQueue(song)}
-        className="neon-button absolute right-0 top-1/2 -translate-y-1/2 h-7 w-12 sm:h-9 sm:w-14 text-[10px] sm:text-xs p-0 rounded-r-lg rounded-l-none"
-        data-testid={`add-to-queue-${song.id}`}
-      >
-        <span>ADD</span>
-      </Button>
     </div>
   );
 
