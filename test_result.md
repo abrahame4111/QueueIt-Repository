@@ -171,9 +171,9 @@ frontend:
     implemented: true
     working: false
     file: "/app/frontend/src/components/SpotifyPlayer.js"
-    stuck_count: 3
+    stuck_count: 4
     priority: "critical"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: false
         agent: "user"
@@ -187,6 +187,9 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: "FIX ATTEMPT #2: Identified root cause as race condition. Removed duplicate auto-play logic from AdminDashboard.handleSkip (lines 145-158). Now only SpotifyPlayer's useEffect handles auto-play based on currentSong.id changes. Improved auto-advance timing (triggers 2s before end instead of 3s). Added detailed logging. Reduced retry attempts from 2 to 1 to prevent loops. Added isTransitioning check to track mismatch detection."
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL BUG STILL EXISTS: Tested skip functionality 3 times. Each skip triggers 'New song detected, auto-playing: [Song Name]' but immediately followed by 'Track mismatch detected' warnings. The currentSong state appears to not update properly after skip - logs show 'queuedSong: We Own It (Fast & Furious)' persisting even after multiple skips. Race condition partially fixed but timing/state synchronization issue remains. Skip advances queue in DB but SpotifyPlayer gets confused about which song should be playing."
 
   - task: "Admin Controls - Skip and Clear"
     implemented: true
@@ -194,11 +197,14 @@ frontend:
     file: "/app/frontend/src/pages/AdminDashboard.js"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: true
         agent: "main"
         comment: "Skip button simplified - now just calls backend /api/queue/skip and fetchData(). SpotifyPlayer handles actual playback."
+      - working: true
+        agent: "testing"
+        comment: "Skip button functionality works - successfully calls backend and advances queue. Clear queue also works correctly. UI updates properly after both operations."
 
 metadata:
   created_by: "main_agent"
