@@ -98,6 +98,7 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   const handlePlayPause = async () => {
     try {
       if (isPlaying) {
+        // Pause current playback
         await axios.post(
           `${API}/spotify/pause`,
           {},
@@ -105,11 +106,30 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
         );
         setIsPlaying(false);
       } else {
-        await axios.post(
-          `${API}/spotify/resume`,
-          {},
-          { headers: { Authorization: `Bearer ${token}` } }
-        );
+        // Check if we should play the current queued song or just resume
+        const stateResponse = await axios.get(`${API}/spotify/playback-state`, {
+          headers: { Authorization: `Bearer ${token}` }
+        });
+        
+        const currentSpotifyTrack = stateResponse.data?.item;
+        const queuedTrackUri = currentSong?.song?.spotify_uri;
+        
+        // If Spotify is playing a different song than what's in our queue, play the queued song
+        if (!currentSpotifyTrack || currentSpotifyTrack.uri !== queuedTrackUri) {
+          console.log('Playing queued song:', queuedTrackUri);
+          await axios.post(
+            `${API}/spotify/play`,
+            { track_uri: queuedTrackUri },
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+        } else {
+          // Resume current playback
+          await axios.post(
+            `${API}/spotify/resume`,
+            {},
+            { headers: { Authorization: `Bearer ${token}` } }
+          );
+        }
         setIsPlaying(true);
       }
     } catch (error) {
