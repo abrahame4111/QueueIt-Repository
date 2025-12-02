@@ -115,26 +115,24 @@ const CustomerHome = () => {
 
   const SongCard = ({ song }) => (
     <div 
-      className="song-card group"
+      className="song-card group w-full"
       data-testid={`song-card-${song.id}`}
     >
-      <div className="flex gap-1.5 sm:gap-3 items-center justify-between">
-        <div className="flex gap-1.5 sm:gap-3 items-center flex-1 min-w-0 overflow-hidden">
-          <div className="relative w-10 h-10 sm:w-16 sm:h-16 flex-shrink-0">
-            <img
-              src={song.album_art || 'https://via.placeholder.com/64'}
-              alt={song.album}
-              className="w-full h-full object-cover rounded"
-            />
-          </div>
-          <div className="flex-1 min-w-0">
-            <h3 className="text-white font-semibold text-sm sm:text-base truncate">{song.name}</h3>
-            <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
-          </div>
+      <div className="flex items-center gap-2 sm:gap-3 w-full">
+        <div className="relative w-10 h-10 sm:w-16 sm:h-16 flex-shrink-0">
+          <img
+            src={song.album_art || 'https://via.placeholder.com/64'}
+            alt={song.album}
+            className="w-full h-full object-cover rounded"
+          />
+        </div>
+        <div className="flex-1 min-w-0 overflow-hidden pr-2">
+          <h3 className="text-white font-semibold text-sm sm:text-base truncate">{song.name}</h3>
+          <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
         </div>
         <Button
           onClick={() => addToQueue(song)}
-          className="neon-button h-7 w-10 sm:h-9 sm:w-14 text-[9px] sm:text-xs p-0 flex-shrink-0 ml-1"
+          className="neon-button h-7 w-10 sm:h-9 sm:w-auto sm:px-4 text-[9px] sm:text-xs p-0 flex-shrink-0"
           data-testid={`add-to-queue-${song.id}`}
         >
           <span>ADD</span>
