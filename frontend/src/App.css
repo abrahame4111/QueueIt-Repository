@@ -30,10 +30,10 @@ html {
   background: rgba(255, 255, 255, 0.05);
   border: 1px solid rgba(255, 255, 255, 0.05);
   border-radius: 0.5rem;
-  padding: 1rem;
+  padding: 0.75rem;
   transition: all 0.3s ease;
-  max-width: 100%;
-  overflow: hidden;
+  width: 100%;
+  box-sizing: border-box;
 }
 
 .song-card:hover {
@@ -42,37 +42,21 @@ html {
   transform: translateY(-2px);
 }
 
-/* Text truncation with ellipsis */
-.song-title-truncate,
-.song-artist-truncate {
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  display: block;
-  max-width: 100%;
-}
-
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .song-card {
-    padding: 0.5rem 0.6rem;
+    padding: 0.625rem 0.5rem;
   }
   
   .glass-panel {
     backdrop-filter: blur(16px);
-  }
-  
-  /* Enhanced text truncation for mobile */
-  .song-title-truncate,
-  .song-artist-truncate {
-    max-width: calc(100% - 4px);
   }
 }
 
 /* Extra small screens */
 @media (max-width: 400px) {
   .song-card {
-    padding: 0.4rem 0.5rem;
+    padding: 0.5rem 0.375rem;
   }
 }
 
