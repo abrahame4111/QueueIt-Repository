@@ -40,8 +40,37 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   };
 
   const checkPlaybackState = async () => {
-    // This would check if song ended and call onPlayNext
-    // For now, we rely on manual skip
+    try {
+      const response = await axios.get(`${API}/spotify/playback-state`, {
+        headers: { Authorization: `Bearer ${token}` }
+      });
+      
+      const state = response.data;
+      
+      // Update playing state
+      if (state.is_playing !== undefined) {
+        setIsPlaying(state.is_playing);
+      }
+      
+      // Check if song ended (progress >= duration or not playing and no item)
+      if (state.item) {
+        const progress = state.progress_ms || 0;
+        const duration = state.item.duration_ms || 0;
+        
+        // If within 2 seconds of end, skip to next
+        if (duration > 0 && progress >= duration - 2000) {
+          console.log('Song ending, advancing to next...');
+          if (onPlayNext) {
+            onPlayNext();
+          }
+        }
+      } else if (!state.is_playing && currentSong) {
+        // Playback stopped but we have a song queued - might have ended
+        console.log('Playback stopped, checking if song ended...');
+      }
+    } catch (error) {
+      console.error('Error checking playback state:', error);
+    }
   };
 
   const playCurrentSong = async () => {
