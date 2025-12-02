@@ -221,6 +221,18 @@ frontend:
         agent: "testing"
         comment: "Skip button functionality works - successfully calls backend and advances queue. Clear queue also works correctly. UI updates properly after both operations."
 
+  - task: "Mobile Layout - ADD Button Visibility (320px viewport)"
+    implemented: true
+    working: false
+    file: "/app/frontend/src/pages/CustomerHome.js"
+    stuck_count: 1
+    priority: "critical"
+    needs_retesting: true
+    status_history:
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL BUG: ADD buttons completely off-screen on 320px mobile viewport. Buttons positioned at X: 659.5px with right edge at 721.1px - extending 401px beyond viewport. All ADD buttons invisible and inaccessible to mobile users. Core functionality broken on smallest mobile screens. Urgent responsive design fix required for SongCard component ADD button positioning."
+
 metadata:
   created_by: "main_agent"
   version: "1.0"
