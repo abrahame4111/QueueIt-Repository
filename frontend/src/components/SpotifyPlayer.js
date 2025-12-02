@@ -17,6 +17,7 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   const [retryCount, setRetryCount] = useState(0);
   const pollIntervalRef = useRef(null);
   const lastSongIdRef = useRef(null);
+  const lastPlayedUriRef = useRef(null);
 
   // Fetch devices and monitor playback
   useEffect(() => {
