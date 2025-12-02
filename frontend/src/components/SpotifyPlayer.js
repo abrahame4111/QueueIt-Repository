@@ -18,6 +18,12 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   const pollIntervalRef = useRef(null);
   const lastSongIdRef = useRef(null);
   const lastPlayedUriRef = useRef(null);
+  const currentSongRef = useRef(currentSong);
+  
+  // Keep currentSongRef in sync with currentSong prop
+  useEffect(() => {
+    currentSongRef.current = currentSong;
+  }, [currentSong]);
 
   // Fetch devices and monitor playback
   useEffect(() => {
