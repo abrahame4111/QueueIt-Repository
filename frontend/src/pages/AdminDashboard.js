@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { LogIn, SkipForward, Trash2, Play, Music, List } from 'lucide-react';
+import { LogIn, SkipForward, Trash2, Play, Music, List, FastForward } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
