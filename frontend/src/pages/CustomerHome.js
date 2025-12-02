@@ -234,16 +234,16 @@ const CustomerHome = () => {
               </Button>
             </div>
 
-            <ScrollArea className="h-[500px]">
-              <div className="space-y-3">
+            <ScrollArea className="h-[400px] sm:h-[500px]">
+              <div className="space-y-2 sm:space-y-3">
                 {searchResults.map((song) => (
                   <SongCard key={song.id} song={song} />
                 ))}
               </div>
               {searchResults.length === 0 && !loading && (
                 <div className="text-center py-12 text-neutral-500">
-                  <Search className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                  <p>Search for songs to add to queue</p>
+                  <Search className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 opacity-30" />
+                  <p className="text-sm sm:text-base">Search for songs to add to queue</p>
                 </div>
               )}
             </ScrollArea>
