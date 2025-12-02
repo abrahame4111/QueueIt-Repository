@@ -129,35 +129,36 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
       const queuedUri = latestCurrentSong?.song?.spotify_uri;
       
       if (currentSpotifyUri === queuedUri) {
-        // Perfect match, reset retry count
+        // Perfect match, reset retry count and update last played
+        if (lastPlayedUriRef.current !== queuedUri) {
+          lastPlayedUriRef.current = queuedUri;
+        }
         setRetryCount(0);
       } else if (currentSpotifyUri && queuedUri && currentSpotifyUri !== queuedUri && !isTransitioning) {
-        // Mismatch detected - but only sync if it's not what we just played
-        if (lastPlayedUriRef.current !== queuedUri) {
+        // Mismatch detected - ONLY sync if:
+        // 1. This is not what we just commanded to play
+        // 2. We haven't exceeded retry limit
+        // 3. Enough time has passed since last play command (prevent rapid-fire)
+        
+        const isRecentlyPlayed = lastPlayedUriRef.current === queuedUri;
+        const isRecentlyCommandedSpotify = lastPlayedUriRef.current === currentSpotifyUri;
+        
+        if (!isRecentlyPlayed && !isRecentlyCommandedSpotify) {
           console.log('Track mismatch detected:', {
             spotifyPlaying: state.item?.name,
             queuedSong: latestCurrentSong?.song?.name,
             queuedUri: queuedUri,
             lastPlayedUri: lastPlayedUriRef.current,
-            spotifyUri: currentSpotifyUri
+            spotifyUri: currentSpotifyUri,
+            retryCount: retryCount
           });
           
-          // Only sync if we haven't retried too many times and this is a significant mismatch
-          if (retryCount < 1) {
-            console.log('Syncing to correct song after delay...');
-            setTimeout(() => {
-              // Double-check the mismatch still exists before syncing
-              const currentQueuedUri = currentSongRef.current?.song?.spotify_uri;
-              if (currentQueuedUri === queuedUri) {
-                playCurrentSong();
-              } else {
-                console.log('Mismatch resolved, skipping sync');
-              }
-            }, 2000);
-            setRetryCount(prev => prev + 1);
-          }
+          // DISABLED: Only allow manual sync, no automatic retry to prevent loops
+          // User can manually click play if needed
+          console.log('⚠️ Sync disabled to prevent loops. Use manual play if needed.');
         } else {
-          console.log('Mismatch detected but we just played this song, waiting for Spotify to sync...');
+          // This is expected during transitions
+          console.log('Mismatch expected during transition, ignoring...');
         }
       }
       
