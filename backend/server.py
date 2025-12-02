@@ -385,13 +385,13 @@ async def spotify_callback(code: str, admin: bool = Depends(verify_admin)):
     
     if response.status_code == 200:
         token_data = response.json()
-        # Store token (use admin token as key)
-        admin_token = admin if isinstance(admin, str) else "default"
-        user_tokens[admin_token] = {
+        # Store token in database
+        token_info = {
             'access_token': token_data['access_token'],
             'refresh_token': token_data.get('refresh_token'),
             'expires_at': datetime.now(timezone.utc).timestamp() + token_data['expires_in']
         }
+        await save_spotify_token("default_admin", token_info)
         return {"success": True, "access_token": token_data['access_token']}
     else:
         raise HTTPException(status_code=400, detail="Failed to get access token")
