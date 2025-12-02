@@ -187,13 +187,25 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   };
 
   const playCurrentSong = async () => {
-    if (!currentSong || isTransitioning) {
-      console.log('Skipping playCurrentSong:', { hasCurrentSong: !!currentSong, isTransitioning });
+    if (!currentSong) {
+      console.log('⏭️ No currentSong, skipping playback');
+      return;
+    }
+    
+    if (isTransitioning) {
+      console.log('⏭️ Already transitioning, skipping duplicate play call');
       return;
     }
 
     const trackUri = currentSong.song.spotify_uri;
-    console.log('Playing song:', currentSong.song.name, 'URI:', trackUri);
+    
+    // Prevent duplicate plays of the same song
+    if (lastPlayedUriRef.current === trackUri) {
+      console.log('⏭️ This song was just played, skipping duplicate play call');
+      return;
+    }
+    
+    console.log('▶️ Playing song:', currentSong.song.name, 'URI:', trackUri);
     setIsTransitioning(true);
     
     try {
@@ -203,7 +215,7 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
-      // Track what we just played to avoid mismatch false positives
+      // Track what we just played to avoid mismatch false positives and duplicates
       lastPlayedUriRef.current = trackUri;
       setIsPlaying(true);
       setRetryCount(0);
