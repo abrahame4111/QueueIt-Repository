@@ -143,20 +143,20 @@ const CustomerHome = () => {
   );
 
   return (
-    <div className="min-h-screen bg-background pb-32">
+    <div className="min-h-screen bg-background pb-24 md:pb-32">
       {/* Hero Section */}
       <div 
-        className="relative h-48 bg-cover bg-center"
+        className="relative h-36 sm:h-48 bg-cover bg-center"
         style={{
           backgroundImage: `linear-gradient(180deg, rgba(0,240,255,0.1) 0%, rgba(5,5,5,0.8) 100%), url('https://images.unsplash.com/photo-1706148817964-08251bc8cf8c?crop=entropy&cs=srgb&fm=jpg&q=85')`,
         }}
       >
-        <div className="absolute inset-0 flex items-center justify-center">
+        <div className="absolute inset-0 flex items-center justify-center px-4">
           <div className="text-center">
-            <h1 className="text-5xl font-heading font-bold text-white tracking-tighter mb-2">
+            <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-white tracking-tighter mb-2">
               HOSTEL <span className="text-primary">BEATS</span>
             </h1>
-            <p className="text-neutral-500 uppercase tracking-widest text-sm">Queue Your Vibe</p>
+            <p className="text-neutral-500 uppercase tracking-widest text-xs sm:text-sm">Queue Your Vibe</p>
           </div>
         </div>
       </div>
