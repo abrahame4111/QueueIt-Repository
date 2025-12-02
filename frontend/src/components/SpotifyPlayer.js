@@ -123,8 +123,10 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
       setSongDuration(state.item.duration_ms || 0);
       
       // Check if current playing track matches our queue
+      // Use ref to get the latest currentSong value
+      const latestCurrentSong = currentSongRef.current;
       const currentSpotifyUri = state.item?.uri;
-      const queuedUri = currentSong?.song?.spotify_uri;
+      const queuedUri = latestCurrentSong?.song?.spotify_uri;
       
       if (currentSpotifyUri === queuedUri) {
         // Perfect match, reset retry count
@@ -134,8 +136,10 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
         if (lastPlayedUriRef.current !== queuedUri) {
           console.log('Track mismatch detected:', {
             spotifyPlaying: state.item?.name,
-            queuedSong: currentSong?.song?.name,
-            lastPlayed: lastPlayedUriRef.current
+            queuedSong: latestCurrentSong?.song?.name,
+            queuedUri: queuedUri,
+            lastPlayedUri: lastPlayedUriRef.current,
+            spotifyUri: currentSpotifyUri
           });
           
           // Only sync if we haven't retried too many times and this is a significant mismatch
@@ -143,8 +147,11 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
             console.log('Syncing to correct song after delay...');
             setTimeout(() => {
               // Double-check the mismatch still exists before syncing
-              if (currentSong?.song?.spotify_uri === queuedUri) {
+              const currentQueuedUri = currentSongRef.current?.song?.spotify_uri;
+              if (currentQueuedUri === queuedUri) {
                 playCurrentSong();
+              } else {
+                console.log('Mismatch resolved, skipping sync');
               }
             }, 2000);
             setRetryCount(prev => prev + 1);
