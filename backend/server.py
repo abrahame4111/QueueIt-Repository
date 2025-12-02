@@ -532,6 +532,31 @@ async def get_spotify_devices(authorization: Optional[str] = Header(None)):
     else:
         return {"devices": []}
 
+@api_router.get("/spotify/playback-state")
+async def get_playback_state(authorization: Optional[str] = Header(None)):
+    """Get current playback state from Spotify"""
+    if not authorization:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    token_data = await get_spotify_token("default_admin")
+    
+    if not token_data:
+        raise HTTPException(status_code=401, detail="No Spotify token found")
+    
+    import requests
+    
+    response = requests.get(
+        "https://api.spotify.com/v1/me/player",
+        headers={'Authorization': f"Bearer {token_data['access_token']}"}
+    )
+    
+    if response.status_code == 200:
+        return response.json()
+    elif response.status_code == 204:
+        return {"is_playing": False, "item": None}
+    else:
+        return {"is_playing": False, "item": None}
+
 # Include router
 app.include_router(api_router)
 
