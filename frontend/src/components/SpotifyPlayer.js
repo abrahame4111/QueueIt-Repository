@@ -113,20 +113,23 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
         }
       }
       
-      // Auto-advance when song ends (within last 3 seconds)
+      // Auto-advance when song ends (within last 2 seconds but not in last 500ms to avoid duplicate triggers)
       const duration = state.item.duration_ms || 0;
       const progress = state.progress_ms || 0;
       
-      if (duration > 0 && progress >= duration - 3000 && progress < duration - 1000) {
+      if (duration > 0 && progress >= duration - 2000 && progress < duration - 500) {
         if (!isTransitioning) {
-          console.log('Song ending, preparing next track...');
+          console.log('Song ending soon, will skip to next track...');
           setIsTransitioning(true);
+          // Skip the current song in backend, fetchData will update currentSong, 
+          // which will trigger the auto-play useEffect above
+          if (onPlayNext) {
+            onPlayNext();
+          }
+          // Reset transitioning state after a delay
           setTimeout(() => {
-            if (onPlayNext) {
-              onPlayNext();
-            }
             setIsTransitioning(false);
-          }, 2000);
+          }, 3000);
         }
       }
     } catch (error) {
