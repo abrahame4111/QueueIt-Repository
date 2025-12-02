@@ -23,7 +23,8 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   }, [spotifyToken]);
 
   useEffect(() => {
-    if (currentSong && spotifyToken && devices.length > 0) {
+    if (currentSong && spotifyToken) {
+      // Auto-play when a new song becomes current
       playCurrentSong();
     }
   }, [currentSong?.id, spotifyToken]);
