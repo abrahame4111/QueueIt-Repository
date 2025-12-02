@@ -104,13 +104,20 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
       const currentSpotifyUri = state.item?.uri;
       const queuedUri = currentSong?.song?.spotify_uri;
       
-      if (currentSpotifyUri && queuedUri && currentSpotifyUri !== queuedUri) {
-        console.log('Track mismatch detected - syncing...');
-        // Spotify is playing wrong song, sync it
-        if (retryCount < 2) {
-          setTimeout(() => playCurrentSong(), 1000);
+      if (currentSpotifyUri && queuedUri && currentSpotifyUri !== queuedUri && !isTransitioning) {
+        console.log('Track mismatch detected:', {
+          spotifyPlaying: state.item?.name,
+          queuedSong: currentSong?.song?.name
+        });
+        // Only sync if we haven't retried too many times
+        if (retryCount < 1) {
+          console.log('Syncing to correct song...');
+          setTimeout(() => playCurrentSong(), 1500);
           setRetryCount(prev => prev + 1);
         }
+      } else if (currentSpotifyUri === queuedUri) {
+        // Songs match, reset retry count
+        setRetryCount(0);
       }
       
       // Auto-advance when song ends (within last 2 seconds but not in last 500ms to avoid duplicate triggers)
