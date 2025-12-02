@@ -250,9 +250,9 @@ const CustomerHome = () => {
           </TabsContent>
 
           {/* Playlists Tab */}
-          <TabsContent value="playlists" className="mt-6">
+          <TabsContent value="playlists" className="mt-4 sm:mt-6">
             {!selectedPlaylist ? (
-              <div className="grid grid-cols-1 gap-4">
+              <div className="grid grid-cols-1 gap-3 sm:gap-4">
                 {playlists.map((playlist) => (
                   <div
                     key={playlist.id}
@@ -260,15 +260,15 @@ const CustomerHome = () => {
                     className="song-card cursor-pointer"
                     data-testid={`playlist-${playlist.id}`}
                   >
-                    <div className="flex gap-4 items-center">
+                    <div className="flex gap-3 sm:gap-4 items-center">
                       <img
                         src={playlist.image}
                         alt={playlist.name}
-                        className="w-20 h-20 rounded-lg"
+                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg flex-shrink-0"
                       />
-                      <div>
-                        <h3 className="text-xl font-heading font-bold text-white">{playlist.name}</h3>
-                        <p className="text-neutral-500 text-sm">{playlist.description}</p>
+                      <div className="flex-1 min-w-0">
+                        <h3 className="text-base sm:text-xl font-heading font-bold text-white truncate">{playlist.name}</h3>
+                        <p className="text-neutral-500 text-xs sm:text-sm truncate">{playlist.description}</p>
                       </div>
                     </div>
                   </div>
