@@ -429,16 +429,27 @@ const AdminDashboard = () => {
                         Requested by: {item.requested_by || 'Guest'}
                       </p>
                     </div>
-                    <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
                       <p className="text-neutral-500 font-mono">
                         {formatDuration(item.song.duration_ms)}
                       </p>
+                      <Button
+                        onClick={() => handlePlayNext(item._id)}
+                        variant="outline"
+                        size="sm"
+                        className="border-primary/30 text-primary hover:bg-primary/10 opacity-0 group-hover:opacity-100 transition-opacity"
+                        data-testid={`play-next-${index}`}
+                        title="Play next"
+                      >
+                        <FastForward className="w-4 h-4" />
+                      </Button>
                       <Button
                         onClick={() => handleRemoveSong(item._id)}
                         variant="outline"
                         size="sm"
                         className="border-white/20 text-white hover:bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"
                         data-testid={`remove-song-${index}`}
+                        title="Remove"
                       >
                         <Trash2 className="w-4 h-4" />
                       </Button>
