@@ -303,7 +303,7 @@ const CustomerHome = () => {
           </TabsContent>
 
           {/* Queue Tab */}
-          <TabsContent value="queue" className="mt-4 sm:mt-6">
+          <TabsContent value="queue" className="mt-4 sm:mt-6 max-w-full overflow-hidden">
             <ScrollArea className="h-[400px] sm:h-[500px]">
               <div className="space-y-0">
                 {queue.filter(item => item.status === 'queued').map((item, index) => (
