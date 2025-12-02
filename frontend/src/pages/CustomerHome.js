@@ -235,8 +235,8 @@ const CustomerHome = () => {
               </Button>
             </div>
 
-            <ScrollArea className="h-[400px] sm:h-[500px]">
-              <div className="space-y-2 sm:space-y-3">
+            <ScrollArea className="h-[400px] sm:h-[500px] w-full">
+              <div className="space-y-2 sm:space-y-3 pr-2">
                 {searchResults.map((song) => (
                   <SongCard key={song.id} song={song} />
                 ))}
