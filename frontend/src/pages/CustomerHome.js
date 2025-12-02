@@ -115,10 +115,10 @@ const CustomerHome = () => {
 
   const SongCard = ({ song }) => (
     <div 
-      className="song-card group"
+      className="song-card group relative"
       data-testid={`song-card-${song.id}`}
     >
-      <div className="flex gap-2 sm:gap-4 items-center justify-between">
+      <div className="flex gap-2 sm:gap-4 items-center pr-16 sm:pr-24">
         <div className="relative w-12 h-12 sm:w-16 sm:h-16 flex-shrink-0">
           <img
             src={song.album_art || 'https://via.placeholder.com/64'}
@@ -126,19 +126,19 @@ const CustomerHome = () => {
             className="w-full h-full object-cover rounded"
           />
         </div>
-        <div className="flex-1 min-w-0 mr-2">
+        <div className="flex-1 min-w-0 overflow-hidden">
           <h3 className="text-white font-semibold text-sm sm:text-base truncate">{song.name}</h3>
           <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
           <p className="text-neutral-500 text-xs font-mono hidden sm:block">{formatDuration(song.duration_ms)}</p>
         </div>
-        <Button
-          onClick={() => addToQueue(song)}
-          className="neon-button h-9 px-4 sm:h-10 sm:px-6 text-xs sm:text-sm whitespace-nowrap"
-          data-testid={`add-to-queue-${song.id}`}
-        >
-          <span>REQUEST</span>
-        </Button>
       </div>
+      <Button
+        onClick={() => addToQueue(song)}
+        className="neon-button absolute right-2 top-1/2 -translate-y-1/2 h-7 px-2 sm:h-9 sm:px-4 text-xs sm:text-sm"
+        data-testid={`add-to-queue-${song.id}`}
+      >
+        <span>ADD</span>
+      </Button>
     </div>
   );
 
