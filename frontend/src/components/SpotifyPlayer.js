@@ -27,11 +27,17 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
     }
   }, [spotifyToken]);
 
-  // Auto-play new songs
+  // Auto-play new songs when they change
   useEffect(() => {
-    if (currentSong && spotifyToken && currentSong.id !== lastSongIdRef.current) {
-      lastSongIdRef.current = currentSong.id;
-      playCurrentSong();
+    if (currentSong && spotifyToken) {
+      const newSongId = currentSong.id;
+      
+      // Only auto-play if this is actually a different song
+      if (newSongId !== lastSongIdRef.current) {
+        console.log('New song detected, auto-playing:', currentSong.song.name);
+        lastSongIdRef.current = newSongId;
+        playCurrentSong();
+      }
     }
   }, [currentSong?.id, spotifyToken]);
 
