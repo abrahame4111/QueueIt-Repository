@@ -316,6 +316,40 @@ async def remove_from_queue(item_id: str, admin: bool = Depends(verify_admin)):
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
 
+@api_router.post("/queue/{item_id}/play-next")
+async def play_next(item_id: str, admin: bool = Depends(verify_admin)):
+    """Move a song to play next (right after current song)"""
+    from bson import ObjectId
+    
+    try:
+        # Get the song to move
+        song_to_move = await db.queue.find_one({"_id": ObjectId(item_id)})
+        if not song_to_move:
+            raise HTTPException(status_code=404, detail="Song not found")
+        
+        # Get current playing song
+        current = await db.queue.find_one({"status": "playing"})
+        if not current:
+            return {"success": False, "message": "No song currently playing"}
+        
+        # Set the requested_at timestamp to be just after the current song
+        current_time = current['requested_at']
+        if isinstance(current_time, str):
+            current_time = datetime.fromisoformat(current_time)
+        
+        # Add 1 millisecond to ensure it's right after current
+        new_time = current_time.replace(microsecond=(current_time.microsecond + 1000) % 1000000)
+        
+        # Update the song's timestamp
+        await db.queue.update_one(
+            {"_id": ObjectId(item_id)},
+            {"$set": {"requested_at": new_time.isoformat()}}
+        )
+        
+        return {"success": True, "message": "Song moved to play next"}
+    except Exception as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
 # Playback Control Endpoints
 @api_router.get("/playback/devices")
 async def get_devices(admin: bool = Depends(verify_admin)):
