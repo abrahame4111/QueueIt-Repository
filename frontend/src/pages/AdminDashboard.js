@@ -97,7 +97,26 @@ const AdminDashboard = () => {
         axios.get(`${API}/queue/current`),
         axios.get(`${API}/queue`)
       ]);
-      setCurrentSong(currentResponse.data.current);
+      
+      const fetchedCurrent = currentResponse.data.current;
+      
+      // Only update currentSong if it actually changed (by ID)
+      // This prevents unnecessary re-renders and SpotifyPlayer useEffect triggers
+      setCurrentSong(prevSong => {
+        if (!fetchedCurrent && !prevSong) return null;
+        if (!fetchedCurrent) return null;
+        if (!prevSong) return fetchedCurrent;
+        
+        // Only update if the song ID actually changed
+        if (prevSong.id !== fetchedCurrent.id) {
+          console.log('fetchData: Current song changed from', prevSong.song?.name, 'to', fetchedCurrent.song?.name);
+          return fetchedCurrent;
+        }
+        
+        // Same song, don't update to prevent useEffect trigger
+        return prevSong;
+      });
+      
       setQueue(queueResponse.data.queue);
     } catch (error) {
       console.error('Error fetching data:', error);
