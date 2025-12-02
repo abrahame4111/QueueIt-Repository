@@ -147,7 +147,16 @@ const AdminDashboard = () => {
   };
 
   const handleSkip = async () => {
+    if (isSkipping) {
+      console.log('Skip already in progress, ignoring...');
+      return;
+    }
+    
+    setIsSkipping(true);
+    
     try {
+      console.log('handleSkip: Starting skip operation');
+      
       const response = await axios.post(
         `${API}/queue/skip`,
         {},
@@ -163,18 +172,23 @@ const AdminDashboard = () => {
         const nextSongData = response.data.next_song;
         nextSongData['_id'] = nextSongData['_id'] || nextSongData.id;
         setCurrentSong(nextSongData);
-        console.log('Skip: Updated currentSong to', nextSongData.song?.name);
+        console.log('handleSkip: Updated currentSong to', nextSongData.song?.name, 'ID:', nextSongData.id);
       } else {
         setCurrentSong(null);
-        console.log('Skip: No more songs in queue');
+        console.log('handleSkip: No more songs in queue');
       }
       
       // Also fetch full queue state to refresh UI
       const queueResponse = await axios.get(`${API}/queue`);
       setQueue(queueResponse.data.queue);
+      
+      console.log('handleSkip: Skip operation complete');
     } catch (error) {
       toast.error('Failed to skip song');
       console.error('Skip error:', error);
+    } finally {
+      // Delay before allowing next skip to ensure state settles
+      setTimeout(() => setIsSkipping(false), 1000);
     }
   };
 
