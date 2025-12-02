@@ -33,7 +33,9 @@ html {
   padding: 0.75rem;
   transition: all 0.3s ease;
   width: 100%;
+  max-width: 100%;
   box-sizing: border-box;
+  overflow: visible;
 }
 
 .song-card:hover {
