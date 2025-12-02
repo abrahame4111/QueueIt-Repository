@@ -215,7 +215,6 @@ metadata:
 test_plan:
   current_focus:
     - "Spotify Player - Playback Logic (CRITICAL BUG FIX)"
-    - "Admin Controls - Skip and Clear"
   stuck_tasks:
     - "Spotify Player - Playback Logic (CRITICAL BUG FIX)"
   test_all: false
