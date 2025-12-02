@@ -128,7 +128,7 @@ const AdminDashboard = () => {
 
   const handleSkip = async () => {
     try {
-      const response = await axios.post(
+      await axios.post(
         `${API}/queue/skip`,
         {},
         {
@@ -138,24 +138,8 @@ const AdminDashboard = () => {
       
       toast.success('Song skipped');
       
-      // Fetch updated queue
+      // Fetch updated queue - SpotifyPlayer will handle auto-play via its useEffect
       await fetchData();
-      
-      // If there's a next song and Spotify is connected, play it automatically
-      if (response.data.next_song && spotifyToken) {
-        setTimeout(async () => {
-          try {
-            await axios.post(
-              `${API}/spotify/play`,
-              { track_uri: response.data.next_song.song.spotify_uri },
-              { headers: { Authorization: `Bearer ${token}` } }
-            );
-            console.log('Auto-playing next song:', response.data.next_song.song.name);
-          } catch (error) {
-            console.error('Failed to auto-play next song:', error);
-          }
-        }, 500);
-      }
     } catch (error) {
       toast.error('Failed to skip song');
       console.error('Skip error:', error);
