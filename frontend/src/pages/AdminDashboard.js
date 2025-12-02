@@ -197,6 +197,23 @@ const AdminDashboard = () => {
     }
   };
 
+  const handlePlayNext = async (itemId) => {
+    try {
+      await axios.post(
+        `${API}/queue/${itemId}/play-next`,
+        {},
+        {
+          headers: { Authorization: `Bearer ${token}` }
+        }
+      );
+      toast.success('Song moved to play next');
+      fetchData();
+    } catch (error) {
+      toast.error('Failed to move song');
+      console.error('Play next error:', error);
+    }
+  };
+
   const formatDuration = (ms) => {
     const minutes = Math.floor(ms / 60000);
     const seconds = ((ms % 60000) / 1000).toFixed(0);
