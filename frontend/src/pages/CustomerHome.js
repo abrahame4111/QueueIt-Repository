@@ -254,7 +254,7 @@ const CustomerHome = () => {
           </TabsContent>
 
           {/* Playlists Tab */}
-          <TabsContent value="playlists" className="mt-4 sm:mt-6">
+          <TabsContent value="playlists" className="mt-4 sm:mt-6 max-w-full overflow-hidden">
             {!selectedPlaylist ? (
               <div className="grid grid-cols-1 gap-3 sm:gap-4">
                 {playlists.map((playlist) => (
