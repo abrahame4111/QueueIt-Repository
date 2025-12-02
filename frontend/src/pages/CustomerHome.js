@@ -118,7 +118,8 @@ const CustomerHome = () => {
       className="song-card group w-full"
       data-testid={`song-card-${song.id}`}
     >
-      <div className="flex items-center gap-1.5 sm:gap-3 w-full">
+      <div className="flex items-center w-full" style={{ gap: '0.375rem' }}>
+        {/* Album Art */}
         <div className="relative w-10 h-10 sm:w-16 sm:h-16 flex-shrink-0">
           <img
             src={song.album_art || 'https://via.placeholder.com/64'}
@@ -126,17 +127,23 @@ const CustomerHome = () => {
             className="w-full h-full object-cover rounded"
           />
         </div>
-        <div className="flex-1 min-w-0 overflow-hidden">
-          <h3 className="text-white font-semibold text-sm sm:text-base song-title-truncate">{song.name}</h3>
-          <p className="text-neutral-500 text-xs sm:text-sm song-artist-truncate">{song.artist}</p>
+        
+        {/* Song Info - flexible width but constrained */}
+        <div className="flex-1 min-w-0" style={{ marginRight: '0.5rem' }}>
+          <h3 className="text-white font-semibold text-sm sm:text-base truncate">{song.name}</h3>
+          <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
         </div>
-        <Button
-          onClick={() => addToQueue(song)}
-          className="neon-button h-7 w-11 sm:h-9 sm:w-auto sm:px-4 text-[10px] sm:text-xs p-0 flex-shrink-0"
-          data-testid={`add-to-queue-${song.id}`}
-        >
-          <span className="font-bold">ADD</span>
-        </Button>
+        
+        {/* ADD Button - always visible, never pushed off */}
+        <div className="flex-shrink-0">
+          <Button
+            onClick={() => addToQueue(song)}
+            className="neon-button h-8 px-2 sm:h-9 sm:px-4 text-[11px] sm:text-xs font-bold whitespace-nowrap"
+            data-testid={`add-to-queue-${song.id}`}
+          >
+            ADD
+          </Button>
+        </div>
       </div>
     </div>
   );
