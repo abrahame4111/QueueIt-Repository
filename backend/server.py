@@ -248,6 +248,9 @@ async def get_current_song():
         current['_id'] = str(current['_id'])
         if isinstance(current['requested_at'], str):
             current['requested_at'] = datetime.fromisoformat(current['requested_at'])
+        logger.debug(f"GET /queue/current: Returning {current.get('song', {}).get('name')} (ID: {current.get('id')})")
+    else:
+        logger.debug("GET /queue/current: No song playing")
     
     return {"current": current}
 
