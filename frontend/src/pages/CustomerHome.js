@@ -282,13 +282,13 @@ const CustomerHome = () => {
                     setPlaylistTracks([]);
                   }}
                   variant="outline"
-                  className="mb-4 border-white/20 text-white hover:bg-white/5"
+                  className="mb-4 border-white/20 text-white hover:bg-white/5 text-sm"
                   data-testid="back-to-playlists"
                 >
                   ← Back to Playlists
                 </Button>
-                <ScrollArea className="h-[500px]">
-                  <div className="space-y-3">
+                <ScrollArea className="h-[400px] sm:h-[500px]">
+                  <div className="space-y-2 sm:space-y-3">
                     {playlistTracks.map((song) => (
                       <SongCard key={song.id} song={song} />
                     ))}
