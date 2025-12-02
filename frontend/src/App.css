@@ -50,12 +50,12 @@ body {
   color: #000000;
   font-weight: 700;
   text-transform: uppercase;
-  letter-spacing: 0.1em;
-  padding: 0.75rem 1.5rem;
+  letter-spacing: 0.05em;
   border: none;
   cursor: pointer;
   transition: all 0.3s ease;
   transform: skewX(-10deg);
+  border-radius: 0;
 }
 
 .neon-button:hover {
@@ -65,6 +65,13 @@ body {
 .neon-button span {
   display: inline-block;
   transform: skewX(10deg);
+}
+
+@media (max-width: 768px) {
+  .neon-button {
+    letter-spacing: 0.05em;
+    font-size: 0.75rem;
+  }
 }
 
 .queue-item {
