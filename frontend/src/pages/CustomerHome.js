@@ -184,7 +184,7 @@ const CustomerHome = () => {
       )}
 
       {/* Main Content */}
-      <div className="px-3 sm:px-4 mt-4 sm:mt-6">
+      <div className="px-3 sm:px-4 mt-4 sm:mt-6 max-w-full overflow-hidden">
         <Tabs defaultValue="search" className="w-full">
           <TabsList className="grid w-full grid-cols-3 bg-surface border border-white/10">
             <TabsTrigger 
