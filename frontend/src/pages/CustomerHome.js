@@ -299,34 +299,34 @@ const CustomerHome = () => {
           </TabsContent>
 
           {/* Queue Tab */}
-          <TabsContent value="queue" className="mt-6">
-            <ScrollArea className="h-[500px]">
+          <TabsContent value="queue" className="mt-4 sm:mt-6">
+            <ScrollArea className="h-[400px] sm:h-[500px]">
               <div className="space-y-0">
                 {queue.filter(item => item.status === 'queued').map((item, index) => (
-                  <div key={item.id} className="queue-item" data-testid={`queue-item-${index}`}>
-                    <div className="text-primary font-mono font-bold text-lg w-8">
+                  <div key={item.id} className="queue-item py-3 sm:py-4 px-2 sm:px-0" data-testid={`queue-item-${index}`}>
+                    <div className="text-primary font-mono font-bold text-base sm:text-lg w-6 sm:w-8 flex-shrink-0">
                       {index + 1}
                     </div>
                     <img
                       src={item.song.album_art || 'https://via.placeholder.com/48'}
                       alt={item.song.album}
-                      className="w-12 h-12 rounded"
+                      className="w-10 h-10 sm:w-12 sm:h-12 rounded flex-shrink-0"
                     />
                     <div className="flex-1 min-w-0">
-                      <p className="text-white font-semibold truncate">{item.song.name}</p>
-                      <p className="text-neutral-500 text-sm truncate">{item.song.artist}</p>
+                      <p className="text-white font-semibold text-sm sm:text-base truncate">{item.song.name}</p>
+                      <p className="text-neutral-500 text-xs sm:text-sm truncate">{item.song.artist}</p>
                     </div>
-                    <div className="flex items-center gap-2 text-neutral-500 text-xs">
-                      <Clock className="w-4 h-4" />
-                      {formatDuration(item.song.duration_ms)}
+                    <div className="flex items-center gap-1 sm:gap-2 text-neutral-500 text-xs flex-shrink-0">
+                      <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
+                      <span className="hidden sm:inline">{formatDuration(item.song.duration_ms)}</span>
                     </div>
                   </div>
                 ))}
               </div>
               {queue.filter(item => item.status === 'queued').length === 0 && (
                 <div className="text-center py-12 text-neutral-500">
-                  <List className="w-12 h-12 mx-auto mb-4 opacity-30" />
-                  <p>Queue is empty</p>
+                  <List className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 opacity-30" />
+                  <p className="text-sm sm:text-base">Queue is empty</p>
                 </div>
               )}
             </ScrollArea>
