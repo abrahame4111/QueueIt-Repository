@@ -239,7 +239,7 @@ const CustomerHome = () => {
             </div>
 
             <ScrollArea className="h-[400px] sm:h-[500px] w-full">
-              <div className="space-y-2 sm:space-y-3 pr-2">
+              <div className="space-y-2 sm:space-y-3 pr-1 max-w-full">
                 {searchResults.map((song) => (
                   <SongCard key={song.id} song={song} />
                 ))}
