@@ -42,48 +42,37 @@ html {
   transform: translateY(-2px);
 }
 
-/* Text truncation with fade effect */
+/* Text truncation with ellipsis */
 .song-title-truncate,
 .song-artist-truncate {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
   display: block;
+  max-width: 100%;
 }
 
 /* Mobile optimizations */
 @media (max-width: 768px) {
   .song-card {
-    padding: 0.5rem 0.75rem;
+    padding: 0.5rem 0.6rem;
   }
   
   .glass-panel {
     backdrop-filter: blur(16px);
   }
   
-  /* Enhanced text truncation for mobile with fade effect */
+  /* Enhanced text truncation for mobile */
   .song-title-truncate,
   .song-artist-truncate {
-    position: relative;
-    max-width: 100%;
-    padding-right: 8px;
+    max-width: calc(100% - 4px);
   }
-  
-  .song-title-truncate::after,
-  .song-artist-truncate::after {
-    content: '';
-    position: absolute;
-    right: 0;
-    top: 0;
-    bottom: 0;
-    width: 20px;
-    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.05));
-    pointer-events: none;
-  }
-  
-  .song-card:hover .song-title-truncate::after,
-  .song-card:hover .song-artist-truncate::after {
-    background: linear-gradient(to right, transparent, rgba(255, 255, 255, 0.1));
+}
+
+/* Extra small screens */
+@media (max-width: 400px) {
+  .song-card {
+    padding: 0.4rem 0.5rem;
   }
 }
 
