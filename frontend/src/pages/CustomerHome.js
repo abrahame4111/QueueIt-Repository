@@ -118,7 +118,7 @@ const CustomerHome = () => {
       className="song-card group relative overflow-hidden"
       data-testid={`song-card-${song.id}`}
     >
-      <div className="flex gap-2 sm:gap-3 items-center pr-0">
+      <div className="flex gap-2 sm:gap-3 items-center pr-14 sm:pr-16">
         <div className="relative w-11 h-11 sm:w-16 sm:h-16 flex-shrink-0">
           <img
             src={song.album_art || 'https://via.placeholder.com/64'}
@@ -126,13 +126,11 @@ const CustomerHome = () => {
             className="w-full h-full object-cover rounded"
           />
         </div>
-        <div className="flex-1 min-w-0">
-          <h3 className="text-white font-semibold text-sm sm:text-base whitespace-nowrap">{song.name}</h3>
-          <p className="text-neutral-500 text-xs sm:text-sm whitespace-nowrap">{song.artist}</p>
+        <div className="flex-1 min-w-0 overflow-hidden">
+          <h3 className="text-white font-semibold text-sm sm:text-base truncate">{song.name}</h3>
+          <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
         </div>
       </div>
-      {/* Gradient fade effect */}
-      <div className="absolute right-12 top-0 bottom-0 w-20 pointer-events-none bg-gradient-to-r from-transparent to-[rgba(255,255,255,0.05)]" />
       {/* Button at absolute right */}
       <Button
         onClick={() => addToQueue(song)}
