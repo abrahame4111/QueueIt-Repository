@@ -115,10 +115,10 @@ const CustomerHome = () => {
 
   const SongCard = ({ song }) => (
     <div 
-      className="song-card group"
+      className="song-card group relative overflow-hidden"
       data-testid={`song-card-${song.id}`}
     >
-      <div className="flex gap-1.5 sm:gap-3 items-center">
+      <div className="flex gap-2 sm:gap-3 items-center pr-0">
         <div className="relative w-11 h-11 sm:w-16 sm:h-16 flex-shrink-0">
           <img
             src={song.album_art || 'https://via.placeholder.com/64'}
@@ -126,18 +126,21 @@ const CustomerHome = () => {
             className="w-full h-full object-cover rounded"
           />
         </div>
-        <div className="flex-1 min-w-0 overflow-hidden">
-          <h3 className="text-white font-semibold text-sm sm:text-base truncate pr-1">{song.name}</h3>
-          <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
+        <div className="flex-1 min-w-0">
+          <h3 className="text-white font-semibold text-sm sm:text-base whitespace-nowrap">{song.name}</h3>
+          <p className="text-neutral-500 text-xs sm:text-sm whitespace-nowrap">{song.artist}</p>
         </div>
-        <Button
-          onClick={() => addToQueue(song)}
-          className="neon-button h-7 w-12 sm:h-9 sm:w-auto sm:px-4 text-[10px] sm:text-xs flex-shrink-0 p-0"
-          data-testid={`add-to-queue-${song.id}`}
-        >
-          <span>ADD</span>
-        </Button>
       </div>
+      {/* Gradient fade effect */}
+      <div className="absolute right-12 top-0 bottom-0 w-20 pointer-events-none bg-gradient-to-r from-transparent to-[rgba(255,255,255,0.05)]" />
+      {/* Button at absolute right */}
+      <Button
+        onClick={() => addToQueue(song)}
+        className="neon-button absolute right-0 top-1/2 -translate-y-1/2 h-7 w-12 sm:h-9 sm:w-14 text-[10px] sm:text-xs p-0 rounded-r-lg rounded-l-none"
+        data-testid={`add-to-queue-${song.id}`}
+      >
+        <span>ADD</span>
+      </Button>
     </div>
   );
 
