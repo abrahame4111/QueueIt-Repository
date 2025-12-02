@@ -380,15 +380,26 @@ const AdminDashboard = () => {
               <List className="w-5 h-5" />
               QUEUE
             </CardTitle>
-            <Button
-              onClick={handleClearQueue}
-              variant="outline"
-              className="border-accent-error text-accent-error hover:bg-accent-error/10"
-              data-testid="clear-queue-button"
-            >
-              <Trash2 className="w-4 h-4 mr-2" />
-              CLEAR ALL
-            </Button>
+            <div className="flex gap-3">
+              <Button
+                onClick={handlePlayNext}
+                variant="outline"
+                className="border-primary text-primary hover:bg-primary/10"
+                data-testid="play-next-button"
+              >
+                <SkipForward className="w-4 h-4 mr-2" />
+                PLAY NEXT
+              </Button>
+              <Button
+                onClick={handleClearQueue}
+                variant="outline"
+                className="border-accent-error text-accent-error hover:bg-accent-error/10"
+                data-testid="clear-queue-button"
+              >
+                <Trash2 className="w-4 h-4 mr-2" />
+                CLEAR ALL
+              </Button>
+            </div>
           </div>
         </CardHeader>
         <CardContent>
