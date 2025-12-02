@@ -128,7 +128,7 @@ const AdminDashboard = () => {
 
   const handleSkip = async () => {
     try {
-      await axios.post(
+      const response = await axios.post(
         `${API}/queue/skip`,
         {},
         {
@@ -138,8 +138,20 @@ const AdminDashboard = () => {
       
       toast.success('Song skipped');
       
-      // Fetch updated queue - SpotifyPlayer will handle auto-play via its useEffect
-      await fetchData();
+      // Use the next_song from skip response to update state immediately
+      if (response.data.next_song) {
+        const nextSongData = response.data.next_song;
+        nextSongData['_id'] = nextSongData['_id'] || nextSongData.id;
+        setCurrentSong(nextSongData);
+        console.log('Skip: Updated currentSong to', nextSongData.song?.name);
+      } else {
+        setCurrentSong(null);
+        console.log('Skip: No more songs in queue');
+      }
+      
+      // Also fetch full queue state to refresh UI
+      const queueResponse = await axios.get(`${API}/queue`);
+      setQueue(queueResponse.data.queue);
     } catch (error) {
       toast.error('Failed to skip song');
       console.error('Skip error:', error);
