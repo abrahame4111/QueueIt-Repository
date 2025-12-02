@@ -105,20 +105,32 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
       const currentSpotifyUri = state.item?.uri;
       const queuedUri = currentSong?.song?.spotify_uri;
       
-      if (currentSpotifyUri && queuedUri && currentSpotifyUri !== queuedUri && !isTransitioning) {
-        console.log('Track mismatch detected:', {
-          spotifyPlaying: state.item?.name,
-          queuedSong: currentSong?.song?.name
-        });
-        // Only sync if we haven't retried too many times
-        if (retryCount < 1) {
-          console.log('Syncing to correct song...');
-          setTimeout(() => playCurrentSong(), 1500);
-          setRetryCount(prev => prev + 1);
-        }
-      } else if (currentSpotifyUri === queuedUri) {
-        // Songs match, reset retry count
+      if (currentSpotifyUri === queuedUri) {
+        // Perfect match, reset retry count
         setRetryCount(0);
+      } else if (currentSpotifyUri && queuedUri && currentSpotifyUri !== queuedUri && !isTransitioning) {
+        // Mismatch detected - but only sync if it's not what we just played
+        if (lastPlayedUriRef.current !== queuedUri) {
+          console.log('Track mismatch detected:', {
+            spotifyPlaying: state.item?.name,
+            queuedSong: currentSong?.song?.name,
+            lastPlayed: lastPlayedUriRef.current
+          });
+          
+          // Only sync if we haven't retried too many times and this is a significant mismatch
+          if (retryCount < 1) {
+            console.log('Syncing to correct song after delay...');
+            setTimeout(() => {
+              // Double-check the mismatch still exists before syncing
+              if (currentSong?.song?.spotify_uri === queuedUri) {
+                playCurrentSong();
+              }
+            }, 2000);
+            setRetryCount(prev => prev + 1);
+          }
+        } else {
+          console.log('Mismatch detected but we just played this song, waiting for Spotify to sync...');
+        }
       }
       
       // Auto-advance when song ends (within last 2 seconds but not in last 500ms to avoid duplicate triggers)
