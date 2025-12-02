@@ -5,6 +5,8 @@ body {
   background-color: #050505;
   color: white;
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
 
 .App {
@@ -30,6 +32,17 @@ body {
   background: rgba(255, 255, 255, 0.1);
   border-color: rgba(0, 240, 255, 0.5);
   transform: translateY(-2px);
+}
+
+/* Mobile optimizations */
+@media (max-width: 768px) {
+  .song-card {
+    padding: 0.75rem;
+  }
+  
+  .glass-panel {
+    backdrop-filter: blur(16px);
+  }
 }
 
 .neon-button {
