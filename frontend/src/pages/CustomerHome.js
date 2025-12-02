@@ -115,12 +115,12 @@ const CustomerHome = () => {
 
   const SongCard = ({ song }) => (
     <div 
-      className="song-card group w-full"
+      className="song-card group"
       data-testid={`song-card-${song.id}`}
     >
-      <div className="flex items-center w-full" style={{ gap: '0.375rem' }}>
+      <div className="flex items-center gap-2 sm:gap-3">
         {/* Album Art */}
-        <div className="relative w-10 h-10 sm:w-16 sm:h-16 flex-shrink-0">
+        <div className="w-10 h-10 sm:w-16 sm:h-16 flex-shrink-0">
           <img
             src={song.album_art || 'https://via.placeholder.com/64'}
             alt={song.album}
@@ -128,22 +128,20 @@ const CustomerHome = () => {
           />
         </div>
         
-        {/* Song Info - flexible width but constrained */}
-        <div className="flex-1 min-w-0" style={{ marginRight: '0.5rem' }}>
-          <h3 className="text-white font-semibold text-sm sm:text-base truncate">{song.name}</h3>
+        {/* Song Info - takes remaining space minus button width */}
+        <div className="flex-1 min-w-0 pr-2">
+          <h3 className="text-white font-semibold text-sm sm:text-base truncate leading-tight">{song.name}</h3>
           <p className="text-neutral-500 text-xs sm:text-sm truncate">{song.artist}</p>
         </div>
         
-        {/* ADD Button - always visible, never pushed off */}
-        <div className="flex-shrink-0">
-          <Button
-            onClick={() => addToQueue(song)}
-            className="neon-button h-8 px-2 sm:h-9 sm:px-4 text-[11px] sm:text-xs font-bold whitespace-nowrap"
-            data-testid={`add-to-queue-${song.id}`}
-          >
-            ADD
-          </Button>
-        </div>
+        {/* ADD Button - fixed width, always visible */}
+        <Button
+          onClick={() => addToQueue(song)}
+          className="neon-button h-8 w-14 sm:h-9 sm:w-auto sm:px-4 text-[10px] sm:text-xs font-bold flex-shrink-0"
+          data-testid={`add-to-queue-${song.id}`}
+        >
+          ADD
+        </Button>
       </div>
     </div>
   );
