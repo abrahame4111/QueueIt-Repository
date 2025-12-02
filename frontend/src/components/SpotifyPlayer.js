@@ -32,13 +32,28 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   useEffect(() => {
     if (currentSong && spotifyToken) {
       const newSongId = currentSong.id;
+      const newSongName = currentSong.song?.name;
+      const newSongUri = currentSong.song?.spotify_uri;
       
-      // Only auto-play if this is actually a different song
-      if (newSongId !== lastSongIdRef.current) {
-        console.log('New song detected, auto-playing:', currentSong.song.name);
+      console.log('SpotifyPlayer useEffect triggered:', {
+        newSongId,
+        newSongName,
+        lastSongId: lastSongIdRef.current,
+        isTransitioning,
+        willPlay: newSongId !== lastSongIdRef.current && !isTransitioning
+      });
+      
+      // Only auto-play if this is actually a different song AND we're not already transitioning
+      if (newSongId !== lastSongIdRef.current && !isTransitioning) {
+        console.log('New song detected, auto-playing:', newSongName, 'URI:', newSongUri);
         lastSongIdRef.current = newSongId;
         playCurrentSong();
+      } else if (newSongId === lastSongIdRef.current) {
+        console.log('Same song detected, skipping auto-play');
       }
+    } else if (!currentSong && lastSongIdRef.current) {
+      console.log('No current song, resetting lastSongIdRef');
+      lastSongIdRef.current = null;
     }
   }, [currentSong?.id, spotifyToken]);
 
