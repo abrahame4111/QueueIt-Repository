@@ -145,8 +145,12 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   };
 
   const playCurrentSong = async () => {
-    if (!currentSong || isTransitioning) return;
+    if (!currentSong || isTransitioning) {
+      console.log('Skipping playCurrentSong:', { hasCurrentSong: !!currentSong, isTransitioning });
+      return;
+    }
 
+    console.log('Playing song:', currentSong.song.name, 'URI:', currentSong.song.spotify_uri);
     setIsTransitioning(true);
     
     try {
