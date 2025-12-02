@@ -492,8 +492,7 @@ async def spotify_resume(authorization: Optional[str] = Header(None)):
     if not authorization:
         raise HTTPException(status_code=401, detail="Not authenticated")
     
-    admin_token = authorization.replace("Bearer ", "")
-    token_data = user_tokens.get(admin_token)
+    token_data = await get_spotify_token("default_admin")
     
     if not token_data:
         raise HTTPException(status_code=401, detail="No Spotify token found")
