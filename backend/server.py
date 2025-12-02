@@ -397,13 +397,12 @@ async def spotify_callback(code: str, admin: bool = Depends(verify_admin)):
         raise HTTPException(status_code=400, detail="Failed to get access token")
 
 @api_router.get("/spotify/token")
-async def get_spotify_token(authorization: Optional[str] = Header(None)):
+async def check_spotify_token(authorization: Optional[str] = Header(None)):
     """Get stored Spotify access token"""
     if not authorization:
         return {"has_token": False}
     
-    admin_token = authorization.replace("Bearer ", "")
-    token_data = user_tokens.get(admin_token)
+    token_data = await get_spotify_token("default_admin")
     
     if token_data:
         # Check if token expired
@@ -420,8 +419,12 @@ async def get_spotify_token(authorization: Optional[str] = Header(None)):
                 
                 if response.status_code == 200:
                     new_token_data = response.json()
-                    user_tokens[admin_token]['access_token'] = new_token_data['access_token']
-                    user_tokens[admin_token]['expires_at'] = datetime.now(timezone.utc).timestamp() + new_token_data['expires_in']
+                    token_info = {
+                        'access_token': new_token_data['access_token'],
+                        'refresh_token': token_data['refresh_token'],
+                        'expires_at': datetime.now(timezone.utc).timestamp() + new_token_data['expires_in']
+                    }
+                    await save_spotify_token("default_admin", token_info)
                     return {"has_token": True, "access_token": new_token_data['access_token']}
         
         return {"has_token": True, "access_token": token_data['access_token']}
