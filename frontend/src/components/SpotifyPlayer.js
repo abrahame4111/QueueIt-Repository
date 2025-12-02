@@ -151,16 +151,19 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
       return;
     }
 
-    console.log('Playing song:', currentSong.song.name, 'URI:', currentSong.song.spotify_uri);
+    const trackUri = currentSong.song.spotify_uri;
+    console.log('Playing song:', currentSong.song.name, 'URI:', trackUri);
     setIsTransitioning(true);
     
     try {
       await axios.post(
         `${API}/spotify/play`,
-        { track_uri: currentSong.song.spotify_uri },
+        { track_uri: trackUri },
         { headers: { Authorization: `Bearer ${token}` } }
       );
       
+      // Track what we just played to avoid mismatch false positives
+      lastPlayedUriRef.current = trackUri;
       setIsPlaying(true);
       setRetryCount(0);
       toast.success(`▶️ ${currentSong.song.name}`, {
@@ -180,7 +183,7 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
         });
       }
     } finally {
-      setTimeout(() => setIsTransitioning(false), 1000);
+      setTimeout(() => setIsTransitioning(false), 2000);
     }
   };
 
