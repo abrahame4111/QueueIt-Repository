@@ -217,8 +217,8 @@ const CustomerHome = () => {
           </TabsList>
 
           {/* Search Tab */}
-          <TabsContent value="search" className="mt-4 sm:mt-6">
-            <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-6">
+          <TabsContent value="search" className="mt-4 sm:mt-6 max-w-full">
+            <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-6 max-w-full">
               <Input
                 type="text"
                 placeholder="Search for songs..."
