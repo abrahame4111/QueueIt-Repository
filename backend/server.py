@@ -34,8 +34,31 @@ if spotify_client_id and spotify_client_secret:
 else:
     sp = None
 
-# Store user tokens temporarily (in production, use Redis or database)
-user_tokens = {}
+# Store user tokens in MongoDB instead of memory
+async def save_spotify_token(admin_token, token_data):
+    """Save Spotify token to database"""
+    await db.spotify_tokens.update_one(
+        {"admin_token": admin_token},
+        {"$set": {
+            "admin_token": admin_token,
+            "access_token": token_data['access_token'],
+            "refresh_token": token_data.get('refresh_token'),
+            "expires_at": token_data['expires_at'],
+            "updated_at": datetime.now(timezone.utc).isoformat()
+        }},
+        upsert=True
+    )
+
+async def get_spotify_token(admin_token):
+    """Get Spotify token from database"""
+    token_doc = await db.spotify_tokens.find_one({"admin_token": admin_token})
+    if token_doc:
+        return {
+            'access_token': token_doc['access_token'],
+            'refresh_token': token_doc.get('refresh_token'),
+            'expires_at': token_doc['expires_at']
+        }
+    return None
 
 # Create the main app
 app = FastAPI()
