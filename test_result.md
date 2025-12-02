@@ -169,9 +169,9 @@ frontend:
 
   - task: "Spotify Player - Playback Logic (CRITICAL BUG FIX)"
     implemented: true
-    working: true
+    working: false
     file: "/app/frontend/src/components/SpotifyPlayer.js"
-    stuck_count: 4
+    stuck_count: 5
     priority: "critical"
     needs_retesting: false
     status_history:
@@ -199,6 +199,9 @@ frontend:
       - working: true
         agent: "testing"
         comment: "COMPREHENSIVE PLAYBACK TESTING COMPLETED - NO LOOPHOLES FOUND: Conducted exhaustive testing per user request covering all scenarios: ✅ Admin login & initial state verification, ✅ Queue building with multiple songs via customer portal, ✅ Multiple consecutive skips (5 skips tested) - all working perfectly with correct console logs, ✅ Skip until queue empty - handles gracefully, ✅ Clear queue functionality - preserves current song correctly, ✅ Rapid skip clicks race condition test - no duplicate commands or race conditions detected, ✅ State synchronization after page refresh - current song and queue state persist correctly. All critical console patterns working as expected: 'Skip: Updated currentSong to [Song]', 'New song detected, auto-playing: [Song]', proper mismatch handling. The playback bug fix is robust with no edge cases or loopholes detected. System handles all scenarios correctly without glitching to previous tracks."
+      - working: false
+        agent: "testing"
+        comment: "CRITICAL BUG REGRESSION DETECTED - PRODUCTION READINESS TESTING FAILED: Comprehensive production testing reveals the duplicate play command issue has returned. Each skip operation triggers 2 play commands: 1) 'New song detected, auto-playing: [Song Name]' and 2) 'Playing song: [Song Name]'. This indicates duplicate play logic is still present in the codebase. The playCurrentSong() function is being called twice per skip operation. Root cause analysis needed: The SpotifyPlayer useEffect may be triggering playCurrentSong() while the skip handler is also calling it. Despite previous fixes, the race condition persists. URGENT: This is the exact same bug pattern that was originally reported - multiple play commands per skip operation."
 
   - task: "Admin Controls - Skip and Clear"
     implemented: true
