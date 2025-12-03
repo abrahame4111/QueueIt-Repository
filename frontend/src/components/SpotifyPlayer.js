@@ -322,9 +322,14 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
             LOGIN WITH SPOTIFY
           </span>
         </Button>
-        <p className="text-xs text-neutral-600 mt-4">
-          Requires Spotify Premium for playback control
-        </p>
+        <div className="mt-4 space-y-2">
+          <p className="text-xs text-neutral-600">
+            Requires Spotify Premium for playback control
+          </p>
+          <p className="text-xs text-primary/80">
+            💡 To switch accounts: Logout from admin console first
+          </p>
+        </div>
       </div>
     );
   }
