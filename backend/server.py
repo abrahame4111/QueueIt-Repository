@@ -479,6 +479,17 @@ async def check_spotify_token(authorization: Optional[str] = Header(None)):
     
     return {"has_token": False}
 
+@api_router.post("/spotify/logout")
+async def spotify_logout(admin: bool = Depends(verify_admin)):
+    """Logout from Spotify - clear stored tokens"""
+    try:
+        result = await db.spotify_tokens.delete_many({"user_id": "default_admin"})
+        logger.info(f"Spotify logout: Deleted {result.deleted_count} token(s)")
+        return {"success": True, "message": "Logged out from Spotify"}
+    except Exception as e:
+        logger.error(f"Error during Spotify logout: {str(e)}")
+        raise HTTPException(status_code=500, detail="Failed to logout from Spotify")
+
 @api_router.post("/spotify/play")
 async def spotify_play_track(request: PlaybackRequest, authorization: Optional[str] = Header(None)):
     """Play a track on user's Spotify"""
