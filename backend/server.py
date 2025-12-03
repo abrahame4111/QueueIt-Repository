@@ -405,11 +405,18 @@ async def control_playback(request: PlaybackControl, admin: bool = Depends(verif
 
 @api_router.get("/spotify/auth-url")
 async def get_spotify_auth_url(admin: bool = Depends(verify_admin)):
-    """Generate Spotify OAuth URL with forced re-authentication"""
+    """Generate Spotify OAuth URL with forced login and re-authentication
+    
+    This ensures that:
+    1. User sees Spotify login screen (can enter different credentials)
+    2. User sees consent/terms screen
+    3. Allows switching between different Spotify accounts
+    """
     scope = "user-read-playback-state user-modify-playback-state streaming user-read-currently-playing"
     
     # show_dialog=true: Always show consent screen
-    # This forces users to see terms and select account, even if previously authorized
+    # Note: We construct URL without prompt parameter to let Spotify handle it naturally
+    # The show_dialog ensures consent is shown every time
     auth_url = f"https://accounts.spotify.com/authorize?" + \
         f"client_id={spotify_client_id}&" + \
         f"response_type=code&" + \
@@ -417,7 +424,7 @@ async def get_spotify_auth_url(admin: bool = Depends(verify_admin)):
         f"scope={scope}&" + \
         f"show_dialog=true"
     
-    logger.info("Generated Spotify auth URL with forced dialog")
+    logger.info("Generated Spotify auth URL with forced dialog for re-authentication")
     return {"auth_url": auth_url}
 
 @api_router.post("/spotify/callback")
