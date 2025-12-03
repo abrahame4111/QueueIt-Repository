@@ -238,11 +238,29 @@ const AdminDashboard = () => {
     return `${minutes}:${seconds.padStart(2, '0')}`;
   };
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    try {
+      // Logout from Spotify first
+      if (spotifyToken) {
+        await axios.post(
+          `${API}/spotify/logout`,
+          {},
+          { headers: { Authorization: `Bearer ${token}` } }
+        );
+        console.log('✅ Logged out from Spotify');
+      }
+    } catch (error) {
+      console.error('Error logging out from Spotify:', error);
+      // Continue with admin logout even if Spotify logout fails
+    }
+    
+    // Clear local storage and state
     localStorage.removeItem('admin_token');
     setIsAuthenticated(false);
     setToken('');
     setPassword('');
+    setSpotifyToken(null);
+    toast.success('Logged out successfully');
   };
 
   if (!isAuthenticated) {
