@@ -269,10 +269,10 @@ const AdminDashboard = () => {
     setPassword('');
     setSpotifyToken(null);
     
-    // Show final logout confirmation
+    // Show final logout confirmation with account switching tip
     setTimeout(() => {
       toast.success('Logged out successfully', {
-        description: 'Please log in again to access admin dashboard'
+        description: 'To switch Spotify accounts: Logout from spotify.com too, or use Incognito mode'
       });
     }, 500);
   };
