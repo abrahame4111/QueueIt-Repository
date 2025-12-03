@@ -240,18 +240,26 @@ const AdminDashboard = () => {
 
   const handleLogout = async () => {
     try {
-      // Logout from Spotify first
+      // Logout from Spotify first if connected
       if (spotifyToken) {
-        await axios.post(
+        const response = await axios.post(
           `${API}/spotify/logout`,
           {},
           { headers: { Authorization: `Bearer ${token}` } }
         );
         console.log('✅ Logged out from Spotify');
+        console.log(`📊 Removed ${response.data.tokens_removed} Spotify token(s)`);
+        
+        toast.success('Logged out from Spotify', {
+          description: 'You will need to re-authorize on next login'
+        });
       }
     } catch (error) {
       console.error('Error logging out from Spotify:', error);
       // Continue with admin logout even if Spotify logout fails
+      toast.error('Could not logout from Spotify', {
+        description: 'But admin session will be cleared'
+      });
     }
     
     // Clear local storage and state
@@ -260,7 +268,13 @@ const AdminDashboard = () => {
     setToken('');
     setPassword('');
     setSpotifyToken(null);
-    toast.success('Logged out successfully');
+    
+    // Show final logout confirmation
+    setTimeout(() => {
+      toast.success('Logged out successfully', {
+        description: 'Please log in again to access admin dashboard'
+      });
+    }, 500);
   };
 
   if (!isAuthenticated) {
