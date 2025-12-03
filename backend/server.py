@@ -485,11 +485,25 @@ async def check_spotify_token(authorization: Optional[str] = Header(None)):
 
 @api_router.post("/spotify/logout")
 async def spotify_logout(admin: bool = Depends(verify_admin)):
-    """Logout from Spotify - clear stored tokens"""
+    """Logout from Spotify - clear stored tokens
+    
+    Note: Spotify doesn't provide a token revocation endpoint, but we:
+    1. Delete tokens from our database
+    2. Use show_dialog=true on next login to force re-authorization
+    3. This ensures users see the consent screen and can choose accounts
+    """
     try:
         result = await db.spotify_tokens.delete_many({"user_id": "default_admin"})
-        logger.info(f"Spotify logout: Deleted {result.deleted_count} token(s)")
-        return {"success": True, "message": "Logged out from Spotify"}
+        logger.info(f"Spotify logout: Deleted {result.deleted_count} token(s) from database")
+        
+        if result.deleted_count > 0:
+            logger.info("User will need to re-authorize Spotify on next login")
+        
+        return {
+            "success": True, 
+            "message": "Logged out from Spotify. You will need to re-authorize on next login.",
+            "tokens_removed": result.deleted_count
+        }
     except Exception as e:
         logger.error(f"Error during Spotify logout: {str(e)}")
         raise HTTPException(status_code=500, detail="Failed to logout from Spotify")
