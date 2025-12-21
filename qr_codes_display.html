@@ -1,0 +1,271 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hostel Music Queue - QR Codes</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 100%);
+            color: #ffffff;
+            padding: 40px 20px;
+            min-height: 100vh;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        h1 {
+            text-align: center;
+            font-size: 3rem;
+            margin-bottom: 20px;
+            background: linear-gradient(135deg, #00f0ff 0%, #00a8ff 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .subtitle {
+            text-align: center;
+            color: #888;
+            margin-bottom: 60px;
+            font-size: 1.2rem;
+        }
+        .url-box {
+            background: rgba(0, 240, 255, 0.1);
+            border: 2px solid #00f0ff;
+            border-radius: 12px;
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 60px;
+        }
+        .url-box h2 {
+            color: #00f0ff;
+            margin-bottom: 10px;
+            font-size: 1.5rem;
+        }
+        .url-box a {
+            color: #00f0ff;
+            text-decoration: none;
+            font-size: 1.3rem;
+            word-break: break-all;
+        }
+        .url-box a:hover {
+            text-decoration: underline;
+        }
+        .qr-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(450px, 1fr));
+            gap: 40px;
+            margin-bottom: 60px;
+        }
+        .qr-card {
+            background: rgba(255, 255, 255, 0.05);
+            border: 1px solid rgba(255, 255, 255, 0.1);
+            border-radius: 16px;
+            padding: 30px;
+            text-align: center;
+            transition: transform 0.3s, border-color 0.3s;
+        }
+        .qr-card:hover {
+            transform: translateY(-5px);
+            border-color: #00f0ff;
+        }
+        .qr-card h3 {
+            color: #00f0ff;
+            margin-bottom: 15px;
+            font-size: 1.8rem;
+        }
+        .qr-card .description {
+            color: #aaa;
+            margin-bottom: 25px;
+            font-size: 1rem;
+            line-height: 1.5;
+        }
+        .qr-card img {
+            width: 100%;
+            max-width: 400px;
+            height: auto;
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.1);
+            margin-bottom: 20px;
+        }
+        .qr-card .use-case {
+            background: rgba(0, 240, 255, 0.1);
+            border-left: 4px solid #00f0ff;
+            padding: 15px;
+            text-align: left;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+        .qr-card .use-case h4 {
+            color: #00f0ff;
+            margin-bottom: 10px;
+            font-size: 1.1rem;
+        }
+        .qr-card .use-case ul {
+            list-style: none;
+            padding-left: 0;
+        }
+        .qr-card .use-case li {
+            color: #ccc;
+            margin-bottom: 8px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .qr-card .use-case li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #00f0ff;
+            font-weight: bold;
+        }
+        .download-btn {
+            display: inline-block;
+            background: #00f0ff;
+            color: #000;
+            padding: 12px 30px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            margin-top: 15px;
+            transition: background 0.3s;
+        }
+        .download-btn:hover {
+            background: #00a8ff;
+        }
+        .admin-warning {
+            background: rgba(255, 0, 0, 0.1);
+            border: 2px solid #ff0000;
+            border-radius: 12px;
+            padding: 20px;
+            margin-bottom: 20px;
+        }
+        .admin-warning h4 {
+            color: #ff0000;
+            margin-bottom: 10px;
+            font-size: 1.3rem;
+        }
+        .footer {
+            text-align: center;
+            color: #666;
+            margin-top: 80px;
+            padding-top: 40px;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
+        }
+        @media (max-width: 768px) {
+            .qr-grid {
+                grid-template-columns: 1fr;
+            }
+            h1 {
+                font-size: 2rem;
+            }
+            .url-box a {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎵 Hostel Music Queue</h1>
+        <p class="subtitle">QR Codes for Customer Access</p>
+
+        <div class="url-box">
+            <h2>📱 Customer Portal URL</h2>
+            <a href="https://queueit.preview.emergentagent.com" target="_blank">
+                https://queueit.preview.emergentagent.com
+            </a>
+            <p style="color: #666; margin-top: 15px; font-size: 0.9rem;">
+                Customers scan the QR code to access this URL
+            </p>
+        </div>
+
+        <div class="qr-grid">
+            <!-- Simple QR Code -->
+            <div class="qr-card">
+                <h3>Simple QR Code</h3>
+                <p class="description">Clean cyan QR code for quick scanning. Perfect for digital displays or simple printing.</p>
+                <img src="qr_customer_simple.png" alt="Simple QR Code">
+                <a href="qr_customer_simple.png" download class="download-btn">Download PNG</a>
+                <div class="use-case">
+                    <h4>Best For:</h4>
+                    <ul>
+                        <li>Digital screens/TV displays</li>
+                        <li>Social media posts</li>
+                        <li>Quick print on A4 paper</li>
+                        <li>Mobile-friendly sharing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Table Tent -->
+            <div class="qr-card">
+                <h3>Table Tent Card</h3>
+                <p class="description">Branded QR code with "HOSTEL BEATS - Scan to Request Songs" text. Professional table display.</p>
+                <img src="qr_table_tent.png" alt="Table Tent QR Code">
+                <a href="qr_table_tent.png" download class="download-btn">Download PNG</a>
+                <div class="use-case">
+                    <h4>Best For:</h4>
+                    <ul>
+                        <li>Restaurant/cafe tables</li>
+                        <li>Reception desk cards</li>
+                        <li>Common area displays</li>
+                        <li>Fold-up table tents</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Poster -->
+            <div class="qr-card">
+                <h3>Full Poster</h3>
+                <p class="description">Large format poster with "QUEUE YOUR MUSIC" heading. Eye-catching wall display.</p>
+                <img src="qr_poster.png" alt="Poster QR Code">
+                <a href="qr_poster.png" download class="download-btn">Download PNG</a>
+                <div class="use-case">
+                    <h4>Best For:</h4>
+                    <ul>
+                        <li>Wall posters (A4/Letter size)</li>
+                        <li>Entrance displays</li>
+                        <li>Common room walls</li>
+                        <li>Large format printing</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Admin QR -->
+            <div class="qr-card">
+                <div class="admin-warning">
+                    <h4>⚠️ STAFF ONLY</h4>
+                    <p style="color: #ff6666;">This QR code links directly to the admin dashboard. Keep private!</p>
+                </div>
+                <h3>Admin Access QR</h3>
+                <p class="description">Red QR code for admin dashboard access. For staff use only in back office.</p>
+                <img src="qr_admin.png" alt="Admin QR Code">
+                <a href="qr_admin.png" download class="download-btn">Download PNG</a>
+                <div class="use-case">
+                    <h4>Best For:</h4>
+                    <ul>
+                        <li>Staff-only areas</li>
+                        <li>Back office/manager desk</li>
+                        <li>Quick admin access</li>
+                        <li>Password still required</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            <p>🚀 Made with Emergent</p>
+            <p style="margin-top: 10px; font-size: 0.9rem;">
+                All QR codes link to the production URL and are ready for printing
+            </p>
+        </div>
+    </div>
+</body>
+</html>
