@@ -37,17 +37,17 @@
         // Download URLs (update these with actual download links)
         const downloadLinks = {
             'Mac': {
-                url: 'https://queueit.preview.emergentagent.com/downloads/QueueIt-Mac.dmg',
+                url: 'https://queue-it-preview.preview.emergentagent.com/downloads/QueueIt-Mac.dmg',
                 text: 'Download for Mac',
                 info: 'macOS 10.13+ • Intel & Apple Silicon'
             },
             'Windows': {
-                url: 'https://queueit.preview.emergentagent.com/downloads/QueueIt-Windows.exe',
+                url: 'https://queue-it-preview.preview.emergentagent.com/downloads/QueueIt-Windows.exe',
                 text: 'Download for Windows',
                 info: 'Windows 10/11 • 64-bit'
             },
             'Linux': {
-                url: 'https://queueit.preview.emergentagent.com/downloads/QueueIt-Linux.AppImage',
+                url: 'https://queue-it-preview.preview.emergentagent.com/downloads/QueueIt-Linux.AppImage',
                 text: 'Download for Linux',
                 info: 'Ubuntu 18.04+ • AppImage'
             },
@@ -109,7 +109,7 @@
                 </ol>
                 <p><strong>Or try the instant PWA version:</strong></p>
                 <ol>
-                    <li>Open <a href="https://queueit.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a> in Chrome</li>
+                    <li>Open <a href="https://queue-it-preview.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a> in Chrome</li>
                     <li>Click the install icon (⊕) in address bar</li>
                     <li>Click "Install" - Done!</li>
                 </ol>
@@ -127,7 +127,7 @@
                 </ol>
                 <p><strong>Or try the instant PWA version:</strong></p>
                 <ol>
-                    <li>Open <a href="https://queueit.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a> in Chrome/Edge</li>
+                    <li>Open <a href="https://queue-it-preview.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a> in Chrome/Edge</li>
                     <li>Click the install icon (⊕) in address bar</li>
                     <li>Click "Install" - Done!</li>
                 </ol>
@@ -144,7 +144,7 @@
                 </ul>
                 <p><strong>Or use the instant PWA version (recommended):</strong></p>
                 <ol>
-                    <li>Open <a href="https://queueit.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a></li>
+                    <li>Open <a href="https://queue-it-preview.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a></li>
                     <li>Click install icon in browser</li>
                     <li>Works on any device!</li>
                 </ol>
@@ -163,7 +163,7 @@
                     ${instructions}
                 </div>
                 <div class="modal-actions">
-                    <button class="btn-primary" onclick="window.open('https://queueit.preview.emergentagent.com/admin', '_blank')">
+                    <button class="btn-primary" onclick="window.open('https://queue-it-preview.preview.emergentagent.com/admin', '_blank')">
                         Try PWA Version (Instant)
                     </button>
                     <button class="btn-outline modal-close-btn">Close</button>

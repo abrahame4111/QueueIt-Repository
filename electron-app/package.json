@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "Hostel Music Queue - Admin Desktop Application",
   "main": "main.js",
-  "homepage": "https://queueit.preview.emergentagent.com",
+  "homepage": "https://queue-it-preview.preview.emergentagent.com",
   "author": {
     "name": "Emergent",
     "email": "admin@emergentagent.com"

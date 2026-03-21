@@ -169,7 +169,7 @@ If you just want to give your client something immediately:
 ### Use the Web Version
 
 Your client can access the admin portal directly in any browser:
-- URL: https://queueit.preview.emergentagent.com/admin
+- URL: https://queue-it-preview.preview.emergentagent.com/admin
 - Works on Windows, Mac, tablets, phones
 - No installation needed!
 

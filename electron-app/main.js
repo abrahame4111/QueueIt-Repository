@@ -2,7 +2,7 @@ const { app, BrowserWindow, Menu, shell, dialog } = require('electron');
 const path = require('path');
 
 // Admin portal URL
-const ADMIN_URL = 'https://queueit.preview.emergentagent.com/admin';
+const ADMIN_URL = 'https://queue-it-preview.preview.emergentagent.com/admin';
 
 let mainWindow;
 
@@ -169,7 +169,7 @@ function createMenu() {
         {
           label: 'Open Customer Portal in Browser',
           click: () => {
-            shell.openExternal('https://queueit.preview.emergentagent.com');
+            shell.openExternal('https://queue-it-preview.preview.emergentagent.com');
           }
         },
         { type: 'separator' },

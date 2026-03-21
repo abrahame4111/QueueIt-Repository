@@ -1,170 +1,175 @@
-<analysis>Here is a summary of the session to help the next agent continue the work.
+<analysis>**original_problem_statement:**
+The user initially wanted to build a music queueing system called dhumjam for a hostel. This involved a customer portal for song requests (via Spotify), an admin console for queue management, and Spotify OAuth for playback.
 
-**original_problem_statement:** The user wants to build a music queueing system for a hostel, similar to an existing service called dhumjam.
-
-**PRODUCT REQUIREMENTS:**
-1.  **Customer Portal:** Customers scan a QR code which takes them to a mobile-friendly web portal.
-    *   They can search for songs (using Spotify).
-    *   They can request a song to be added to a queue.
-    *   They can see the currently playing song and the upcoming songs in the queue.
-2.  **Music Playback:** Songs are played in a first-come, first-served (FCFS) order from the queue.
-3.  **Admin Console:** A password-protected web portal for hostel staff.
-    *   View and manage the entire song queue.
-    *   Control playback: Play the next song in the queue, skip the current song.
-    *   Clear the entire queue.
-    *   Prioritize a song to be played next.
-4.  **Authentication:** The admin must log in to Spotify via OAuth to connect the system to a playback device (e.g., a laptop connected to speakers).
-5.  **Technology:** The user has agreed to a stack of FastAPI (Python) for the backend, React for the frontend, and MongoDB for the database.
+The project has since evolved into a full product launch for the app, now named QueueIt. The new requirements are:
+1.  **Marketing & Download Website:** A professional landing page, styled like Google Chrome's download page, to advertise the QueueIt brand. This site should feature a smart download button that detects the user's OS (Mac/Windows).
+2.  **Desktop Application:** Native installers for Mac (.dmg) and Windows (.exe).
+3.  **First-Launch Onboarding:** When the desktop app is launched for the first time, it should guide the user through a small tutorial, including Spotify sign-in.
+4.  **In-App QR Generator:** A tool within the admin portal for generating a QR code specific to the user's establishment.
+5.  **Customer Flow:** When customers scan the generated QR code, they should be taken directly to the song request page.
 
 **User's preferred language**: English
 
 **what currently exists?**
-A full-stack application has been built with a React frontend and a FastAPI backend.
--   **Customer Portal**: A mobile-responsive page where users can search for songs via the Spotify API and add them to the queue.
--   **Admin Dashboard**: A password-protected page that displays the current queue, statistics, and playback controls. It requires the admin to log in with their Spotify Premium account to enable playback.
--   **Backend**: Features include Spotify search, queue management (add, skip, clear, play next), and a full Spotify OAuth 2.0 flow with token persistence in MongoDB.
--   **QR Codes**: Several QR code image assets have been generated, linking to the customer portal URL, ready for printing.
+-   A stable, full-stack music queueing application (React frontend, FastAPI backend, MongoDB).
+-   The core features (Spotify search, queueing, admin controls, playback) are functional and tested.
+-   A full Spotify authentication flow (login/logout) is implemented, which forces re-authentication to allow switching accounts.
+-   The mobile UI for the customer portal has been fixed and is responsive.
+-   A new, separate static website has been created in  to serve as the marketing and download page, styled to mimic the Google Chrome download page aesthetic.
+-   An Electron app structure exists in , but cross-platform builds for Windows/Mac from the Linux environment were unsuccessful.
 
 **Last working item**:
-The agent was attempting to fix a critical bug in the Spotify playback logic. The user reported that after a song finishes, or when trying to play a new song, the playback glitches and sometimes reverts to the *previous* song in the queue instead of progressing to the next one. The agent's last action was to completely rewrite the  component to address this flawed logic.
+The agent was redesigning the new marketing/download website to match the clean, minimalist aesthetic of the Google Chrome download page, as requested by the user with image references. The agent's last action was taking a screenshot of the redesigned page to show the user.
 
--   **Last item agent was working**: Fixing a critical bug where the playback logic was flawed, causing songs to glitch and play the wrong track from the queue. The agent rewrote the  component to implement more robust state management.
--   **Status**: **IN PROGRESS**
--   **Agent Testing Done**: N
--   **Which testing method agent to use?**: both. The backend logic for queue progression (, ) and the frontend state management in  and  must be tested together. Use the frontend testing agent to simulate a full user flow in the admin dashboard.
--   **User Testing Done**: Y (User confirmed the bug still exists after the agent's last attempt.)
+-   **Last item agent was working**: Redesigning the marketing website at  to align with the user's visual reference of the Google Chrome website.
+-   **Status**: **USER VERIFICATION PENDING**
+-   **Agent Testing Done**: Y (Agent took a screenshot to visually verify the changes)
+-   **Which testing method agent to use?**: screenshot tool. The next agent should present the last taken screenshot to the user and ask for confirmation on the design.
+-   **User Testing Done**: N
 
 **All Pending/In progress Issue list**:
--   **Issue 1**: Core playback logic is flawed, causing playback to glitch to the previous song. (P0 - HIGHEST PRIORITY)
+-   **Issue 1**:  Final user approval on the redesigned marketing website. (P0 - HIGHEST PRIORITY)
 
 **Issues Detail**:
 -   **Issue 1**:
-    -   **Description**: When a song is played (either by clicking the play button or automatically after the previous song ends), the system sometimes plays the wrong song, often glitching back to a previously played track instead of the next one in the queue.
-    -   **Attempted fixes**: The agent rewrote the  file to improve the logic. This did not resolve the issue, as the user immediately reported the bug was still present.
-    -   **Next debug checklist**:
-        1.  **Examine Backend Logic**: Review the  and  endpoints in . Ensure that when a song is marked as 'played', the *next* song in the queue is correctly marked as 'playing' and that this is the song URI returned and used.
-        2.  **Trace Frontend State**: Add detailed  statements in  and . Log the  prop and the track URI being passed to the  function to ensure the frontend has the correct song data before initiating playback.
-        3.  **Verify State Synchronization**: The core of the problem is likely a race condition or state mismatch between the frontend's idea of the current song and the backend's database state. When a song ends or is skipped, ensure the frontend re-fetches the entire queue/current song state *before* attempting to trigger the next playback.
-        4.  **Simplify **: In , the logic to check if the correct song is playing before resuming is complex. Simplify it to always call the  endpoint with the explicit URI of the song that *should* be playing, rather than relying on a  command.
-    -   **Why fix this issue and what will be achieved with the fix?**: This is the application's core feature. Fixing it will make the music queueing system functional and reliable.
-    -   **Status**: IN PROGRESS
-    -   **Is recurring issue?**: Y
-    -   **Should Test frontend/backend/both after fix?**: both
-    -   **Blocked on other issue**: None
+     -   **Description**: The user requested a redesign of the marketing website to look like Google's. The agent has implemented the changes and taken a screenshot, but has not yet shown it to the user for feedback or approval.
+     -   **Attempted fixes**: The agent modified  and its corresponding CSS to use a white background, Google's brand blue, and a centered, minimalist layout.
+     -   **Next debug checklist**:
+         1.  Present the last captured screenshot () to the user.
+         2.  Ask the user for specific feedback on the new design.
+         3.  Confirm if the user is satisfied and ready to move to the next phase.
+     -   **Why fix this issue and what will be achieved with the fix?**: This is the final step of Phase 1 of the user's new product launch plan. Approval is required before starting work on the desktop app installers and onboarding.
+     -   **Status**:  USER VERIFICATION PENDING
+     -   **Is recurring issue?**: N
+     -   **Should Test frontend/backend/both after fix?**: frontend (screenshot tool)
+     -   **Blocked on other issue**: None
 
 **In progress Task List**:
-There are no other in-progress tasks. The sole focus is on fixing the critical playback bug.
+-   **Task 1**:  Complete the Marketing Website (Phase 1).
+     -   **Where to resume**: Awaiting user feedback on the current design.
+     -   **What will be achieved with this?**: A user-approved landing page for the product.
+     -   **Status**:  IN PROGRESS
+     -   **Should Test frontend/backend/both after fix?**: frontend
+     -   **Blocked on something**: User feedback.
 
 **Upcoming and Future Tasks**
-There are no pending or future tasks requested by the user. The primary goal is to stabilize the existing features and deliver a working version 1.0.
+The user has defined a clear, multi-phase project plan.
+
+**Upcoming Tasks:**
+-   **Phase 2: Desktop App Experience (P0)**
+    -   Successfully build the DMG installer for Mac and EXE installer for Windows. This was previously blocked by environment limitations. The agent should re-evaluate the build process or confirm with the user if building on the target OS (as suggested by the previous agent) is acceptable.
+    -   Implement a first-launch onboarding flow within the Electron app.
+
+-   **Phase 3: Onboarding Tutorial (P1)**
+    -   Design and build a step-by-step interactive tutorial for new admins.
+    -   Integrate a QR code generator tool directly into the admin page.
+
+**Future Tasks:**
+-   **Phase 4: Customer Experience Refinement (P2)**
+    -   Ensure the end-to-end flow from the newly generated QR code to the customer song request page is seamless.
 
 **Completed work in this session**
--   **Initial Scaffolding**: Created the full-stack application structure with React, FastAPI, and MongoDB.
--   **Customer Portal**: Implemented song search and request functionality.
--   **Admin Dashboard**:
-    -   Created admin login and a dashboard with queue visibility and statistics.
-    -   Implemented full Spotify OAuth 2.0 authentication.
-    -   Stored Spotify API tokens securely in the MongoDB database.
-    -   Added controls to  songs from the queue.
-    -   Added a  button to skip the current track and play the next one.
--   **Mobile Responsiveness**: Optimized the customer-facing portal for various mobile screen sizes, ensuring UI elements like song cards and ADD buttons are visible and functional.
--   **QR Code Generation**: Created printable QR code assets (posters, table tents) that link directly to the customer portal.
+-   **Spotify Playback Bug (RESOLVED)**: Fixed the critical, recurring bug where playback would glitch and revert to the previous song. The entire state management logic in  and  was rewritten and stabilized.
+-   **Spotify Logout/Account Switching (DONE)**: Implemented a full logout mechanism that clears database tokens and forces Spotify to show the login screen, allowing different admin users to connect their own Spotify accounts.
+-   **Mobile Layout Optimization (DONE)**: Fixed the customer portal's mobile UI where the ADD button was overflowing. Re-implemented the layout using CSS Grid for robustness.
+-   **QR Code Generation (DONE)**: Generated several QR code assets for the customer portal.
+-   **Electron App Scaffolding (DONE)**: Created the initial file structure for an Electron desktop app, though the build process for Windows/Mac was unsuccessful.
+-   **Marketing Website Creation (DONE)**: Built and then redesigned a new static marketing website based on user's request.
 
 **Earlier issues found/mentioned but not fixed**
-None. All previously identified issues were addressed, although the fix for the core playback logic was unsuccessful and remains the primary ongoing issue.
+-   **Issue 1**: Inability to build Windows (.exe) and Mac (.dmg) installers from the Linux-based development environment.
+    -   **Debug checklist**: The previous agent created build scripts (, ) and a guide () for the user to run on their own machine. The next agent should confirm this strategy with the user or investigate alternative cross-compilation tools if the user insists on building within the environment.
+    -   **Why to solve this issue and what will be achieved with this?**: This is a core requirement for Phase 2 of the user's product launch plan.
+    -   **Should Test frontend/backend/both after fix**: NA
+    -   **Is recurring issue?**: Y
 
 **Known issue recurrence from previous fork**
--   **Issue recurrence in previous fork**:
-    1.  **Playback Logic**: Bugs related to playing the correct song have appeared multiple times with different symptoms. The current glitch to previous song issue is the latest manifestation.
-    2.  **Mobile UI Overflow**: The ADD button on song cards repeatedly disappeared off-screen on mobile devices. This was eventually solved with a robust flexbox layout instead of absolute positioning.
--   **Recurrence count**: 2
--   **Status**:
-    1.  Playback Logic: **IN PROGRESS**
-    2.  Mobile UI Overflow: **RESOLVED**
+-   **Issue recurrence in previous fork**: Playback Logic bug.
+-   **Recurrence count**: 2+
+-   **Status**: **RESOLVED**. The previous agent implemented a robust fix using refs for state synchronization and adding debounce/loading states, which passed comprehensive testing.
 
 **Code Architecture**
 
 
 **Key Technical Concepts**
--   **Backend**: FastAPI, Pydantic, Motor (async MongoDB driver)
--   **Frontend**: React, TailwindCSS, Sonner (for toasts)
+-   **Backend**: FastAPI, Motor
+-   **Frontend**: React, TailwindCSS
 -   **Database**: MongoDB
--   **API Integration**: Spotify Web API (OAuth 2.0, Search, Playback Control)
--   **Deployment**: The application is running within a containerized environment with a public preview URL.
+-   **API Integration**: Spotify Web API (OAuth 2.0)
+-   **Desktop**: Electron.js
+-   **Deployment**: PWA (Progressive Web App) was suggested as an alternative to native installers.
 
 **key DB schema**
 -   **queue**: 
 -   **spotify_tokens**: 
 
 **changes in tech stack**
-None.
+-   Electron.js was introduced for the desktop application wrapper.
+-   A plain HTML/CSS/JS site was created for the download page.
 
 **All files of reference**
--   : Contains all API logic, including the Spotify integration, OAuth flow, and queue management in the database.
--   : The central component for the admin interface, responsible for fetching data, managing state, and rendering the queue and player.
--   : The component responsible for all user interactions with Spotify playback. **This file contains the primary bug.**
--   : The customer-facing UI for searching and requesting songs.
--   : Contains critical global and responsive styles, especially for the mobile layout.
+-   : Contains all backend API logic.
+-   : Main state management for the admin view.
+-   : Handles Spotify playback UI and state.
+-   : Customer-facing UI for song requests.
+-   : The new marketing landing page.
+-   : The main process file for the Electron app.
+-   : Dependencies and build scripts for the Electron app.
+-   : Guide for building installers locally.
 
 **Areas that need refactoring**:
--   **State Management**: The state logic in  is becoming complex, with multiple  hooks and a  for polling. This could be refactored into a custom React hook (e.g., ) to simplify the component and improve readability.
--   **Polling to WebSocket**: The current playback monitoring relies on polling (). For a more professional and real-time experience, this should be upgraded to use WebSockets to push updates from the backend to the frontend.
+-   The build process for the Electron app needs a robust solution. The current approach relies on the user building it themselves.
+-   The state logic in , while stable, is complex and could still benefit from being refactored into a custom hook as noted in the previous handoff.
 
 **key api endpoints**
--   : (GET) Get all songs in the queue.
--   : (POST) Add a song to the queue.
--   : (POST) Skip the current song and advance the queue.
--   : (GET) Get the Spotify authorization URL.
--   : (GET) Handles the OAuth callback from Spotify.
--   : (POST) Play a specific song URI.
--   : (GET) Get the current playback status from Spotify.
--   : (GET) Get a list of available Spotify devices.
+-   : (GET) Get all songs.
+-   : (POST) Add a song.
+-   : (POST) Skip current song.
+-   : (GET) Get the Spotify authorization URL (now includes  and ).
+-   : (POST) **(NEW)** Deletes the Spotify token from the database.
 
 **Critical Info for New Agent**
--   The most critical task is to fix the playback logic. The user is blocked until this is resolved.
--   The problem is a state synchronization issue between the frontend, backend DB, and Spotify's actual playback state.
--   Do not simply try to patch the existing . A systematic diagnosis is needed by tracing the song URI through the entire play/skip flow, from frontend click to backend action and back to the frontend update.
--   The application is accessed via a public preview URL, which must be used as the  in the Spotify Developer Dashboard. The agent has already configured this correctly in the environment.
+-   **Project Pivot**: The user's goal has shifted from a simple functional app to a full product launch. Follow the multi-phase plan laid out by the user.
+-   **Confirm Design First**: Do not proceed to Phase 2 (Desktop App) until the user explicitly approves the new marketing website design from Phase 1.
+-   **Electron Build Challenge**: Be aware that building Mac/Windows installers is not directly possible in the current Linux environment. You must manage the user's expectations and either find a cross-compilation solution or guide the user to use the provided build scripts on their own machine. PWA installation is a strong, recommended alternative.
 
-**documents created in this job**
--   
--   
--   
--   
--   
--   
--   
--   
--   
--   
+**documents and test reports created in this job**
+-   /app/test_result.md
+-   /app/PRODUCTION_GUIDE.md
+-   /app/SPOTIFY_LOGOUT_GUIDE.md
+-   /app/ACCOUNT_SWITCHING_GUIDE.md
+-   /app/electron-app/INSTALLATION_GUIDE.md
+-   /app/electron-app/BUILD_ON_YOUR_COMPUTER.md
+-   /app/android-app/BUILD_INSTRUCTIONS.md
+-   /app/qr_codes_display.html
 
-**Last 10 User Messages and any pending user messages**
-1.  **User**:  (Requesting auto-advance) - **Status: Implemented, but buggy.**
-2.  **User**:  (Reporting a playback bug) - **Status: Fixed.**
-3.  **User**:  (Requesting a UI change for an existing feature) - **Status: Implemented.**
-4.  **User**:  (Clarifying the UI for the Play Next button) - **Status: Implemented.**
-5.  **User**:  (Requesting QR codes) - **Status: Completed.**
-6.  **User**:  (Reporting another playback issue) - **Status: Diagnosed as an inactive Spotify device, explained to the user.**
-7.  **User**:  (Requesting mobile responsiveness) - **Status: Completed.**
-8.  **User**: A series of messages debugging the mobile UI, ending with . - **Status: Completed.**
-9.  **User**:  (General feedback on playback reliability).
-10. **User**:  (Reporting the current critical bug). - **Status: IN PROGRESS.**
+**Last 10 User Messages and any pending HUMAN messages**
+1.  : User asked for the installer files. (Status: Addressed by explaining PWA and build limitations).
+2.  : User defined the new multi-phase product launch plan. (Status: Plan acknowledged, Phase 1 started).
+3.  : User provided visual references for the new website design. (Status: Implemented).
+4.  : User wants to see the redesigned website. (Status: IN PROGRESS, agent needs to show the latest screenshot).
+5.  : User requested proper Spotify logout. (Status: Implemented and tested).
+6.  : User clarified the logout requirement, wanting to see the Spotify auth screen on re-login. (Status: Implemented and tested).
+7.  : User re-emphasized the need to switch Spotify accounts easily. (Status: Implemented by forcing the Spotify login prompt).
+8.  : User requested to see the QR codes. (Status: Completed).
+9.  : User requested a desktop app. (Status: Scaffolding created, build limitations identified).
+10. : User asked for a single installer file. (Status: Addressed by explaining platform-specific builds).
 
 **Project Health Check:**
--   **Broken**: The core Spotify playback progression logic is broken. This is a showstopper bug for the user.
+-   **Broken**: The cross-platform build process for the Electron app is non-functional in the current environment.
 -   **Mocked**: None.
 
-**3rd Party Integrations**:
--   Spotify Web API — requires User API Key
+**3rd Party Integrations**
+-   Spotify Web API — requires User API Key.
 
 **Testing status**
--   **Testing agent used after significant changes**: YES, but the last test run is outdated and does not cover the latest (buggy) changes.
+-   **Testing agent used after significant changes**: YES. The core application's playback and mobile UI were thoroughly tested and declared production-ready.
 -   **Troubleshoot agent used after agent stuck in loop**: NO
 -   **Test files created**: None.
--   **Known regressions**: The core playback functionality has regressed and is currently not working reliably.
+-   **Known regressions**: None. Previous regressions (playback logic, mobile UI) have been resolved.
 
 **Credentials to test flow:**
-Spotify credentials (Client ID and Secret) are already present in the  file. No new credentials are required.
+Spotify credentials (Client ID and Secret) are in .
 
 **What agent forgot to execute**
-The agent did not thoroughly test the rewritten  component before handing it back to the user. This resulted in delivering a non-working fix for the critical playback bug. A local test of the play/skip/auto-advance flow would have caught the regression.</analysis>
+The previous agent was about to show the user a screenshot of the redesigned website to get their approval but was interrupted. The immediate next step is to present this visual confirmation to the user and ask for feedback before proceeding with any other task.</analysis>

@@ -240,7 +240,7 @@ chmod +x Hostel\ Music\ Queue\ Admin.AppImage
 
 **Solution:**
 1. Check internet connection
-2. Try opening https://queueit.preview.emergentagent.com/admin in browser
+2. Try opening https://queue-it-preview.preview.emergentagent.com/admin in browser
 3. If browser works, press Ctrl+Shift+R in app to force reload
 
 ### Spotify Login Opens Inside App (Wrong!)
@@ -386,7 +386,7 @@ A: Yes, in encrypted browser storage (same as Chrome/Firefox).
 
 1. Check this guide first
 2. Try the troubleshooting section
-3. Check if the web version works: https://queueit.preview.emergentagent.com/admin
+3. Check if the web version works: https://queue-it-preview.preview.emergentagent.com/admin
 4. If web version works but app doesn't, it's an app issue
 
 **Common fixes that solve 90% of issues:**
