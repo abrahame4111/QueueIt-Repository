@@ -7,13 +7,12 @@ const ADMIN_URL = 'https://queue-it-preview.preview.emergentagent.com/admin';
 let mainWindow;
 
 function createWindow() {
-  // Create the browser window
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
     minWidth: 1000,
     minHeight: 700,
-    title: 'Hostel Music Queue - Admin',
+    title: 'QueueIt',
     icon: path.join(__dirname, 'assets/icon.png'),
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),

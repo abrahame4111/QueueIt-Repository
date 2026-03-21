@@ -1,35 +1,27 @@
 {
-  "name": "hostel-music-queue-admin",
+  "name": "queueit",
   "version": "1.0.0",
-  "description": "Hostel Music Queue - Admin Desktop Application",
+  "description": "QueueIt - The smart music queue system for your venue",
   "main": "main.js",
   "homepage": "https://queue-it-preview.preview.emergentagent.com",
   "author": {
-    "name": "Emergent",
-    "email": "admin@emergentagent.com"
+    "name": "QueueIt"
   },
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
     "build:win": "electron-builder --win --x64",
-    "build:mac": "electron-builder --mac --x64",
-    "build:linux": "electron-builder --linux",
-    "build:all": "electron-builder -mwl --x64"
+    "build:mac": "electron-builder --mac",
+    "build:linux": "electron-builder --linux"
   },
-  "keywords": [
-    "music",
-    "queue",
-    "admin",
-    "hostel"
-  ],
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.0.0",
     "electron-builder": "^24.9.1"
   },
   "build": {
-    "appId": "com.hostel.musicqueue.admin",
-    "productName": "Hostel Music Queue Admin",
+    "appId": "com.queueit.admin",
+    "productName": "QueueIt",
     "directories": {
       "output": "dist"
     },
@@ -43,10 +35,6 @@
         {
           "target": "nsis",
           "arch": ["x64"]
-        },
-        {
-          "target": "portable",
-          "arch": ["x64"]
         }
       ],
       "icon": "assets/icon.png"
@@ -55,19 +43,23 @@
       "target": [
         {
           "target": "dmg",
-          "arch": ["x64"]
+          "arch": ["universal"]
         }
       ],
       "icon": "assets/icon.png",
       "category": "public.app-category.music"
     },
     "linux": {
-      "target": [
-        "AppImage"
-      ],
+      "target": ["AppImage"],
       "icon": "assets/icon.png",
-      "category": "AudioVideo",
-      "maintainer": "admin@emergentagent.com"
+      "category": "AudioVideo"
+    },
+    "dmg": {
+      "title": "QueueIt",
+      "contents": [
+        { "x": 130, "y": 220 },
+        { "x": 410, "y": 220, "type": "link", "path": "/Applications" }
+      ]
     },
     "nsis": {
       "oneClick": false,
