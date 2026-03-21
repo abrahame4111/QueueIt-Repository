@@ -1,0 +1,108 @@
+# QueueIt - Product Requirements Document
+
+## Problem Statement
+Build a music queueing system called "QueueIt" for hostels, bars, and cafés. Customers scan a QR code to request songs, admins control the queue and Spotify playback from a dashboard. The project has evolved into a full product launch with a marketing website, desktop app (Electron/PWA), onboarding tutorial, and QR code generator.
+
+## User Personas
+- **Admin (Venue Owner/Staff)**: Manages the music queue, controls Spotify playback, generates QR codes for venue display
+- **Customer (Guest)**: Scans QR code to search and request songs from their phone
+
+## Core Requirements
+1. Spotify integration for song search and playback control
+2. Real-time music queue management (add, skip, remove, clear)
+3. Admin authentication with password protection
+4. Customer-facing song request portal (mobile-optimized)
+5. Marketing/download website
+6. In-app QR code generator
+7. First-launch onboarding tutorial
+8. PWA support for installability
+
+## Architecture
+- **Frontend**: React 19 + TailwindCSS + Shadcn/UI
+- **Backend**: FastAPI + Motor (MongoDB async driver)
+- **Database**: MongoDB
+- **API Integration**: Spotify Web API (OAuth 2.0)
+- **Desktop**: Electron.js (scaffolded), PWA (implemented)
+
+## Key API Endpoints
+- `POST /api/admin/login` - Admin authentication
+- `GET /api/queue` - Get all songs in queue
+- `GET /api/queue/current` - Get currently playing song
+- `POST /api/queue/add` - Add song to queue
+- `POST /api/queue/skip` - Skip current song (admin)
+- `POST /api/queue/clear` - Clear queue (admin)
+- `DELETE /api/queue/{id}` - Remove specific song (admin)
+- `GET /api/songs/search?q=` - Search Spotify
+- `GET /api/songs/playlists` - Get featured playlists
+- `GET /api/spotify/auth-url` - Get Spotify OAuth URL
+- `POST /api/spotify/callback` - Handle OAuth callback
+- `POST /api/spotify/logout` - Disconnect Spotify
+- `GET /api/spotify/token` - Check token status
+- `GET /api/spotify/devices` - List Spotify devices
+- `POST /api/spotify/play` - Play track
+- `POST /api/spotify/pause` - Pause playback
+- `POST /api/spotify/resume` - Resume playback
+- `GET /api/spotify/playback-state` - Get playback state
+- `GET /api/download` - Marketing website
+
+## DB Schema
+- **queue**: `{ id, song: {id, name, artist, album, duration_ms, album_art, spotify_uri}, requested_by, requested_at, status }`
+- **spotify_tokens**: `{ admin_token, access_token, refresh_token, expires_at, updated_at }`
+
+---
+
+## What's Been Implemented
+
+### Phase 1: Core Application (COMPLETE)
+- [x] Spotify search and song queueing
+- [x] Admin dashboard with queue management
+- [x] Customer portal with search, playlists, queue tabs
+- [x] Spotify OAuth and playback control
+- [x] Real-time queue polling
+- [x] Mobile-responsive UI
+- [x] Spotify logout and account switching
+- [x] Playback auto-advance
+- [x] Password-protected admin access
+
+### Phase 1.5: Marketing Website (COMPLETE - March 2026)
+- [x] Static marketing website at `/api/download`
+- [x] Google Chrome-inspired clean design
+- [x] OS-detecting download button
+- [x] Features, How It Works, and Download sections
+- [x] Responsive design
+
+### Phase 2: In-App Features (COMPLETE - March 2026)
+- [x] QR Code Generator in admin dashboard
+  - Download PNG, Print, Copy Link
+  - Venue name customization
+  - Points to customer portal URL
+- [x] First-launch onboarding tutorial (5 steps)
+  - Welcome → Connect Spotify → Generate QR → Manage Queue → All Set
+  - Skip option, progress indicators
+  - localStorage persistence
+- [x] PWA support (manifest.json, service worker, icons)
+
+### Phase 2.5: Desktop App (SCAFFOLDED)
+- [x] Electron app structure created
+- [ ] Cross-platform builds (blocked by Linux environment)
+- [x] Build scripts provided for local builds
+
+---
+
+## Backlog / Remaining Tasks
+
+### P0 - High Priority
+- Electron app: Build .dmg (Mac) and .exe (Windows) installers
+  - Requires user to build on their own Mac/Windows machine using provided scripts
+  - OR use PWA install as cross-platform alternative
+
+### P1 - Medium Priority
+- Enhanced onboarding with interactive tutorial (highlight actual UI elements)
+- Admin settings page (change password, manage venue info)
+
+### P2 - Nice to Have
+- Refactor `server.py` into modular route files
+- Extract AdminDashboard state logic into custom hooks
+- Analytics dashboard (most requested songs, peak hours)
+- Multiple venue support
+- Song voting/priority system
