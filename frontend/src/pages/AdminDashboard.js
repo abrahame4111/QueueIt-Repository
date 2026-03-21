@@ -7,6 +7,8 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import SpotifyPlayer from '@/components/SpotifyPlayer';
+import QRCodeGenerator from '@/components/QRCodeGenerator';
+import OnboardingTutorial from '@/components/OnboardingTutorial';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -20,6 +22,7 @@ const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
   const [spotifyToken, setSpotifyToken] = useState(null);
   const [isSkipping, setIsSkipping] = useState(false);
+  const [showOnboarding, setShowOnboarding] = useState(false);
 
   useEffect(() => {
     // Check for saved token
@@ -29,6 +32,11 @@ const AdminDashboard = () => {
       setIsAuthenticated(true);
       fetchData();
       checkSpotifyToken(savedToken);
+      
+      // Show onboarding for first-time users on page load too
+      if (!localStorage.getItem('queueit_onboarding_done')) {
+        setShowOnboarding(true);
+      }
     }
 
     // Handle OAuth callback
@@ -137,6 +145,11 @@ const AdminDashboard = () => {
         setIsAuthenticated(true);
         checkSpotifyToken(response.data.token);
         toast.success('Login successful');
+        
+        // Show onboarding for first-time users
+        if (!localStorage.getItem('queueit_onboarding_done')) {
+          setShowOnboarding(true);
+        }
       }
     } catch (error) {
       toast.error('Invalid password');
@@ -320,6 +333,11 @@ const AdminDashboard = () => {
 
   return (
     <div className="min-h-screen bg-background p-4 md:p-8">
+      {/* Onboarding Tutorial */}
+      {showOnboarding && (
+        <OnboardingTutorial onComplete={() => setShowOnboarding(false)} />
+      )}
+
       {/* Header */}
       <div className="flex justify-between items-center mb-8">
         <div>
@@ -511,6 +529,11 @@ const AdminDashboard = () => {
           </ScrollArea>
         </CardContent>
       </Card>
+
+      {/* QR Code Generator */}
+      <div className="mt-8">
+        <QRCodeGenerator />
+      </div>
     </div>
   );
 };
