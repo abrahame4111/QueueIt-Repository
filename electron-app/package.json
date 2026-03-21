@@ -11,10 +11,10 @@
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
-    "build:win": "electron-builder --win",
-    "build:mac": "electron-builder --mac",
+    "build:win": "electron-builder --win --x64",
+    "build:mac": "electron-builder --mac --x64",
     "build:linux": "electron-builder --linux",
-    "build:all": "electron-builder -mwl"
+    "build:all": "electron-builder -mwl --x64"
   },
   "keywords": [
     "music",
@@ -40,16 +40,23 @@
     ],
     "win": {
       "target": [
-        "nsis",
-        "portable"
+        {
+          "target": "nsis",
+          "arch": ["x64"]
+        },
+        {
+          "target": "portable",
+          "arch": ["x64"]
+        }
       ],
-      "icon": "assets/icon.png",
-      "arch": ["x64"]
+      "icon": "assets/icon.png"
     },
     "mac": {
       "target": [
-        "dmg",
-        "zip"
+        {
+          "target": "dmg",
+          "arch": ["x64"]
+        }
       ],
       "icon": "assets/icon.png",
       "category": "public.app-category.music"
@@ -61,6 +68,12 @@
       "icon": "assets/icon.png",
       "category": "AudioVideo",
       "maintainer": "admin@emergentagent.com"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true,
+      "createStartMenuShortcut": true
     }
   }
 }
