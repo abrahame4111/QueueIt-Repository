@@ -79,3 +79,8 @@ agenthub/agents/youtube/db
 # Mobile development
 android-sdk/ electron-app/node_modules/electron/dist/electron
 electron-app/node_modules/electron/dist/electron
+electron-app/dist/Hostel
+Music
+Queue
+Admin-1.0.0-arm64.AppImage
+electron-app/dist/linux-arm64-unpacked/hostel-music-queue-admin

@@ -3,6 +3,11 @@
   "version": "1.0.0",
   "description": "Hostel Music Queue - Admin Desktop Application",
   "main": "main.js",
+  "homepage": "https://queueit.preview.emergentagent.com",
+  "author": {
+    "name": "Emergent",
+    "email": "admin@emergentagent.com"
+  },
   "scripts": {
     "start": "electron .",
     "build": "electron-builder",
@@ -17,7 +22,6 @@
     "admin",
     "hostel"
   ],
-  "author": "Emergent",
   "license": "MIT",
   "devDependencies": {
     "electron": "^28.0.0",
@@ -51,11 +55,11 @@
     },
     "linux": {
       "target": [
-        "AppImage",
-        "deb"
+        "AppImage"
       ],
       "icon": "assets/icon.png",
-      "category": "AudioVideo"
+      "category": "AudioVideo",
+      "maintainer": "admin@emergentagent.com"
     }
   }
 }
