@@ -43,7 +43,8 @@
         "nsis",
         "portable"
       ],
-      "icon": "assets/icon.png"
+      "icon": "assets/icon.png",
+      "arch": ["x64"]
     },
     "mac": {
       "target": [

@@ -84,3 +84,5 @@ Music
 Queue
 Admin-1.0.0-arm64.AppImage
 electron-app/dist/linux-arm64-unpacked/hostel-music-queue-admin
+electron-app/dist/win-arm64-unpacked/Hostel
+Admin.exe
