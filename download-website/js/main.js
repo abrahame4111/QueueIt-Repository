@@ -34,27 +34,26 @@
         const downloadText = document.getElementById('download-text');
         const platformInfo = document.getElementById('platform-info');
 
-        // Download URLs (update these with actual download links)
         const downloadLinks = {
             'Mac': {
-                url: 'https://queue-it-preview.preview.emergentagent.com/downloads/QueueIt-Mac.dmg',
+                url: '#download',
                 text: 'Download for Mac',
-                info: 'macOS 10.13+ • Intel & Apple Silicon'
+                info: 'macOS build coming soon'
             },
             'Windows': {
-                url: 'https://queue-it-preview.preview.emergentagent.com/downloads/QueueIt-Windows.exe',
+                url: 'https://drive.google.com/uc?export=download&id=1-2bOv1hg7NiSFnIS43LqzhbudeTbVrhX',
                 text: 'Download for Windows',
                 info: 'Windows 10/11 • 64-bit'
             },
             'Linux': {
-                url: 'https://queue-it-preview.preview.emergentagent.com/downloads/QueueIt-Linux.AppImage',
+                url: '#download',
                 text: 'Download for Linux',
-                info: 'Ubuntu 18.04+ • AppImage'
+                info: 'Linux build coming soon'
             },
             'Unknown': {
-                url: '#download',
+                url: 'https://drive.google.com/uc?export=download&id=1-2bOv1hg7NiSFnIS43LqzhbudeTbVrhX',
                 text: 'Download QueueIt',
-                info: 'Available for macOS, Windows, and Linux'
+                info: 'Available for Windows • More platforms coming soon'
             }
         };
 
@@ -81,14 +80,13 @@
 
     // Handle download click
     function handleDownload(os, url) {
-        // Analytics event (if you have analytics)
         console.log(`Download initiated for ${os}`);
 
-        // For now, show a message since we don't have actual build files yet
-        showDownloadModal(os);
-
-        // When you have real download links, uncomment this:
-        // window.location.href = url;
+        if (url && url !== '#download') {
+            window.location.href = url;
+        } else {
+            showDownloadModal(os);
+        }
     }
 
     // Show download modal/instructions
@@ -310,11 +308,11 @@
         const winBtn = document.querySelector('.windows-download');
 
         if (macBtn) {
-            macBtn.addEventListener('click', () => handleDownload('Mac', ''));
+            macBtn.addEventListener('click', () => handleDownload('Mac', '#download'));
         }
 
         if (winBtn) {
-            winBtn.addEventListener('click', () => handleDownload('Windows', ''));
+            winBtn.addEventListener('click', () => handleDownload('Windows', 'https://drive.google.com/uc?export=download&id=1-2bOv1hg7NiSFnIS43LqzhbudeTbVrhX'));
         }
     }
 
