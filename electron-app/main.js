@@ -30,22 +30,9 @@ function createWindow() {
     createMenu();
   });
 
-  // Handle external links — open Spotify OAuth in system browser
-  mainWindow.webContents.setWindowOpenHandler(({ url }) => {
-    if (url.includes('spotify.com') || url.includes('accounts.spotify.com')) {
-      shell.openExternal(url);
-      return { action: 'deny' };
-    }
-    return { action: 'allow' };
-  });
-
-  // Handle navigation to Spotify OAuth — intercept and open externally
-  mainWindow.webContents.on('will-navigate', (event, url) => {
-    if (url.includes('accounts.spotify.com')) {
-      event.preventDefault();
-      shell.openExternal(url);
-    }
-  });
+  // Let Spotify OAuth happen INSIDE the Electron window.
+  // Do NOT open it externally — the redirect_uri points back to our app URL,
+  // so the ?code= will land back in this window and be handled by React.
 
   mainWindow.on('closed', () => { mainWindow = null; });
 }
@@ -60,7 +47,6 @@ function createMenu() {
   const isMac = process.platform === 'darwin';
 
   const template = [
-    // App menu (macOS only)
     ...(isMac ? [{
       label: 'QueueIt',
       submenu: [
@@ -141,7 +127,7 @@ function createMenu() {
                   method: 'POST',
                   headers: { 'Authorization': 'Bearer ' + token }
                 })
-                .then(() => { alert('Logged out from Spotify. Reload the page to re-connect.'); location.reload(); })
+                .then(() => { alert('Logged out from Spotify. Reloading...'); location.reload(); })
                 .catch(() => alert('Failed to logout from Spotify'));
               })()
             `);
@@ -154,7 +140,7 @@ function createMenu() {
               (function() {
                 var token = localStorage.getItem('admin_token');
                 if (!token) { alert('Please login as admin first'); return; }
-                if (!confirm('This will log you out of the current Spotify account and let you sign in with a different one.')) return;
+                if (!confirm('This will log you out and let you sign in with a different Spotify account.')) return;
                 fetch(window.location.origin + '/api/spotify/logout', {
                   method: 'POST',
                   headers: { 'Authorization': 'Bearer ' + token }
@@ -289,7 +275,6 @@ function createMenu() {
   Menu.setApplicationMenu(Menu.buildFromTemplate(template));
 }
 
-// App lifecycle
 app.whenReady().then(createWindow);
 app.on('window-all-closed', () => { if (process.platform !== 'darwin') app.quit(); });
 app.on('activate', () => { if (BrowserWindow.getAllWindows().length === 0) createWindow(); });

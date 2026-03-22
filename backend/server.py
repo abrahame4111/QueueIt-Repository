@@ -502,7 +502,7 @@ async def spotify_logout(admin: bool = Depends(verify_admin)):
     3. This ensures users see the consent screen and can choose accounts
     """
     try:
-        result = await db.spotify_tokens.delete_many({"user_id": "default_admin"})
+        result = await db.spotify_tokens.delete_many({"admin_token": "default_admin"})
         logger.info(f"Spotify logout: Deleted {result.deleted_count} token(s) from database")
         
         if result.deleted_count > 0:
