@@ -82,23 +82,34 @@ Build a music queueing system called "QueueIt" for hostels, bars, and cafés. Cu
   - localStorage persistence
 - [x] PWA support (manifest.json, service worker, icons)
 
-### Phase 2.5: Desktop App (SCAFFOLDED)
-- [x] Electron app structure created
-- [ ] Cross-platform builds (blocked by Linux environment)
-- [x] Build scripts provided for local builds
+### Phase 2.5: Mobile Admin Console (COMPLETE - March 2026)
+- [x] Fully responsive mobile layout with bottom tab navigation
+  - Player tab: mini stats, Spotify player, Skip/Clear actions
+  - Queue tab: touch-friendly queue list with swipe-to-delete
+  - QR Code tab: full QR generator on mobile
+  - Settings tab: Spotify connect/disconnect/switch, app info, logout
+- [x] Sticky header with QueueIt branding and Spotify connection status
+- [x] PWA installable on iOS/Android ("Add to Home Screen")
+- [x] Safe area support for notched devices
+- [x] Desktop layout preserved unchanged (md+ breakpoint)
+
+### Phase 2.5: Desktop App (COMPLETE - March 2026)
+- [x] Electron app with native menu bar (File, Edit, Spotify, View, Window, Help)
+- [x] Spotify menu: Login, Logout, Switch Account, Web Player, Check Status
+- [x] Windows EXE built and linked to download website
+- [x] Build scripts for Mac DMG provided
 
 ---
 
 ## Backlog / Remaining Tasks
 
 ### P0 - High Priority
-- Electron app: Build .dmg (Mac) and .exe (Windows) installers
-  - Requires user to build on their own Mac/Windows machine using provided scripts
-  - OR use PWA install as cross-platform alternative
+- Spotify OAuth flow testing (user reported client_id/redirect_uri issues — credentials updated)
 
 ### P1 - Medium Priority
 - Enhanced onboarding with interactive tutorial (highlight actual UI elements)
 - Admin settings page (change password, manage venue info)
+- Mac DMG build and upload to download website
 
 ### P2 - Nice to Have
 - Refactor `server.py` into modular route files
