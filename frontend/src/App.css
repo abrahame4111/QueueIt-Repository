@@ -115,3 +115,37 @@ html {
     box-shadow: 0 0 20px rgba(0, 240, 255, 0.6);
   }
 }
+
+/* Safe area for mobile bottom bar */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+
+/* Mobile touch feedback */
+@media (max-width: 768px) {
+  .queue-item {
+    gap: 0.75rem;
+    padding: 0.75rem;
+  }
+
+  .queue-item:active {
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  /* Smooth tab transitions */
+  [data-testid^="mobile-"] {
+    animation: fadeIn 0.2s ease-out;
+  }
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* PWA standalone mode */
+@media (display-mode: standalone) {
+  .safe-area-bottom {
+    padding-bottom: env(safe-area-inset-bottom, 16px);
+  }
+}
