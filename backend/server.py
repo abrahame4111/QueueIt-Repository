@@ -141,7 +141,7 @@ async def search_songs(q: str):
         raise HTTPException(status_code=500, detail="Spotify not configured")
     
     try:
-        results = sp.search(q=q, limit=20, type='track')
+        results = sp.search(q=q, limit=10, type='track')
         songs = []
         
         for item in results['tracks']['items']:
@@ -168,7 +168,7 @@ async def get_playlists():
     
     try:
         # Search for popular party/hostel playlists
-        results = sp.search(q='party hits', type='playlist', limit=3)
+        results = sp.search(q='party hits', type='playlist', limit=3, market='US')
         playlists = []
         
         for item in results['playlists']['items']:
