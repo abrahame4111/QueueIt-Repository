@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, SkipForward, Trash2, Play, Music, List, QrCode, LogOut, Settings, Music2, Zap, Radio } from 'lucide-react';
+import { LogIn, SkipForward, Trash2, Play, Music, List, QrCode, LogOut, Settings, Music2, Zap, Radio, Lock, MapPin, Save, Eye, EyeOff, RotateCcw } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -266,7 +266,18 @@ const AdminDashboard = () => {
         </div>
 
         {/* QR */}
-        <div className="mt-6"><QRCodeGenerator /></div>
+        <div className="mt-6" data-testid="qr-generator"><QRCodeGenerator /></div>
+
+        {/* Settings (Desktop) */}
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-4">
+            <Settings className="w-5 h-5 text-[var(--cyan)]" />
+            <span className="font-cyber text-lg font-bold text-white">SETTINGS</span>
+          </div>
+          <div className="grid grid-cols-2 gap-4">
+            <SettingsPanel token={token} spotifyToken={spotifyToken} setSpotifyToken={setSpotifyToken} onSpotifyLogin={handleSpotifyLogin} onLogout={handleLogout} onPasswordChanged={(newToken) => { setToken(newToken); localStorage.setItem('admin_token', newToken); }} />
+          </div>
+        </div>
       </div>
 
       {/* ─── MOBILE ─── */}
@@ -363,35 +374,7 @@ const AdminDashboard = () => {
               <motion.div key="settings" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
                 className="space-y-4" data-testid="mobile-settings-tab">
                 <h2 className="font-cyber text-lg font-bold text-white">SETTINGS</h2>
-                <div className="cyber-card p-4">
-                  <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.15em]">Spotify Connection</span>
-                  <div className="flex items-center gap-2 mt-3 mb-4">
-                    <div className={`w-2.5 h-2.5 ${spotifyToken ? 'bg-green-500' : 'bg-[var(--accent)]'}`} />
-                    <span className="font-mono text-sm text-white">{spotifyToken ? 'CONNECTED' : 'DISCONNECTED'}</span>
-                  </div>
-                  {spotifyToken ? (
-                    <div className="space-y-2">
-                      <button onClick={async () => { try { await axios.post(`${API}/spotify/logout`, {}, { headers: { Authorization: `Bearer ${token}` } }); setSpotifyToken(null); toast.success('Disconnected'); } catch {} }}
-                        className="w-full border border-[var(--accent)]/30 text-[var(--accent)] py-3 font-mono text-xs uppercase" data-testid="mobile-spotify-logout">DISCONNECT</button>
-                      <button onClick={async () => { try { await axios.post(`${API}/spotify/logout`, {}, { headers: { Authorization: `Bearer ${token}` } }); setSpotifyToken(null); handleSpotifyLogin(); } catch {} }}
-                        className="w-full border border-[var(--border)] text-white py-3 font-mono text-xs uppercase hover:bg-white/5" data-testid="mobile-spotify-switch">SWITCH ACCOUNT</button>
-                    </div>
-                  ) : (
-                    <button onClick={handleSpotifyLogin} className="neon-button w-full py-3 text-sm" data-testid="mobile-spotify-login">
-                      <span className="flex items-center justify-center gap-2"><Music2 className="w-4 h-4" /> CONNECT SPOTIFY</span>
-                    </button>
-                  )}
-                </div>
-                <div className="cyber-card p-4">
-                  <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.15em]">System Info</span>
-                  <div className="mt-3 space-y-2 font-mono text-xs">
-                    <div className="flex justify-between text-[var(--text-muted)]"><span>VERSION</span><span className="text-white">1.0.0</span></div>
-                    <div className="flex justify-between text-[var(--text-muted)]"><span>STATUS</span><span className="text-green-500">OPERATIONAL</span></div>
-                  </div>
-                </div>
-                <button onClick={handleLogout} className="w-full border border-[var(--accent)]/30 text-[var(--accent)] py-4 font-mono text-sm uppercase font-bold hover:bg-[var(--accent)]/10 transition-colors duration-200" data-testid="mobile-logout-full">
-                  <span className="flex items-center justify-center gap-2"><LogOut className="w-5 h-5" /> TERMINATE SESSION</span>
-                </button>
+                <SettingsPanel token={token} spotifyToken={spotifyToken} setSpotifyToken={setSpotifyToken} onSpotifyLogin={handleSpotifyLogin} onLogout={handleLogout} onPasswordChanged={(newToken) => { setToken(newToken); localStorage.setItem('admin_token', newToken); }} />
               </motion.div>
             )}
           </AnimatePresence>
@@ -428,3 +411,121 @@ const AdminDashboard = () => {
 };
 
 export default AdminDashboard;
+
+// ─── Settings Panel (shared between desktop and mobile) ───
+const SettingsPanel = ({ token, spotifyToken, setSpotifyToken, onSpotifyLogin, onLogout, onPasswordChanged }) => {
+  const [venueName, setVenueName] = useState('');
+  const [currentPw, setCurrentPw] = useState('');
+  const [newPw, setNewPw] = useState('');
+  const [showPw, setShowPw] = useState(false);
+  const [saving, setSaving] = useState(false);
+
+  useEffect(() => {
+    axios.get(`${API}/admin/settings`, { headers: { Authorization: `Bearer ${token}` } })
+      .then(r => setVenueName(r.data.venue_name || ''))
+      .catch(() => {});
+  }, [token]);
+
+  const saveVenue = async () => {
+    setSaving(true);
+    try {
+      await axios.put(`${API}/admin/settings`, { venue_name: venueName }, { headers: { Authorization: `Bearer ${token}` } });
+      toast.success('Venue name saved');
+    } catch { toast.error('Failed to save'); }
+    finally { setSaving(false); }
+  };
+
+  const changePw = async () => {
+    if (!currentPw || !newPw) return toast.error('Fill in both fields');
+    if (newPw.length < 4) return toast.error('Password too short (min 4 chars)');
+    try {
+      const res = await axios.post(`${API}/admin/change-password`, { current_password: currentPw, new_password: newPw }, { headers: { Authorization: `Bearer ${token}` } });
+      if (res.data.success) {
+        toast.success('Password changed');
+        onPasswordChanged(res.data.token);
+        setCurrentPw(''); setNewPw('');
+      }
+    } catch (e) { toast.error(e.response?.data?.detail || 'Failed to change password'); }
+  };
+
+  const resetOnboarding = () => {
+    localStorage.removeItem('queueit_onboarding_done');
+    toast.success('Onboarding reset. Reload the page to see the tutorial.');
+  };
+
+  return (
+    <div className="space-y-4">
+      {/* Spotify */}
+      <div className="cyber-card p-4">
+        <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.15em]">Spotify Connection</span>
+        <div className="flex items-center gap-2 mt-3 mb-4">
+          <div className={`w-2.5 h-2.5 ${spotifyToken ? 'bg-green-500' : 'bg-[var(--accent)]'}`} />
+          <span className="font-mono text-sm text-white">{spotifyToken ? 'CONNECTED' : 'DISCONNECTED'}</span>
+        </div>
+        {spotifyToken ? (
+          <div className="space-y-2">
+            <button onClick={async () => { try { await axios.post(`${API}/spotify/logout`, {}, { headers: { Authorization: `Bearer ${token}` } }); setSpotifyToken(null); toast.success('Disconnected'); } catch {} }}
+              className="w-full border border-[var(--accent)]/30 text-[var(--accent)] py-3 font-mono text-xs uppercase" data-testid="settings-spotify-logout">DISCONNECT</button>
+            <button onClick={async () => { try { await axios.post(`${API}/spotify/logout`, {}, { headers: { Authorization: `Bearer ${token}` } }); setSpotifyToken(null); onSpotifyLogin(); } catch {} }}
+              className="w-full border border-[var(--border)] text-white py-3 font-mono text-xs uppercase hover:bg-white/5" data-testid="settings-spotify-switch">SWITCH ACCOUNT</button>
+          </div>
+        ) : (
+          <button onClick={onSpotifyLogin} className="neon-button w-full py-3 text-sm" data-testid="settings-spotify-login">
+            <span className="flex items-center justify-center gap-2"><Music2 className="w-4 h-4" /> CONNECT SPOTIFY</span>
+          </button>
+        )}
+      </div>
+
+      {/* Venue Name */}
+      <div className="cyber-card p-4">
+        <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.15em] flex items-center gap-2"><MapPin className="w-3 h-3" /> Venue Name</span>
+        <div className="flex gap-2 mt-3">
+          <Input value={venueName} onChange={e => setVenueName(e.target.value)} placeholder="// Enter venue name"
+            className="bg-black border-[var(--border)] text-white placeholder:text-white/30 rounded-none font-mono text-sm focus:border-[var(--cyan)]"
+            data-testid="settings-venue-name" />
+          <button onClick={saveVenue} disabled={saving} className="cyan-button px-4 py-2 text-xs font-bold shrink-0" data-testid="settings-save-venue">
+            <Save className="w-4 h-4" />
+          </button>
+        </div>
+      </div>
+
+      {/* Change Password */}
+      <div className="cyber-card p-4">
+        <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.15em] flex items-center gap-2"><Lock className="w-3 h-3" /> Change Password</span>
+        <div className="space-y-2 mt-3">
+          <div className="relative">
+            <Input type={showPw ? 'text' : 'password'} value={currentPw} onChange={e => setCurrentPw(e.target.value)} placeholder="// Current password"
+              className="bg-black border-[var(--border)] text-white placeholder:text-white/30 rounded-none font-mono text-sm focus:border-[var(--cyan)] pr-10"
+              data-testid="settings-current-password" />
+            <button onClick={() => setShowPw(!showPw)} className="absolute right-2 top-1/2 -translate-y-1/2 text-[var(--text-muted)] hover:text-white">
+              {showPw ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+            </button>
+          </div>
+          <Input type={showPw ? 'text' : 'password'} value={newPw} onChange={e => setNewPw(e.target.value)} placeholder="// New password"
+            className="bg-black border-[var(--border)] text-white placeholder:text-white/30 rounded-none font-mono text-sm focus:border-[var(--cyan)]"
+            data-testid="settings-new-password" />
+          <button onClick={changePw} className="neon-button w-full py-3 text-sm font-bold" data-testid="settings-change-password">
+            <span className="flex items-center justify-center gap-2"><Lock className="w-4 h-4" /> CHANGE PASSWORD</span>
+          </button>
+        </div>
+      </div>
+
+      {/* System */}
+      <div className="cyber-card p-4">
+        <span className="font-mono text-[10px] text-[var(--text-muted)] uppercase tracking-[0.15em]">System</span>
+        <div className="mt-3 space-y-2 font-mono text-xs">
+          <div className="flex justify-between text-[var(--text-muted)]"><span>VERSION</span><span className="text-white">1.0.0</span></div>
+          <div className="flex justify-between text-[var(--text-muted)]"><span>STATUS</span><span className="text-green-500">OPERATIONAL</span></div>
+        </div>
+        <button onClick={resetOnboarding} className="w-full border border-[var(--border)] text-[var(--text-muted)] hover:text-white py-2.5 font-mono text-xs uppercase mt-3 hover:bg-white/5 transition-colors" data-testid="settings-reset-onboarding">
+          <span className="flex items-center justify-center gap-2"><RotateCcw className="w-3 h-3" /> REPLAY TUTORIAL</span>
+        </button>
+      </div>
+
+      {/* Logout */}
+      <button onClick={onLogout} className="w-full border border-[var(--accent)]/30 text-[var(--accent)] py-4 font-mono text-sm uppercase font-bold hover:bg-[var(--accent)]/10 transition-colors duration-200" data-testid="settings-logout">
+        <span className="flex items-center justify-center gap-2"><LogOut className="w-5 h-5" /> TERMINATE SESSION</span>
+      </button>
+    </div>
+  );
+};

@@ -1,0 +1,49 @@
+from fastapi import APIRouter, HTTPException, Depends
+from models import AdminLogin, AdminResponse, ChangePasswordRequest, VenueSettingsUpdate
+from database import db
+from auth import verify_admin, get_admin_password
+import os
+
+router = APIRouter(prefix="/api")
+
+
+@router.post("/admin/login", response_model=AdminResponse)
+async def admin_login(credentials: AdminLogin):
+    admin_password = await get_admin_password()
+    if credentials.password == admin_password:
+        return AdminResponse(success=True, token=admin_password)
+    else:
+        raise HTTPException(status_code=401, detail="Invalid password")
+
+
+@router.post("/admin/change-password")
+async def change_password(req: ChangePasswordRequest, admin: bool = Depends(verify_admin)):
+    current_pw = await get_admin_password()
+    if req.current_password != current_pw:
+        raise HTTPException(status_code=400, detail="Current password is incorrect")
+    await db.settings.update_one(
+        {"key": "admin_password"},
+        {"$set": {"key": "admin_password", "value": req.new_password}},
+        upsert=True
+    )
+    return {"success": True, "token": req.new_password}
+
+
+@router.get("/admin/settings")
+async def get_settings(admin: bool = Depends(verify_admin)):
+    venue = await db.settings.find_one({"key": "venue_name"})
+    return {
+        "venue_name": venue["value"] if venue else "",
+        "version": "1.0.0"
+    }
+
+
+@router.put("/admin/settings")
+async def update_settings(req: VenueSettingsUpdate, admin: bool = Depends(verify_admin)):
+    if req.venue_name is not None:
+        await db.settings.update_one(
+            {"key": "venue_name"},
+            {"$set": {"key": "venue_name", "value": req.venue_name}},
+            upsert=True
+        )
+    return {"success": True}
