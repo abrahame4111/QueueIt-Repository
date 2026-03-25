@@ -274,6 +274,14 @@ async def add_to_queue(item: QueueItemCreate):
             {"$set": {"status": "playing"}}
         )
     
+    # Cleanup: remove old "played" entries (keep last 20)
+    played_count = await db.queue.count_documents({"status": "played"})
+    if played_count > 20:
+        old_played = db.queue.find({"status": "played"}).sort("requested_at", 1).limit(played_count - 20)
+        old_ids = [doc["_id"] async for doc in old_played]
+        if old_ids:
+            await db.queue.delete_many({"_id": {"$in": old_ids}})
+    
     return {"success": True, "id": str(result.inserted_id)}
 
 @api_router.post("/queue/skip")
@@ -316,8 +324,8 @@ async def skip_song(admin: bool = Depends(verify_admin)):
 
 @api_router.post("/queue/clear")
 async def clear_queue(admin: bool = Depends(verify_admin)):
-    # Delete all queued songs (not the currently playing one)
-    result = await db.queue.delete_many({"status": "queued"})
+    # Delete all songs (queued, playing, and played)
+    result = await db.queue.delete_many({})
     return {"success": True, "deleted_count": result.deleted_count}
 
 @api_router.delete("/queue/{item_id}")

@@ -133,6 +133,9 @@ Build a music queueing system called "QueueIt" for hostels, bars, and cafés. Cu
 
 ### March 25, 2026
 - **Fixed**: Spotify song search `400 Invalid limit` error — Spotify dev mode restricts search to max 10 items; changed `limit=20` to `limit=10` in `server.py`
+- **Fixed**: "Now Playing" card not updating — removed stale comparison logic in `AdminDashboard.js` `setCurrentSong`, now always reflects latest API data
+- **Fixed**: `queue/clear` now clears ALL entries (playing + queued + played) instead of only queued songs
+- **Added**: Auto-cleanup of old "played" entries in DB (keeps last 20) to prevent unbounded growth
 - **Removed**: Obsolete `/app/download-website/` directory and its `StaticFiles` mount + `/api/download` route from `server.py`
-- **Cleaned**: Removed unused `StaticFiles` import from `server.py`
+- **Cleaned**: Removed unused `StaticFiles` import, purged 84 stale DB entries
 - **Added**: Mac DMG installer linked to landing page download button (Universal build for Intel & Apple Silicon)

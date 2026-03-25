@@ -67,13 +67,7 @@ const AdminDashboard = () => {
   const fetchData = async () => {
     try {
       const [cur, q] = await Promise.all([axios.get(`${API}/queue/current`), axios.get(`${API}/queue`)]);
-      const fetched = cur.data.current;
-      setCurrentSong(prev => {
-        if (!fetched && !prev) return null;
-        if (!fetched) return null;
-        if (!prev) return fetched;
-        return prev.id !== fetched.id ? fetched : prev;
-      });
+      setCurrentSong(cur.data.current || null);
       setQueue(q.data.queue);
     } catch (e) { console.error(e); }
   };
@@ -99,14 +93,19 @@ const AdminDashboard = () => {
       toast.success('Song skipped');
       if (res.data.next_song) { const n = res.data.next_song; n['_id'] = n['_id'] || n.id; setCurrentSong(n); }
       else setCurrentSong(null);
-      const q = await axios.get(`${API}/queue`); setQueue(q.data.queue);
+      fetchData();
     } catch { toast.error('Failed to skip song'); }
     finally { setTimeout(() => setIsSkipping(false), 1000); }
   };
 
   const handleClearQueue = async () => {
     if (!window.confirm('Clear entire queue?')) return;
-    try { await axios.post(`${API}/queue/clear`, {}, { headers: { Authorization: `Bearer ${token}` } }); toast.success('Queue cleared'); fetchData(); }
+    try {
+      await axios.post(`${API}/queue/clear`, {}, { headers: { Authorization: `Bearer ${token}` } });
+      setCurrentSong(null);
+      setQueue([]);
+      toast.success('Queue cleared');
+    }
     catch { toast.error('Failed to clear queue'); }
   };
 
