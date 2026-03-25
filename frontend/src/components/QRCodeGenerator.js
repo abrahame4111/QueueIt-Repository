@@ -9,7 +9,7 @@ const QRCodeGenerator = () => {
   const [venueName, setVenueName] = useState('');
   const [copied, setCopied] = useState(false);
   const qrRef = useRef(null);
-  const customerUrl = `${BACKEND_URL}/`;
+  const customerUrl = `${BACKEND_URL}/request`;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(customerUrl);
