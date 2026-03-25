@@ -56,7 +56,7 @@ const DownloadPage = () => {
           <div className="inline-block border border-[var(--border)] px-4 py-1.5 mb-8">
             <span className="font-mono text-[0.65rem] text-[var(--cyan)] uppercase tracking-[0.2em]">// MUSIC QUEUE SYSTEM v1.0</span>
           </div>
-          <h1 className="font-cyber font-black text-[clamp(3rem,8vw,6rem)] leading-none mb-6 tracking-tight">
+          <h1 className="font-cyber font-black text-[clamp(2.5rem,7vw,6rem)] leading-none mb-6 tracking-tight">
             <span className="glitch-text" data-text="LET YOUR">LET YOUR</span><br />
             <span>GUESTS </span><span className="text-[var(--primary)]">DJ</span>
           </h1>
