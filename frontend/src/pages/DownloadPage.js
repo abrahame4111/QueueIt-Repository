@@ -4,6 +4,7 @@ import { motion } from 'framer-motion';
 import { Download, QrCode, Music, List, Smartphone, Monitor, Zap, ArrowRight } from 'lucide-react';
 
 const WINDOWS_URL = 'https://customer-assets.emergentagent.com/job_9c6655a5-05ad-4cc4-9871-fac4b6808ff6/artifacts/holfx7kt_QueueIt%20Setup%201.0.0.exe';
+const MAC_URL = 'https://customer-assets.emergentagent.com/job_03179c1a-c1e0-4037-a646-0831b4343a5e/artifacts/2cdxlpcy_QueueIt-1.0.0-universal.dmg';
 
 const DownloadPage = () => {
   const [os, setOs] = useState('Unknown');
@@ -19,14 +20,14 @@ const DownloadPage = () => {
 
   const handleHeroDownload = () => {
     if (os === 'Windows') window.location.href = WINDOWS_URL;
-    else if (os === 'Mac') alert('macOS build coming soon. Upload your DMG to enable this.');
+    else if (os === 'Mac') window.location.href = MAC_URL;
     else if (os === 'Android' || os === 'iOS') window.location.href = '/admin';
     else window.location.href = WINDOWS_URL;
   };
 
   const heroText = {
     Windows: { btn: 'DOWNLOAD FOR WINDOWS', sub: 'Windows 10/11 \u2022 64-bit' },
-    Mac: { btn: 'DOWNLOAD FOR MAC', sub: 'macOS build coming soon' },
+    Mac: { btn: 'DOWNLOAD FOR MAC', sub: 'macOS Universal \u2022 Intel & Apple Silicon' },
     Android: { btn: 'INSTALL ON ANDROID', sub: 'PWA \u2022 No app store needed' },
     iOS: { btn: 'INSTALL ON IPHONE', sub: 'PWA \u2022 Add to Home Screen' },
     Linux: { btn: 'DOWNLOAD FOR LINUX', sub: 'Linux build coming soon' },
@@ -132,7 +133,7 @@ const DownloadPage = () => {
           <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-px bg-[var(--border)] max-w-[900px] mx-auto">
             {[
               { os: 'Windows', info: 'EXE Installer', sub: 'Win 10/11 64-bit', action: () => window.location.href = WINDOWS_URL, ready: true },
-              { os: 'macOS', info: 'DMG Installer', sub: 'Coming Soon', action: () => alert('macOS build coming soon'), ready: false },
+              { os: 'macOS', info: 'DMG Installer', sub: 'Universal (Intel & Apple Silicon)', action: () => window.location.href = MAC_URL, ready: true },
               { os: 'Android', info: 'PWA Install', sub: 'Chrome Browser', action: () => window.location.href = '/admin', ready: true },
               { os: 'iOS', info: 'PWA Install', sub: 'Safari Browser', action: () => window.location.href = '/admin', ready: true },
             ].map((d, i) => (

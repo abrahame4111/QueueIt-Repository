@@ -119,7 +119,6 @@ Build a music queueing system called "QueueIt" for hostels, bars, and cafés. Cu
 ### P1 - Medium Priority
 - Enhanced onboarding with interactive tutorial (highlight actual UI elements)
 - Admin settings page (change password, manage venue info)
-- Mac DMG build and upload to download website
 
 ### P2 - Nice to Have
 - Refactor `server.py` into modular route files
@@ -136,3 +135,4 @@ Build a music queueing system called "QueueIt" for hostels, bars, and cafés. Cu
 - **Fixed**: Spotify song search `400 Invalid limit` error — Spotify dev mode restricts search to max 10 items; changed `limit=20` to `limit=10` in `server.py`
 - **Removed**: Obsolete `/app/download-website/` directory and its `StaticFiles` mount + `/api/download` route from `server.py`
 - **Cleaned**: Removed unused `StaticFiles` import from `server.py`
+- **Added**: Mac DMG installer linked to landing page download button (Universal build for Intel & Apple Silicon)
