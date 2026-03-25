@@ -1,8 +1,8 @@
 const { app, BrowserWindow, Menu, shell, dialog } = require('electron');
 const path = require('path');
 
-const ADMIN_URL = 'https://queue-it-preview.preview.emergentagent.com/admin';
-const CUSTOMER_URL = 'https://queue-it-preview.preview.emergentagent.com/request';
+const ADMIN_URL = 'https://queueit.live/admin';
+const CUSTOMER_URL = 'https://queueit.live/request';
 
 let mainWindow;
 

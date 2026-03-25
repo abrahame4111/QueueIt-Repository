@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Download, QrCode, Music, List, Smartphone, Monitor, Zap, ArrowRight } from 'lucide-react';
 

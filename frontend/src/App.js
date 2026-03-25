@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import CustomerHome from '@/pages/CustomerHome';
 import AdminDashboard from '@/pages/AdminDashboard';
 import DownloadPage from '@/pages/DownloadPage';
+import PostDownloadPage from '@/pages/PostDownloadPage';
 import { Toaster } from '@/components/ui/sonner';
 
 function App() {
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path="/" element={<DownloadPage />} />
           <Route path="/downloads" element={<DownloadPage />} />
+          <Route path="/downloads/thanks" element={<PostDownloadPage />} />
           <Route path="/request" element={<CustomerHome />} />
           <Route path="/admin" element={<AdminDashboard />} />
         </Routes>

@@ -3,13 +3,13 @@ import { QRCodeSVG } from 'qrcode.react';
 import { Download, Copy, Check, QrCode, Printer } from 'lucide-react';
 import { toast } from 'sonner';
 
-const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+const CUSTOMER_URL = 'https://queueit.live/request';
 
 const QRCodeGenerator = () => {
   const [venueName, setVenueName] = useState('');
   const [copied, setCopied] = useState(false);
   const qrRef = useRef(null);
-  const customerUrl = `${BACKEND_URL}/request`;
+  const customerUrl = CUSTOMER_URL;
 
   const handleCopyLink = () => {
     navigator.clipboard.writeText(customerUrl);
