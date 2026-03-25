@@ -93,11 +93,21 @@ Build a music queueing system called "QueueIt" for hostels, bars, and cafés. Cu
 - [x] Safe area support for notched devices
 - [x] Desktop layout preserved unchanged (md+ breakpoint)
 
-### Phase 2.5: Desktop App (COMPLETE - March 2026)
-- [x] Electron app with native menu bar (File, Edit, Spotify, View, Window, Help)
-- [x] Spotify menu: Login, Logout, Switch Account, Web Player, Check Status
-- [x] Windows EXE built and linked to download website
-- [x] Build scripts for Mac DMG provided
+### Phase 3: Cyberpunk 2077 Rebrand (COMPLETE - March 2026)
+- [x] Complete UI rebrand to Cyberpunk 2077 aesthetic
+  - Color palette: Primary Yellow (#FCEE0A), Cyan (#00F0FF), Accent Red (#FF003C), Black (#050505)
+  - Fonts: Unbounded (headings), JetBrains Mono (mono/labels), IBM Plex Sans (body)
+  - Effects: Glitch text, scanline overlays, HUD corner marks, breathing borders
+  - Angular clip-path buttons, glass-morphism panels
+  - Framer-motion tab transitions with AnimatePresence
+- [x] Custom cyberpunk logo and app icons generated
+- [x] Admin login redesigned as "Access Terminal"
+- [x] Admin dashboard: cyber-cards, neon borders, PURGE/NEXT buttons
+- [x] Customer portal: glitch hero text, cyberpunk search/browse/queue
+- [x] Download/marketing website: full cyberpunk landing page with glitch effects
+- [x] QR code generator: cyan QR on black background
+- [x] Onboarding tutorial: cyberpunk step cards with motion animations
+- [x] All mobile layouts updated with cyberpunk styling
 
 ---
 
