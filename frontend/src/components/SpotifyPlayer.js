@@ -304,32 +304,23 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   // Not connected to Spotify
   if (!spotifyToken) {
     return (
-      <div className="bg-surface border border-primary/30 rounded-xl p-8 text-center" data-testid="spotify-connect">
-        <Music2 className="w-16 h-16 mx-auto mb-4 text-primary" />
-        <h3 className="text-2xl font-heading font-bold text-white mb-2">
-          Connect to Spotify
+      <div className="cyber-card hud-corners p-8 text-center" data-testid="spotify-connect">
+        <Music2 className="w-16 h-16 mx-auto mb-4 text-[var(--cyan)]" />
+        <h3 className="font-cyber text-2xl font-bold text-white mb-2">
+          CONNECT SPOTIFY
         </h3>
-        <p className="text-neutral-500 mb-6">
-          Login with your Spotify Premium account to control playback on your devices.
+        <p className="text-[var(--text-muted)] font-mono text-sm mb-6">
+          Link your Spotify Premium to control playback
         </p>
-        <Button
-          onClick={onSpotifyLogin}
-          className="neon-button h-14 px-8"
-          data-testid="spotify-login-button"
-        >
+        <button onClick={onSpotifyLogin} className="neon-button h-14 px-8 mx-auto" data-testid="spotify-login-button">
           <span className="flex items-center gap-3">
             <Music2 className="w-5 h-5" />
-            LOGIN WITH SPOTIFY
+            INITIALIZE SPOTIFY
           </span>
-        </Button>
-        <div className="mt-4 space-y-2">
-          <p className="text-xs text-neutral-600">
-            Requires Spotify Premium for playback control
-          </p>
-          <p className="text-xs text-primary/80">
-            💡 To switch accounts: Logout from admin console first
-          </p>
-        </div>
+        </button>
+        <p className="text-xs text-[var(--text-muted)] font-mono mt-4 opacity-50">
+          Requires Spotify Premium
+        </p>
       </div>
     );
   }
@@ -337,111 +328,69 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   // No song in queue
   if (!currentSong) {
     return (
-      <div className="bg-surface border border-white/10 rounded-xl p-6 text-center" data-testid="no-song-playing">
-        <Music2 className="w-12 h-12 mx-auto mb-3 text-neutral-600" />
-        <p className="text-neutral-500">Queue is empty</p>
-        <p className="text-xs text-neutral-600 mt-1">Waiting for song requests...</p>
+      <div className="cyber-card p-6 text-center" data-testid="no-song-playing">
+        <Music2 className="w-12 h-12 mx-auto mb-3 text-[var(--text-muted)] opacity-30" />
+        <p className="text-[var(--text-muted)] font-mono text-sm">// QUEUE EMPTY</p>
+        <p className="text-[var(--text-muted)] text-xs font-mono mt-1 opacity-50">Awaiting song requests...</p>
       </div>
     );
   }
 
   // Now playing card
   return (
-    <div className="bg-surface border border-primary/30 rounded-xl p-6" data-testid="now-playing-card">
+    <div className="cyber-card breathe-border p-5" data-testid="now-playing-card">
       <div className="flex gap-4 items-center mb-4">
         <div className="relative w-20 h-20 flex-shrink-0">
-          <img
-            src={currentSong.song.album_art || 'https://via.placeholder.com/80'}
-            alt={currentSong.song.album}
-            className="w-full h-full object-cover rounded-lg"
-          />
-          <div className="absolute inset-0 bg-black/40 rounded-lg flex items-center justify-center">
-            <Button
-              onClick={handlePlayPause}
-              disabled={isTransitioning}
-              size="sm"
-              className="w-10 h-10 rounded-full bg-primary hover:bg-primary/80 text-black p-0 disabled:opacity-50"
-              data-testid="play-pause-button"
-            >
-              {isTransitioning ? (
-                <Loader2 className="w-5 h-5 animate-spin" />
-              ) : isPlaying ? (
-                <Pause className="w-5 h-5" fill="currentColor" />
-              ) : (
-                <Play className="w-5 h-5 ml-0.5" fill="currentColor" />
-              )}
+          <img src={currentSong.song.album_art || 'https://via.placeholder.com/80'} alt={currentSong.song.album} className="w-full h-full object-cover" />
+          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+            <Button onClick={handlePlayPause} disabled={isTransitioning} size="sm"
+              className="w-10 h-10 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-black p-0 rounded-none disabled:opacity-50"
+              data-testid="play-pause-button">
+              {isTransitioning ? <Loader2 className="w-5 h-5 animate-spin" /> : isPlaying ? <Pause className="w-5 h-5" fill="currentColor" /> : <Play className="w-5 h-5 ml-0.5" fill="currentColor" />}
             </Button>
           </div>
         </div>
-        
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            {deviceStatus === 'active' ? (
-              <CheckCircle className="w-4 h-4 text-green-500" />
-            ) : deviceStatus === 'checking' ? (
-              <Loader2 className="w-4 h-4 text-neutral-500 animate-spin" />
-            ) : (
-              <AlertCircle className="w-4 h-4 text-orange-500" />
-            )}
-            <span className="text-xs text-primary uppercase tracking-wider font-bold">
-              {isPlaying ? 'NOW PLAYING' : 'PAUSED'}
-            </span>
+            {deviceStatus === 'active' ? <CheckCircle className="w-4 h-4 text-green-500" /> : deviceStatus === 'checking' ? <Loader2 className="w-4 h-4 text-[var(--text-muted)] animate-spin" /> : <AlertCircle className="w-4 h-4 text-orange-500" />}
+            <span className="font-mono text-[10px] text-[var(--cyan)] uppercase tracking-[0.15em] font-bold">{isPlaying ? 'NOW PLAYING' : 'PAUSED'}</span>
           </div>
-          <h3 className="text-xl font-heading font-bold text-white truncate">
-            {currentSong.song.name}
-          </h3>
-          <p className="text-neutral-500 text-sm truncate">{currentSong.song.artist}</p>
-          <p className="text-xs text-neutral-600 mt-1">
-            Requested by {currentSong.requested_by || 'Guest'}
-          </p>
+          <h3 className="text-xl font-bold text-white truncate">{currentSong.song.name}</h3>
+          <p className="text-[var(--text-muted)] text-sm truncate font-mono">{currentSong.song.artist}</p>
+          <p className="text-xs text-[var(--text-muted)] mt-1 font-mono opacity-50">REQ: {currentSong.requested_by || 'ANONYMOUS'}</p>
         </div>
-
         {devices.length > 0 && devices[0].is_active && (
           <div className="text-right hidden sm:block">
-            <p className="text-xs text-neutral-500 mb-1">Device</p>
+            <p className="font-mono text-[10px] text-[var(--text-muted)] mb-1">DEVICE</p>
             <p className="text-sm text-white font-semibold truncate max-w-[150px]">{devices[0].name}</p>
-            <p className="text-xs text-primary">{devices[0].type}</p>
+            <p className="font-mono text-[10px] text-[var(--cyan)]">{devices[0].type}</p>
           </div>
         )}
       </div>
-
-      {/* Progress bar */}
       {songDuration > 0 && (
         <div className="space-y-1">
-          <div className="relative h-1.5 bg-white/10 rounded-full overflow-hidden">
-            <div 
-              className="absolute h-full bg-primary transition-all duration-1000"
-              style={{ width: `${progressPercentage}%` }}
-            />
+          <div className="relative h-1 bg-white/10 overflow-hidden">
+            <div className="absolute h-full bg-[var(--cyan)] transition-all duration-1000" style={{ width: `${progressPercentage}%`, boxShadow: 'var(--glow-cyan)' }} />
           </div>
-          <div className="flex justify-between text-xs text-neutral-500 font-mono">
+          <div className="flex justify-between font-mono text-[10px] text-[var(--text-muted)]">
             <span>{formatTime(playbackProgress)}</span>
             <span>{formatTime(songDuration)}</span>
           </div>
         </div>
       )}
-
-      {/* Device warnings */}
       {deviceStatus === 'error' && (
-        <div className="mt-4 pt-4 border-t border-white/10">
-          <div className="flex items-start gap-2 text-orange-500 text-xs">
+        <div className="mt-4 pt-4 border-t border-[var(--border)]">
+          <div className="flex items-start gap-2 text-orange-500 text-xs font-mono">
             <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold">No Spotify device detected</p>
-              <p className="text-neutral-500 mt-1">Open Spotify app and play any song to activate device</p>
-            </div>
+            <div><p className="font-semibold">NO DEVICE DETECTED</p><p className="text-[var(--text-muted)] mt-1">Open Spotify and play any song to activate</p></div>
           </div>
         </div>
       )}
-
       {deviceStatus === 'inactive' && (
-        <div className="mt-4 pt-4 border-t border-white/10">
-          <div className="flex items-start gap-2 text-yellow-500 text-xs">
+        <div className="mt-4 pt-4 border-t border-[var(--border)]">
+          <div className="flex items-start gap-2 text-yellow-500 text-xs font-mono">
             <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
-            <div>
-              <p className="font-semibold">Device inactive</p>
-              <p className="text-neutral-500 mt-1">Play any song in Spotify to activate: {devices[0]?.name}</p>
-            </div>
+            <div><p className="font-semibold">DEVICE INACTIVE</p><p className="text-[var(--text-muted)] mt-1">Play any song to activate: {devices[0]?.name}</p></div>
           </div>
         </div>
       )}

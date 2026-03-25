@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
-import { Search, Music, List, Play, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { Search, Music, List, Play, Clock, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
-import { Button } from '@/components/ui/button';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { ScrollArea } from '@/components/ui/scroll-area';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -19,327 +18,220 @@ const CustomerHome = () => {
   const [queue, setQueue] = useState([]);
   const [currentSong, setCurrentSong] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [activeTab, setActiveTab] = useState('search');
 
   useEffect(() => {
-    fetchPlaylists();
-    fetchQueue();
-    fetchCurrentSong();
-    
-    // Poll queue every 5 seconds
-    const interval = setInterval(() => {
-      fetchQueue();
-      fetchCurrentSong();
-    }, 5000);
-    
+    fetchPlaylists(); fetchQueue(); fetchCurrentSong();
+    const interval = setInterval(() => { fetchQueue(); fetchCurrentSong(); }, 5000);
     return () => clearInterval(interval);
   }, []);
 
-  const fetchPlaylists = async () => {
-    try {
-      const response = await axios.get(`${API}/songs/playlists`);
-      setPlaylists(response.data.playlists);
-    } catch (error) {
-      console.error('Error fetching playlists:', error);
-    }
-  };
-
-  const fetchPlaylistTracks = async (playlistId) => {
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API}/songs/playlist/${playlistId}`);
-      setPlaylistTracks(response.data.songs);
-      setSelectedPlaylist(playlistId);
-    } catch (error) {
-      toast.error('Failed to load playlist');
-      console.error('Error fetching playlist tracks:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const searchSongs = async () => {
-    if (!searchQuery.trim()) return;
-    
-    setLoading(true);
-    try {
-      const response = await axios.get(`${API}/songs/search?q=${encodeURIComponent(searchQuery)}`);
-      setSearchResults(response.data.songs);
-    } catch (error) {
-      toast.error('Search failed');
-      console.error('Error searching songs:', error);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  const fetchQueue = async () => {
-    try {
-      const response = await axios.get(`${API}/queue`);
-      setQueue(response.data.queue);
-    } catch (error) {
-      console.error('Error fetching queue:', error);
-    }
-  };
-
-  const fetchCurrentSong = async () => {
-    try {
-      const response = await axios.get(`${API}/queue/current`);
-      setCurrentSong(response.data.current);
-    } catch (error) {
-      console.error('Error fetching current song:', error);
-    }
-  };
+  const fetchPlaylists = async () => { try { const r = await axios.get(`${API}/songs/playlists`); setPlaylists(r.data.playlists); } catch {} };
+  const fetchPlaylistTracks = async (id) => { setLoading(true); try { const r = await axios.get(`${API}/songs/playlist/${id}`); setPlaylistTracks(r.data.songs); setSelectedPlaylist(id); } catch { toast.error('Failed to load playlist'); } finally { setLoading(false); } };
+  const searchSongs = async () => { if (!searchQuery.trim()) return; setLoading(true); try { const r = await axios.get(`${API}/songs/search?q=${encodeURIComponent(searchQuery)}`); setSearchResults(r.data.songs); } catch { toast.error('Search failed'); } finally { setLoading(false); } };
+  const fetchQueue = async () => { try { const r = await axios.get(`${API}/queue`); setQueue(r.data.queue); } catch {} };
+  const fetchCurrentSong = async () => { try { const r = await axios.get(`${API}/queue/current`); setCurrentSong(r.data.current); } catch {} };
 
   const addToQueue = async (song) => {
     try {
-      await axios.post(`${API}/queue/add`, {
-        song: song,
-        requested_by: 'Guest'
-      });
-      toast.success('Song added to queue!', {
-        description: `${song.name} by ${song.artist}`
-      });
-      fetchQueue();
-      fetchCurrentSong();
-    } catch (error) {
-      toast.error('Failed to add song');
-      console.error('Error adding to queue:', error);
-    }
+      await axios.post(`${API}/queue/add`, { song, requested_by: 'Guest' });
+      toast.success('Song queued!', { description: `${song.name} by ${song.artist}` });
+      fetchQueue(); fetchCurrentSong();
+    } catch { toast.error('Failed to add song'); }
   };
 
-  const formatDuration = (ms) => {
-    const minutes = Math.floor(ms / 60000);
-    const seconds = ((ms % 60000) / 1000).toFixed(0);
-    return `${minutes}:${seconds.padStart(2, '0')}`;
-  };
+  const fmt = (ms) => { const m = Math.floor(ms / 60000); const s = ((ms % 60000) / 1000).toFixed(0); return `${m}:${s.padStart(2, '0')}`; };
 
-  const SongCard = ({ song }) => (
-    <div 
+  const SongCard = ({ song, delay = 0 }) => (
+    <motion.div
+      initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: delay * 0.03 }}
       className="song-card group"
       data-testid={`song-card-${song.id}`}
-      style={{ 
-        display: 'grid',
-        gridTemplateColumns: '40px 1fr 56px',
-        gap: '8px',
-        alignItems: 'center',
-        width: '100%'
-      }}
+      style={{ display: 'grid', gridTemplateColumns: '40px 1fr 56px', gap: '10px', alignItems: 'center', width: '100%' }}
     >
-      {/* Album Art */}
-      <img
-        src={song.album_art || 'https://via.placeholder.com/64'}
-        alt={song.album}
-        style={{ width: '40px', height: '40px', borderRadius: '4px', objectFit: 'cover' }}
-      />
-      
-      {/* Song Info */}
-      <div style={{ minWidth: 0, overflow: 'hidden' }}>
+      <img src={song.album_art || 'https://via.placeholder.com/40'} alt="" style={{ width: '40px', height: '40px', objectFit: 'cover' }} />
+      <div style={{ minWidth: 0 }}>
         <h3 className="text-white font-semibold text-sm truncate leading-tight">{song.name}</h3>
-        <p className="text-neutral-500 text-xs truncate">{song.artist}</p>
+        <p className="text-[var(--text-muted)] text-xs truncate font-mono">{song.artist}</p>
       </div>
-      
-      {/* ADD Button */}
-      <Button
-        onClick={() => addToQueue(song)}
-        className="neon-button text-[10px] font-bold"
-        style={{ height: '32px', padding: '0 4px', whiteSpace: 'nowrap' }}
-        data-testid={`add-to-queue-${song.id}`}
-      >
-        ADD
-      </Button>
-    </div>
+      <button onClick={() => addToQueue(song)} className="neon-button text-[10px] font-bold h-8 px-1" data-testid={`add-to-queue-${song.id}`}>
+        <span><Zap className="w-3 h-3 inline" /> ADD</span>
+      </button>
+    </motion.div>
   );
 
+  const queuedSongs = queue.filter(i => i.status === 'queued');
+  const tabs = [
+    { id: 'search', label: 'SEARCH', icon: Search },
+    { id: 'playlists', label: 'BROWSE', icon: Music },
+    { id: 'queue', label: 'QUEUE', icon: List, badge: queuedSongs.length },
+  ];
+
   return (
-    <div className="min-h-screen bg-background pb-24 md:pb-32">
-      {/* Hero Section */}
-      <div 
-        className="relative h-36 sm:h-48 bg-cover bg-center"
-        style={{
-          backgroundImage: `linear-gradient(180deg, rgba(0,240,255,0.1) 0%, rgba(5,5,5,0.8) 100%), url('https://images.unsplash.com/photo-1706148817964-08251bc8cf8c?crop=entropy&cs=srgb&fm=jpg&q=85')`,
-        }}
-      >
+    <div className="min-h-screen bg-[var(--bg)] pb-20 relative">
+      {/* Hero */}
+      <div className="relative h-40 sm:h-52 overflow-hidden">
+        <div className="absolute inset-0 bg-gradient-to-b from-[var(--cyan)]/10 via-[var(--bg)]/60 to-[var(--bg)]" />
+        <div className="absolute inset-0" style={{ background: 'repeating-linear-gradient(0deg, transparent, transparent 2px, rgba(0,240,255,0.04) 2px, rgba(0,240,255,0.04) 4px)' }} />
         <div className="absolute inset-0 flex items-center justify-center px-4">
-          <div className="text-center">
-            <h1 className="text-3xl sm:text-4xl md:text-5xl font-heading font-bold text-white tracking-tighter mb-2">
-              HOSTEL <span className="text-primary">BEATS</span>
+          <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
+            <div className="flex justify-center mb-3">
+              <img src="/cyberpunk-icon.png" alt="" className="w-14 h-14 sm:w-16 sm:h-16" />
+            </div>
+            <h1 className="font-cyber text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-1 glitch-text" data-text="QUEUEIT">
+              QUEUE<span className="text-[var(--primary)]">IT</span>
             </h1>
-            <p className="text-neutral-500 uppercase tracking-widest text-xs sm:text-sm">Queue Your Vibe</p>
-          </div>
+            <p className="font-mono text-[var(--text-muted)] uppercase tracking-[0.25em] text-[10px] sm:text-xs">Request. Queue. Vibe.</p>
+          </motion.div>
         </div>
       </div>
 
-      {/* Currently Playing */}
-      {currentSong && (
-        <div className="glass-panel mx-3 sm:mx-4 mt-4 sm:mt-6 p-4 sm:p-6 rounded-xl" data-testid="current-playing">
-          <div className="flex items-center gap-2 mb-3">
-            <Play className="w-4 h-4 sm:w-5 sm:h-5 text-primary animate-pulse" />
-            <span className="text-primary uppercase tracking-wider text-xs sm:text-sm font-bold">Now Playing</span>
-          </div>
-          <div className="flex gap-3 sm:gap-4 items-center">
-            <img
-              src={currentSong.song.album_art || 'https://via.placeholder.com/80'}
-              alt={currentSong.song.album}
-              className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg flex-shrink-0"
-            />
-            <div className="flex-1 min-w-0">
-              <h2 className="text-lg sm:text-2xl font-heading font-bold text-white truncate">{currentSong.song.name}</h2>
-              <p className="text-neutral-500 text-sm sm:text-base truncate">{currentSong.song.artist}</p>
+      {/* Now Playing */}
+      <AnimatePresence>
+        {currentSong && (
+          <motion.div initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}
+            className="cyber-card breathe-border mx-4 mt-4 p-4" data-testid="current-playing">
+            <div className="flex items-center gap-2 mb-3">
+              <div className="w-2 h-2 bg-[var(--cyan)] shadow-[0_0_6px_var(--cyan)] animate-pulse" />
+              <span className="font-mono text-[var(--cyan)] uppercase tracking-[0.15em] text-[10px] font-bold">NOW PLAYING</span>
             </div>
-          </div>
+            <div className="flex gap-3 items-center">
+              <img src={currentSong.song.album_art || 'https://via.placeholder.com/64'} alt="" className="w-14 h-14 sm:w-16 sm:h-16 shrink-0" />
+              <div className="flex-1 min-w-0">
+                <h2 className="text-base sm:text-lg font-bold text-white truncate">{currentSong.song.name}</h2>
+                <p className="text-[var(--text-muted)] text-sm truncate font-mono">{currentSong.song.artist}</p>
+              </div>
+            </div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      {/* Tab Selector */}
+      <div className="px-4 mt-5">
+        <div className="flex border border-[var(--border)]">
+          {tabs.map(tab => (
+            <button key={tab.id} onClick={() => setActiveTab(tab.id)}
+              className="flex-1 py-3 flex items-center justify-center gap-1.5 font-mono text-xs uppercase tracking-wider transition-colors duration-200 relative"
+              style={{
+                background: activeTab === tab.id ? 'var(--primary)' : 'transparent',
+                color: activeTab === tab.id ? '#050505' : 'var(--text-muted)',
+              }}
+              data-testid={`tab-${tab.id}`}>
+              <tab.icon className="w-3.5 h-3.5" />
+              <span className="hidden sm:inline">{tab.label}</span>
+              {tab.badge > 0 && (
+                <span className="ml-1 text-[9px] font-bold" style={{ color: activeTab === tab.id ? '#050505' : 'var(--cyan)' }}>
+                  [{tab.badge}]
+                </span>
+              )}
+            </button>
+          ))}
         </div>
-      )}
+      </div>
 
-      {/* Main Content */}
-      <div className="px-3 sm:px-4 mt-4 sm:mt-6 max-w-full overflow-hidden">
-        <Tabs defaultValue="search" className="w-full">
-          <TabsList className="grid w-full grid-cols-3 bg-surface border border-white/10">
-            <TabsTrigger 
-              value="search" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-black text-xs sm:text-sm py-2 sm:py-3"
-              data-testid="tab-search"
-            >
-              <Search className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-              <span className="hidden sm:inline">SEARCH</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="playlists" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-black text-xs sm:text-sm py-2 sm:py-3"
-              data-testid="tab-playlists"
-            >
-              <Music className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-              <span className="hidden sm:inline">PLAYLISTS</span>
-            </TabsTrigger>
-            <TabsTrigger 
-              value="queue" 
-              className="data-[state=active]:bg-primary data-[state=active]:text-black text-xs sm:text-sm py-2 sm:py-3"
-              data-testid="tab-queue"
-            >
-              <List className="w-3 h-3 sm:w-4 sm:h-4 sm:mr-2" />
-              <span className="hidden sm:inline">QUEUE</span>
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Search Tab */}
-          <TabsContent value="search" className="mt-4 sm:mt-6 max-w-full">
-            <div className="flex flex-col sm:flex-row gap-2 mb-4 sm:mb-6 max-w-full">
-              <Input
-                type="text"
-                placeholder="Search for songs..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                onKeyPress={(e) => e.key === 'Enter' && searchSongs()}
-                className="bg-white/5 border-none text-white placeholder:text-white/30 focus:ring-1 focus:ring-primary rounded-full px-4 sm:px-6 py-4 sm:py-6 text-base sm:text-lg"
-                data-testid="search-input"
-              />
-              <Button
-                onClick={searchSongs}
-                disabled={loading}
-                className="neon-button px-6 sm:px-8 py-4 sm:py-6 w-full sm:w-auto"
-                data-testid="search-button"
-              >
-                <span className="text-sm sm:text-base">{loading ? 'SEARCHING...' : 'SEARCH'}</span>
-              </Button>
-            </div>
-
-            <ScrollArea className="h-[400px] sm:h-[500px] w-full">
-              <div className="space-y-2 sm:space-y-3 pr-1 max-w-full">
-                {searchResults.map((song) => (
-                  <SongCard key={song.id} song={song} />
-                ))}
+      {/* Content */}
+      <div className="px-4 mt-4">
+        <AnimatePresence mode="wait">
+          {/* Search */}
+          {activeTab === 'search' && (
+            <motion.div key="search" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-full">
+              <div className="flex gap-2 mb-4">
+                <Input
+                  placeholder="// SEARCH TRACKS..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onKeyPress={(e) => e.key === 'Enter' && searchSongs()}
+                  className="bg-black border-[var(--border)] text-white placeholder:text-white/20 py-5 rounded-none font-mono text-sm focus:border-[var(--cyan)] focus:ring-1 focus:ring-[var(--cyan)]"
+                  data-testid="search-input"
+                />
+                <button onClick={searchSongs} disabled={loading} className="neon-button px-5 py-3 text-xs shrink-0" data-testid="search-button">
+                  <span>{loading ? '...' : 'GO'}</span>
+                </button>
               </div>
-              {searchResults.length === 0 && !loading && (
-                <div className="text-center py-12 text-neutral-500">
-                  <Search className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 opacity-30" />
-                  <p className="text-sm sm:text-base">Search for songs to add to queue</p>
+              <ScrollArea className="h-[400px] sm:h-[500px]">
+                <div className="space-y-1.5">
+                  {searchResults.map((song, i) => <SongCard key={song.id} song={song} delay={i} />)}
                 </div>
-              )}
-            </ScrollArea>
-          </TabsContent>
+                {searchResults.length === 0 && !loading && (
+                  <div className="text-center py-16 font-mono text-[var(--text-muted)]">
+                    <Search className="w-10 h-10 mx-auto mb-4 opacity-20" />
+                    <p className="text-sm">// ENTER QUERY TO SEARCH</p>
+                  </div>
+                )}
+              </ScrollArea>
+            </motion.div>
+          )}
 
-          {/* Playlists Tab */}
-          <TabsContent value="playlists" className="mt-4 sm:mt-6 max-w-full overflow-hidden">
-            {!selectedPlaylist ? (
-              <div className="grid grid-cols-1 gap-3 sm:gap-4">
-                {playlists.map((playlist) => (
-                  <div
-                    key={playlist.id}
-                    onClick={() => fetchPlaylistTracks(playlist.id)}
-                    className="song-card cursor-pointer"
-                    data-testid={`playlist-${playlist.id}`}
-                  >
-                    <div className="flex gap-3 sm:gap-4 items-center">
-                      <img
-                        src={playlist.image}
-                        alt={playlist.name}
-                        className="w-16 h-16 sm:w-20 sm:h-20 rounded-lg flex-shrink-0"
-                      />
+          {/* Playlists */}
+          {activeTab === 'playlists' && (
+            <motion.div key="playlists" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              {!selectedPlaylist ? (
+                <div className="space-y-2">
+                  {playlists.map((pl, i) => (
+                    <motion.div key={pl.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
+                      onClick={() => fetchPlaylistTracks(pl.id)} className="cyber-card cursor-pointer p-3 flex gap-3 items-center hover:border-[var(--cyan)]" data-testid={`playlist-${pl.id}`}>
+                      <img src={pl.image} alt="" className="w-14 h-14 sm:w-16 sm:h-16 shrink-0" />
                       <div className="flex-1 min-w-0">
-                        <h3 className="text-base sm:text-xl font-heading font-bold text-white truncate">{playlist.name}</h3>
-                        <p className="text-neutral-500 text-xs sm:text-sm truncate">{playlist.description}</p>
+                        <h3 className="text-base font-bold text-white truncate">{pl.name}</h3>
+                        <p className="text-[var(--text-muted)] text-xs truncate font-mono">{pl.description}</p>
                       </div>
+                    </motion.div>
+                  ))}
+                  {playlists.length === 0 && (
+                    <div className="text-center py-16 font-mono text-[var(--text-muted)]">
+                      <Music className="w-10 h-10 mx-auto mb-4 opacity-20" />
+                      <p className="text-sm">// NO PLAYLISTS AVAILABLE</p>
                     </div>
-                  </div>
-                ))}
-              </div>
-            ) : (
-              <div>
-                <Button
-                  onClick={() => {
-                    setSelectedPlaylist(null);
-                    setPlaylistTracks([]);
-                  }}
-                  variant="outline"
-                  className="mb-4 border-white/20 text-white hover:bg-white/5 text-sm"
-                  data-testid="back-to-playlists"
-                >
-                  ← Back to Playlists
-                </Button>
-                <ScrollArea className="h-[400px] sm:h-[500px]">
-                  <div className="space-y-2 sm:space-y-3">
-                    {playlistTracks.map((song) => (
-                      <SongCard key={song.id} song={song} />
-                    ))}
-                  </div>
-                </ScrollArea>
-              </div>
-            )}
-          </TabsContent>
-
-          {/* Queue Tab */}
-          <TabsContent value="queue" className="mt-4 sm:mt-6 max-w-full overflow-hidden">
-            <ScrollArea className="h-[400px] sm:h-[500px]">
-              <div className="space-y-0">
-                {queue.filter(item => item.status === 'queued').map((item, index) => (
-                  <div key={item.id} className="queue-item py-3 sm:py-4 px-2 sm:px-0" data-testid={`queue-item-${index}`}>
-                    <div className="text-primary font-mono font-bold text-base sm:text-lg w-6 sm:w-8 flex-shrink-0">
-                      {index + 1}
+                  )}
+                </div>
+              ) : (
+                <div>
+                  <button onClick={() => { setSelectedPlaylist(null); setPlaylistTracks([]); }}
+                    className="border border-[var(--border)] text-[var(--cyan)] px-4 py-2 font-mono text-xs uppercase mb-4 hover:bg-[var(--cyan)]/10 transition-colors duration-200" data-testid="back-to-playlists">
+                    &lt; BACK
+                  </button>
+                  <ScrollArea className="h-[400px] sm:h-[500px]">
+                    <div className="space-y-1.5">
+                      {playlistTracks.map((song, i) => <SongCard key={song.id} song={song} delay={i} />)}
                     </div>
-                    <img
-                      src={item.song.album_art || 'https://via.placeholder.com/48'}
-                      alt={item.song.album}
-                      className="w-10 h-10 sm:w-12 sm:h-12 rounded flex-shrink-0"
-                    />
-                    <div className="flex-1 min-w-0">
-                      <p className="text-white font-semibold text-sm sm:text-base truncate">{item.song.name}</p>
-                      <p className="text-neutral-500 text-xs sm:text-sm truncate">{item.song.artist}</p>
-                    </div>
-                    <div className="flex items-center gap-1 sm:gap-2 text-neutral-500 text-xs flex-shrink-0">
-                      <Clock className="w-3 h-3 sm:w-4 sm:h-4" />
-                      <span className="hidden sm:inline">{formatDuration(item.song.duration_ms)}</span>
-                    </div>
-                  </div>
-                ))}
-              </div>
-              {queue.filter(item => item.status === 'queued').length === 0 && (
-                <div className="text-center py-12 text-neutral-500">
-                  <List className="w-10 h-10 sm:w-12 sm:h-12 mx-auto mb-4 opacity-30" />
-                  <p className="text-sm sm:text-base">Queue is empty</p>
+                  </ScrollArea>
                 </div>
               )}
-            </ScrollArea>
-          </TabsContent>
-        </Tabs>
+            </motion.div>
+          )}
+
+          {/* Queue */}
+          {activeTab === 'queue' && (
+            <motion.div key="queue" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
+              <ScrollArea className="h-[400px] sm:h-[500px]">
+                <div>
+                  {queuedSongs.map((item, i) => (
+                    <motion.div key={item.id} initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: i * 0.05 }}
+                      className="queue-item" data-testid={`queue-item-${i}`}>
+                      <div className="text-[var(--cyan)] font-mono font-bold text-sm w-6 shrink-0">{String(i+1).padStart(2,'0')}</div>
+                      <img src={item.song.album_art || 'https://via.placeholder.com/40'} alt="" className="w-10 h-10 shrink-0" />
+                      <div className="flex-1 min-w-0">
+                        <p className="text-white font-semibold text-sm truncate">{item.song.name}</p>
+                        <p className="text-[var(--text-muted)] text-xs truncate font-mono">{item.song.artist}</p>
+                      </div>
+                      <div className="flex items-center gap-1 text-[var(--text-muted)] shrink-0">
+                        <Clock className="w-3 h-3" />
+                        <span className="font-mono text-xs">{fmt(item.song.duration_ms)}</span>
+                      </div>
+                    </motion.div>
+                  ))}
+                </div>
+                {queuedSongs.length === 0 && (
+                  <div className="text-center py-16 font-mono text-[var(--text-muted)]">
+                    <List className="w-10 h-10 mx-auto mb-4 opacity-20" />
+                    <p className="text-sm">// QUEUE EMPTY</p>
+                    <p className="text-xs opacity-50 mt-1">Search and add tracks to get started</p>
+                  </div>
+                )}
+              </ScrollArea>
+            </motion.div>
+          )}
+        </AnimatePresence>
       </div>
     </div>
   );
