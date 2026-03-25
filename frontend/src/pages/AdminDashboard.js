@@ -132,7 +132,7 @@ const AdminDashboard = () => {
           <div className="cyber-card hud-corners p-8">
             {/* Logo */}
             <div className="flex justify-center mb-6">
-              <img src="/cyberpunk-logo.png" alt="QueueIt" className="h-20 object-contain" />
+              <img src="/queueit-logo.png" alt="QueueIt" className="h-20 object-contain" />
             </div>
             <div className="text-center mb-8">
               <p className="text-[var(--text-muted)] font-mono text-xs uppercase tracking-[0.2em]">Admin Access Terminal</p>
@@ -173,7 +173,7 @@ const AdminDashboard = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
-            <img src="/cyberpunk-icon.png" alt="" className="w-10 h-10" />
+            <img src="/queueit-icon.png" alt="" className="w-10 h-10" />
             <div>
               <h1 className="font-cyber text-3xl font-bold tracking-tight text-white">
                 QUEUE<span className="text-[var(--primary)]">IT</span>
@@ -276,7 +276,7 @@ const AdminDashboard = () => {
         <div className="sticky top-0 z-40 glass-panel px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <img src="/cyberpunk-icon.png" alt="" className="w-7 h-7" />
+              <img src="/queueit-icon.png" alt="" className="w-7 h-7" />
               <span className="font-cyber text-base font-bold text-white">QUEUE<span className="text-[var(--primary)]">IT</span></span>
             </div>
             <div className="flex items-center gap-2">

@@ -38,7 +38,7 @@ const DownloadPage = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 glass-panel">
         <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 no-underline">
-            <img src="/cyberpunk-icon.png" alt="" className="w-7 h-7" />
+            <img src="/queueit-icon.png" alt="" className="w-7 h-7" />
             <span className="font-cyber text-lg font-bold text-white">QUEUE<span className="text-[var(--primary)]">IT</span></span>
           </a>
           <div className="hidden md:flex items-center gap-8">
@@ -61,7 +61,7 @@ const DownloadPage = () => {
             <span>GUESTS </span><span className="text-[var(--primary)]">DJ</span>
           </h1>
           <p className="font-mono text-[var(--text-muted)] text-base md:text-lg leading-relaxed mb-10 max-w-[600px] mx-auto">
-            The cyberpunk music queue for hostels, bars, and caf&eacute;s.<br />QR scan. Request. Queue. Vibe.
+            The smart music queue for hostels, bars, and caf&eacute;s.<br />QR scan. Request. Queue. Vibe.
           </p>
           <button onClick={handleHeroDownload} className="neon-button h-16 px-10 text-base mx-auto" data-testid="hero-download-btn">
             <span className="flex items-center gap-3">

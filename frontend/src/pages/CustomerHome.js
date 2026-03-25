@@ -76,7 +76,7 @@ const CustomerHome = () => {
         <div className="absolute inset-0 flex items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
             <div className="flex justify-center mb-3">
-              <img src="/cyberpunk-icon.png" alt="" className="w-14 h-14 sm:w-16 sm:h-16" />
+              <img src="/queueit-icon.png" alt="" className="w-14 h-14 sm:w-16 sm:h-16" />
             </div>
             <h1 className="font-cyber text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-1 glitch-text" data-text="QUEUEIT">
               QUEUE<span className="text-[var(--primary)]">IT</span>
