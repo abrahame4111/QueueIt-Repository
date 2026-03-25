@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Download, Shield, Rocket, MonitorDown, ArrowDown } from 'lucide-react';
 
-const WINDOWS_URL = 'https://drive.google.com/uc?export=download&id=1-2bOv1hg7NiSFnIS43LqzhbudeTbVrhX';
+const WINDOWS_URL = 'https://customer-assets.emergentagent.com/job_9c6655a5-05ad-4cc4-9871-fac4b6808ff6/artifacts/holfx7kt_QueueIt%20Setup%201.0.0.exe';
 
 const PostDownloadPage = () => {
   const [os, setOs] = useState('Windows');
