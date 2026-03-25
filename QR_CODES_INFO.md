@@ -1,7 +1,7 @@
 # 📱 Generated QR Codes - Complete Overview
 
 ## Customer Portal URL
-**https://queue-it-preview.preview.emergentagent.com**
+**https://queue-debug-2.preview.emergentagent.com**
 
 All QR codes link to this URL where customers can search and request songs.
 
@@ -106,7 +106,7 @@ All QR codes link to this URL where customers can search and request songs.
 Before printing large quantities:
 
 1. **Scan Test**: Use your phone to scan each QR code
-2. **Verify URL**: Should open https://queue-it-preview.preview.emergentagent.com
+2. **Verify URL**: Should open https://queue-debug-2.preview.emergentagent.com
 3. **Distance Test**: Try scanning from 2-3 feet away
 4. **Lighting Test**: Test in both bright and dim lighting
 5. **Phone Test**: Test with both iPhone and Android
@@ -165,7 +165,7 @@ If printing in bulk, you can upload these PNG files to:
 ## 🔄 QR Code URL Management
 
 All QR codes currently point to:
-**https://queue-it-preview.preview.emergentagent.com**
+**https://queue-debug-2.preview.emergentagent.com**
 
 If you deploy to a custom domain later:
 1. Generate new QR codes with updated URL

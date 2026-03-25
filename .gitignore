@@ -87,3 +87,4 @@ electron-app/dist/linux-arm64-unpacked/hostel-music-queue-admin
 electron-app/dist/win-arm64-unpacked/Hostel
 Admin.exe
 electron-app/dist/win-unpacked/Hostel
+frontend/node_modules/.cache/default-development/0.pack

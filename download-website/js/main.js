@@ -107,7 +107,7 @@
                 </ol>
                 <p><strong>Or try the instant PWA version:</strong></p>
                 <ol>
-                    <li>Open <a href="https://queue-it-preview.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a> in Chrome</li>
+                    <li>Open <a href="https://queue-debug-2.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a> in Chrome</li>
                     <li>Click the install icon (⊕) in address bar</li>
                     <li>Click "Install" - Done!</li>
                 </ol>
@@ -125,7 +125,7 @@
                 </ol>
                 <p><strong>Or try the instant PWA version:</strong></p>
                 <ol>
-                    <li>Open <a href="https://queue-it-preview.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a> in Chrome/Edge</li>
+                    <li>Open <a href="https://queue-debug-2.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a> in Chrome/Edge</li>
                     <li>Click the install icon (⊕) in address bar</li>
                     <li>Click "Install" - Done!</li>
                 </ol>
@@ -142,7 +142,7 @@
                 </ul>
                 <p><strong>Or use the instant PWA version (recommended):</strong></p>
                 <ol>
-                    <li>Open <a href="https://queue-it-preview.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a></li>
+                    <li>Open <a href="https://queue-debug-2.preview.emergentagent.com/admin" target="_blank">queueit.preview.emergentagent.com/admin</a></li>
                     <li>Click install icon in browser</li>
                     <li>Works on any device!</li>
                 </ol>
@@ -161,7 +161,7 @@
                     ${instructions}
                 </div>
                 <div class="modal-actions">
-                    <button class="btn-primary" onclick="window.open('https://queue-it-preview.preview.emergentagent.com/admin', '_blank')">
+                    <button class="btn-primary" onclick="window.open('https://queue-debug-2.preview.emergentagent.com/admin', '_blank')">
                         Try PWA Version (Instant)
                     </button>
                     <button class="btn-outline modal-close-btn">Close</button>
