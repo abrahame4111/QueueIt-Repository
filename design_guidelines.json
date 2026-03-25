@@ -1,155 +1,179 @@
 {
-  "identity": {
-    "persona": "E1: The Anti-AI Designer",
-    "mission": "Create a raw, electric, and immersive music experience for a Goa hostel. Reject generic SaaS aesthetics. Embrace the chaos of a party.",
-    "archetype": "Electric & Neon (Archetype 2)",
-    "vibe": "Cyberpunk meets Tropical Nightlife. Dark, glowing, loud.",
-    "principles": [
-      "Fusion over Imitation: Mix brutalist typography with neon rave aesthetics.",
-      "Emotion First: Every interaction should feel like a beat drop.",
-      "Content is King: The album art and song titles are the heroes.",
-      "Contrast: Deep void blacks vs. blinding neons."
-    ]
+  "theme_strategy": {
+    "mode": "dark",
+    "rationale": "Cyberpunk 2077 aesthetic requires a deep, void-like dark mode to allow high-contrast neon accents to pop. No light mode toggle; this is an atmospheric, nightclub/hostel utility that lives in the dark."
   },
   "typography": {
+    "strategy": "The 'Editorial Future' mixed with 'Terminal' logic. High impact, readable, angular.",
     "fonts": {
-      "heading": {
-        "family": "Syne",
-        "weights": ["700", "800"],
-        "usage": "Page titles, Hero sections, 'Now Playing' song titles",
-        "fallback": "sans-serif"
+      "headings": {
+        "family": "Unbounded",
+        "weights": ["700", "900"],
+        "usage": "Hero text, page titles, large numbers. MUST use tracking-tight or tracking-tighter."
       },
       "body": {
-        "family": "Manrope",
-        "weights": ["400", "500", "600"],
-        "usage": "General UI text, descriptions, lyrics",
-        "fallback": "sans-serif"
-      },
-      "mono": {
         "family": "JetBrains Mono",
-        "weights": ["400"],
-        "usage": "Timestamps, Queue numbers, Track IDs",
-        "fallback": "monospace"
+        "weights": ["400", "500"],
+        "usage": "Data tables, queues, track lengths, secondary text. Monospace fits the terminal/hacker vibe."
+      },
+      "ui": {
+        "family": "IBM Plex Sans",
+        "weights": ["400", "500", "600"],
+        "usage": "Buttons, general UI elements where JetBrains is too wide."
       }
     },
     "rules": [
-      "Headings must be TIGHT (tracking-tighter).",
-      "Overlines/Labels must be WIDE (tracking-widest) and Uppercase.",
-      "Never use Inter for headings."
+      "DO NOT use Inter or generic sans-serif for headings.",
+      "Overlines MUST be Uppercase + Tiny + Wide Spacing (tracking-[0.2em]).",
+      "Line height: leading-none for headers, leading-relaxed for body."
     ]
   },
   "colors": {
+    "archetype": "Electric & Neon (Future, Speed, Disruption)",
     "palette": {
-      "background": {
-        "default": "#050505",
-        "paper": "#0A0A0A",
-        "surface": "#121212"
-      },
-      "primary": {
-        "default": "#00F0FF",
-        "foreground": "#000000",
-        "glow": "0 0 20px rgba(0, 240, 255, 0.5)"
-      },
-      "secondary": {
-        "default": "#FF00FF",
-        "foreground": "#FFFFFF",
-        "glow": "0 0 20px rgba(255, 0, 255, 0.5)"
-      },
-      "accent": {
-        "success": "#39FF14",
-        "warning": "#FFD700",
-        "error": "#FF003C"
-      },
-      "neutral": {
-        "100": "#FFFFFF",
-        "200": "#E5E5E5",
-        "500": "#737373",
-        "800": "#262626",
-        "900": "#171717"
-      }
+      "background": "#050505",
+      "surface": "#0a0a0c",
+      "surface_elevated": "#121216",
+      "primary": "#FCEE0A",
+      "primary_hover": "#FFF55A",
+      "secondary": "#00F0FF",
+      "accent": "#FF003C",
+      "text_primary": "#FFFFFF",
+      "text_secondary": "#A0AEC0",
+      "border": "rgba(0, 240, 255, 0.2)"
     },
-    "gradients": {
-      "hero": "linear-gradient(180deg, rgba(0,240,255,0.1) 0%, rgba(5,5,5,0) 100%)",
-      "card": "linear-gradient(145deg, rgba(255,255,255,0.05) 0%, rgba(255,255,255,0.01) 100%)"
-    }
+    "rules": [
+      "No pure #000000; use #050505 (Deepest Void Black).",
+      "No full-screen gradients. Use solid dark backgrounds with neon accents.",
+      "Text over neon backgrounds MUST be #050505 for maximum contrast.",
+      "Focus states MUST have HIGHER contrast (e.g., focus:ring-2 focus:ring-[#00F0FF] focus:shadow-[0_0_10px_#00F0FF]).",
+      "Hover state color MUST be a lighter hue of ACTIVE state color."
+    ]
   },
-  "layout": {
-    "spacing": {
-      "base": "0.25rem",
-      "container_padding": "p-6 md:p-12",
-      "section_gap": "gap-12 md:gap-24"
+  "visual_enhancers": {
+    "surface_strategies": [
+      {
+        "name": "The Terminal Look (Retro-Futurism)",
+        "context": "Admin Dashboard",
+        "implementation": "Background: #050505. Borders: 1px solid #00F0FF with 30% opacity. Subtle drop-shadow-[0_0_8px_rgba(0,240,255,0.5)] on active elements. Add CSS repeating-linear-gradient scanlines overlay on empty states."
+      },
+      {
+        "name": "Optical Clarity Glassmorphism",
+        "context": "Customer Portal Header / Bottom Nav",
+        "implementation": "bg-black/80 with backdrop-blur-xl and backdrop-saturate-150. 1px delicate top/bottom border (border-cyan/20) to separate from content. DO NOT use completely transparent backgrounds."
+      }
+    ],
+    "shadows_and_glows": "Replace traditional soft drop-shadows with harsh block shadows (translate x/y) or neon glows (box-shadow: 0 0 10px var(--neon-cyan))."
+  },
+  "layouts_and_grids": {
+    "admin_dashboard": {
+      "strategy": "High Density Grid (The Technical Look). Exposed skeleton.",
+      "grid": "grid-cols-1 md:grid-cols-3 lg:grid-cols-4",
+      "gap": "gap-1 lg:gap-4",
+      "rules": [
+        "Cardless or sharp rectangular cards (rounded-none).",
+        "Every pixel utilized, h-full on children to match neighbors.",
+        "Use border-collapse style layouts for tables and lists."
+      ]
     },
-    "grids": {
-      "customer_mobile": "grid-cols-1 gap-4",
-      "admin_dashboard": "grid-cols-1 md:grid-cols-4 gap-6 (The Control Room Grid)"
+    "customer_portal": {
+      "strategy": "Mobile-First App",
+      "layout": "Sticky header (Glass), scrollable list, Fixed bottom tab nav (Glass).",
+      "spacing": "Generous vertical spacing (p-6 to p-8) to prevent fat-finger mistakes."
     },
-    "containers": {
-      "card": "rounded-xl border border-white/10 bg-black/40 backdrop-blur-md",
-      "glass_panel": "bg-black/60 backdrop-blur-xl border-t border-white/10"
+    "marketing_website": {
+      "strategy": "The 'Tetris' Grid (Asymmetry, Visual Tension)",
+      "grid": "grid-cols-1 md:grid-cols-8 lg:grid-cols-12 gap-8 lg:gap-12",
+      "rules": [
+        "Never fill 100% of the grid perfectly. Leave breathing room.",
+        "Hero section MUST be asymmetrical."
+      ]
     }
   },
   "components": {
-    "buttons": {
-      "primary": "bg-primary text-primary-foreground font-bold uppercase tracking-wider hover:shadow-[0_0_20px_rgba(0,240,255,0.6)] transition-all duration-300 rounded-none skew-x-[-10deg]",
-      "secondary": "border border-white/20 hover:border-white text-white hover:bg-white/5 transition-all duration-300 rounded-none skew-x-[-10deg]",
-      "icon": "p-3 rounded-full hover:bg-white/10 transition-colors"
-    },
-    "inputs": {
-      "search": "bg-white/5 border-none text-white placeholder:text-white/30 focus:ring-1 focus:ring-primary rounded-full px-6 py-4 text-lg"
-    },
-    "cards": {
-      "song": "group relative overflow-hidden rounded-lg bg-white/5 hover:bg-white/10 transition-colors border border-white/5 hover:border-primary/50",
-      "queue_item": "flex items-center gap-4 p-4 border-b border-white/5 last:border-0"
-    },
-    "navigation": {
-      "bottom_bar": "fixed bottom-0 left-0 right-0 bg-black/80 backdrop-blur-xl border-t border-white/10 p-4 z-50"
-    }
-  },
-  "assets": {
-    "images": {
-      "hero_bg": "https://images.unsplash.com/photo-1748302591722-a6c0567b1fd0?crop=entropy&cs=srgb&fm=jpg&q=85",
-      "party_crowd": "https://images.pexels.com/photos/1692695/pexels-photo-1692695.jpeg",
-      "abstract_neon": "https://images.unsplash.com/photo-1706148817964-08251bc8cf8c?crop=entropy&cs=srgb&fm=jpg&q=85",
-      "texture_pattern": "https://images.unsplash.com/photo-1643634253140-56872e2f2fa3?crop=entropy&cs=srgb&fm=jpg&q=85"
-    },
-    "icons": {
-      "library": "lucide-react",
-      "style": "Stroke width 1.5px, sharp edges where possible"
+    "rules": [
+      "SHAPE: Replace all rounded corners (rounded-md, rounded-lg) in Shadcn with rounded-none for a brutalist, sharp cyberpunk aesthetic. Or use extreme clip-paths for angled corners.",
+      "BUTTONS: Cyber Yellow (#FCEE0A) background with Black (#050505) text for primary actions. Cyan for secondary. Hover states should translate-y-[-2px] and add a solid block shadow (e.g., shadow-[4px_4px_0px_#FF003C]).",
+      "CARDS: Remove default Shadcn shadow. Apply border border-cyan/30 bg-black/60. On hover, increase border opacity to 100% and add inset cyan glow.",
+      "TABLE/QUEUE: Alternating row backgrounds (bg-white/5) with monospace track lengths. Highlight currently playing row with #00F0FF border and subtle pulse animation.",
+      "INPUTS: bg-black border-cyan/40 text-white placeholder-white/30. Focus: border-cyan/100 ring-1 ring-cyan/100."
+    ],
+    "specific_components": {
+      "BottomNav": "Fixed bottom, bg-[#050505]/90 backdrop-blur-md border-t border-cyan/30. Icons must be neon when active.",
+      "PlayerControls": "Sticky or fixed section. Large typography for track time. Sharp rectangular play/pause buttons.",
+      "QRCode": "Render with Cyan or Cyber Yellow on Black instead of standard black on white."
     }
   },
   "motion": {
-    "transitions": {
-      "default": "transition-all duration-300 ease-out",
-      "hover": "transform hover:-translate-y-1 hover:scale-[1.02]"
-    },
-    "animations": {
-      "fade_in": "animate-in fade-in duration-500",
-      "slide_up": "animate-in slide-in-from-bottom-4 duration-500",
-      "pulse_glow": "animate-pulse"
-    }
-  },
-  "tech_stack": {
-    "frontend": "React, Tailwind CSS, Framer Motion, Lucide React, Sonner (Toast)",
-    "backend": "FastAPI, MongoDB",
-    "libraries": [
-      "clsx",
-      "tailwind-merge",
-      "framer-motion",
-      "lucide-react",
-      "sonner",
-      "react-fast-marquee"
+    "guidelines": [
+      "Use harsh, fast easing for transitions to mimic mechanical/digital speed (e.g., cubic-bezier(0.17, 0.67, 0.83, 0.67)).",
+      "Glitch effects on load or hover for headings (translate quickly horizontally).",
+      "Subtle breathing pulse on the 'Currently Playing' indicator.",
+      "Respect prefers-reduced-motion for the glitch effects.",
+      "DO NOT use `transition: all`. Specify exact properties (e.g., transition: transform 0.2s, box-shadow 0.2s)."
     ]
   },
-  "universal_guidelines": [
-    "DO NOT use gradients for text unless it's a massive headline.",
-    "DO NOT use 'Inter' font. Use 'Syne' for headers and 'Manrope' for body.",
-    "Always add 'data-testid' to interactive elements.",
-    "Use 'sonner' for toasts.",
-    "Dark mode is the ONLY mode. No light mode toggle.",
-    "Spacing should be generous (p-6, p-8) even on mobile cards.",
-    "Glassmorphism must have a 1px border (border-white/10) to define edges.",
-    "Primary actions (Request Song) must be bold and neon.",
-    "Admin dashboard should look like a spaceship control panel (dense, data-heavy, dark)."
+  "accessibility": {
+    "contrast": "Ensure Cyber Yellow and Cyan have pure black (#050505) text layered on top for WCAG AA compliance.",
+    "focus": "High visibility focus rings using Hot Pink or Cyan.",
+    "testing": "All interactive elements MUST include data-testid (e.g., data-testid='play-button', data-testid='queue-item')."
+  },
+  "media": {
+    "icons": {
+      "library": "@phosphor-icons/react",
+      "style": "Duotone or bold. Use strict geometric icons to fit the cyberpunk theme.",
+      "install": "yarn add @phosphor-icons/react"
+    },
+    "images": [
+      {
+        "url": "https://images.pexels.com/photos/342520/pexels-photo-342520.jpeg",
+        "description": "Energetic nightclub scene with people dancing under colorful neon lights.",
+        "category": "marketing_hero"
+      },
+      {
+        "url": "https://images.pexels.com/photos/8357356/pexels-photo-8357356.jpeg",
+        "description": "Minimalist bar with neon lighting",
+        "category": "marketing_feature"
+      },
+      {
+        "url": "https://images.pexels.com/photos/1716400/pexels-photo-1716400.jpeg",
+        "description": "DJ performing in a nightclub with vivid lights",
+        "category": "admin_dashboard_bg_overlay"
+      },
+      {
+        "url": "https://images.pexels.com/photos/164745/pexels-photo-164745.jpeg",
+        "description": "Close-up of illuminated DJ mixer",
+        "category": "customer_portal_header"
+      }
+    ]
+  },
+  "3d_and_creative": {
+    "library": "framer-motion",
+    "usage": "Use Framer Motion for glitch animations on text and page transitions. Avoid heavy WebGL/Three.js on the customer portal to maintain mobile performance.",
+    "install": "yarn add framer-motion"
+  },
+  "instructions_to_main_agent": [
+    "You are rebuilding a hybrid app: QueueIt. It contains an Admin Dashboard, a Customer Portal, and a Marketing Website.",
+    "Apply a strict Cyberpunk 2077 neon aesthetic. Eradicate all rounded corners (use rounded-none).",
+    "Replace all generic Shadcn shadows with solid neon block shadows or glowing box-shadows.",
+    "Setup routing or component switching to demonstrate all 3 views: Admin (Player/Queue/QR), Customer (Search/Request), Marketing.",
+    "Fonts: Add Google Fonts imports for Unbounded and JetBrains Mono.",
+    "Ensure all components use data-testid for testing.",
+    "DO NOT use a global `text-align: center`. Left-align tabular and grid data.",
+    "Use framer-motion to create a 'glitch' entrance effect for the marketing hero section."
   ],
-  "instructions_to_main_agent": "You are building a 'Hostel Music Queue' app. It needs to feel like a party. \n\n1. **Setup Fonts**: Import 'Syne', 'Manrope', and 'JetBrains Mono' from Google Fonts in `index.css`.\n2. **Theme Config**: Update `tailwind.config.js` with the Neon palette defined in `colors`.\n3. **Layouts**: \n   - **Customer View**: Mobile-first. Hero section with 'abstract_neon' image. Search bar floats. Song list uses 'cards.song' style. Bottom player bar is 'glass_panel'.\n   - **Admin View**: Desktop-first. Sidebar nav. 'Control Room' grid for the queue. High density.\n4. **Components**: \n   - Use `shadcn/ui` for complex logic (Dialogs, Dropdowns) but STRIP their default styling and apply the 'Electric & Neon' styles.\n   - Create a `SongCard` component that handles the 'Request' action with a neon glow effect.\n   - Create a `QueueList` component that auto-animates new additions.\n5. **Spotify Integration**: Mock the data for now, but design the UI to handle 'Album Art', 'Track Title', 'Artist', and 'Duration'.\n6. **Testing**: Ensure all buttons have `data-testid`."
+  "universal_guidelines": [
+    "Dark colors look good when used independently without gradients. DO NOT use dark colors as gradients.",
+    "Create depth through layered design elements with z-index hierarchy.",
+    "Use glass-morphism effects with backdrop filters (12-24px blur).",
+    "You MUST NOT apply universal transition (e.g., transition: all).",
+    "You MUST NOT center align the app container (.App { text-align: center; }).",
+    "Always use modern button styles (in this context, sharp-edged brutalist rectangles).",
+    "NEVER use emojis for icons.",
+    "Every interaction needs micro-animations - hover states, transitions, etc.",
+    "Use 2-3x more spacing than feels comfortable. Cramped designs look cheap.",
+    "Missing categories = main agent will use placeholder text which is FORBIDDEN.",
+    "Components MUST use named exports, Pages MUST use default exports.",
+    "Use sonner for toasts (located in /app/src/components/ui/sonner.tsx)."
+  ]
 }
