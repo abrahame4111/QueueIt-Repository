@@ -127,3 +127,12 @@ Build a music queueing system called "QueueIt" for hostels, bars, and cafés. Cu
 - Analytics dashboard (most requested songs, peak hours)
 - Multiple venue support
 - Song voting/priority system
+
+---
+
+## Changelog
+
+### March 25, 2026
+- **Fixed**: Spotify song search `400 Invalid limit` error — Spotify dev mode restricts search to max 10 items; changed `limit=20` to `limit=10` in `server.py`
+- **Removed**: Obsolete `/app/download-website/` directory and its `StaticFiles` mount + `/api/download` route from `server.py`
+- **Cleaned**: Removed unused `StaticFiles` import from `server.py`

@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="9" skipped="0" tests="12" time="556.407" timestamp="2026-03-25T09:18:32.985315+00:00" hostname="agent-env-e2a86d32-180f-4a56-b9d4-0a4c86a49bc4"><testcase classname="backend.tests.test_spotify_search_fix.TestSpotifySearchFix" name="test_search_love_returns_songs" time="60.182"><failure message="AssertionError: Expected 200, got 502: The preview environment is not responding. It may be starting up.&#10;  &#10;assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">backend/tests/test_spotify_search_fix.py:18: in test_search_love_returns_songs
+    assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
+E   AssertionError: Expected 200, got 502: The preview environment is not responding. It may be starting up.
+E     
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestSpotifySearchFix" name="test_search_drake_returns_songs" time="60.404"><failure message="AssertionError: Expected 200, got 502: The preview environment is not responding. It may be starting up.&#10;  &#10;assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">backend/tests/test_spotify_search_fix.py:38: in test_search_drake_returns_songs
+    assert response.status_code == 200, f"Expected 200, got {response.status_code}: {response.text}"
+E   AssertionError: Expected 200, got 502: The preview environment is not responding. It may be starting up.
+E     
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestSpotifySearchFix" name="test_search_returns_exactly_10_or_less" time="49.674"><failure message="assert 500 == 200&#10; +  where 500 = &lt;Response [500]&gt;.status_code">backend/tests/test_spotify_search_fix.py:53: in test_search_returns_exactly_10_or_less
+    assert response.status_code == 200
+E   assert 500 == 200
+E    +  where 500 = &lt;Response [500]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestSpotifySearchFix" name="test_search_empty_query_handling" time="60.126"><failure message="AssertionError: Unexpected status: 502&#10;assert 502 in [200, 422, 500]&#10; +  where 502 = &lt;Response [502]&gt;.status_code">backend/tests/test_spotify_search_fix.py:64: in test_search_empty_query_handling
+    assert response.status_code in [200, 422, 500], f"Unexpected status: {response.status_code}"
+E   AssertionError: Unexpected status: 502
+E   assert 502 in [200, 422, 500]
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestSpotifySearchFix" name="test_search_special_characters" time="60.212"><failure message="assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">backend/tests/test_spotify_search_fix.py:70: in test_search_special_characters
+    assert response.status_code == 200
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestSpotifySearchFix" name="test_search_song_structure_complete" time="60.209"><failure message="assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">backend/tests/test_spotify_search_fix.py:79: in test_search_song_structure_complete
+    assert response.status_code == 200
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestQueueAddWithSearchResults" name="test_search_and_add_to_queue" time="60.252"><failure message="assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">backend/tests/test_spotify_search_fix.py:105: in test_search_and_add_to_queue
+    assert search_response.status_code == 200
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestQueueAddWithSearchResults" name="test_queue_shows_added_song" time="60.193"><failure message="assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">backend/tests/test_spotify_search_fix.py:126: in test_queue_shows_added_song
+    assert search_response.status_code == 200
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestPlaylistsEndpoint" name="test_playlists_returns_list" time="60.197"><failure message="assert 502 == 200&#10; +  where 502 = &lt;Response [502]&gt;.status_code">backend/tests/test_spotify_search_fix.py:156: in test_playlists_returns_list
+    assert response.status_code == 200
+E   assert 502 == 200
+E    +  where 502 = &lt;Response [502]&gt;.status_code</failure></testcase><testcase classname="backend.tests.test_spotify_search_fix.TestPlaylistsEndpoint" name="test_playlist_structure" time="24.520" /><testcase classname="backend.tests.test_spotify_search_fix.TestAdminQueueClear" name="test_admin_login" time="0.122" /><testcase classname="backend.tests.test_spotify_search_fix.TestAdminQueueClear" name="test_clear_queue_with_auth" time="0.202" /></testsuite></testsuites>

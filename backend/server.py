@@ -1,6 +1,4 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Depends, Header
-from fastapi.staticfiles import StaticFiles
-from fastapi.responses import HTMLResponse
 from dotenv import load_dotenv
 from starlette.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
@@ -647,19 +645,6 @@ async def get_playback_state(authorization: Optional[str] = Header(None)):
 app.include_router(api_router)
 
 # --- Download website serving ---
-DOWNLOAD_SITE_DIR = Path(__file__).parent.parent / "download-website"
-
-@app.get("/api/download", response_class=HTMLResponse)
-async def serve_download_website():
-    index_path = DOWNLOAD_SITE_DIR / "index.html"
-    html = index_path.read_text()
-    # Rewrite relative asset paths to use /api/download-assets/
-    html = html.replace('href="css/', 'href="/api/download-assets/css/')
-    html = html.replace('src="js/', 'src="/api/download-assets/js/')
-    return HTMLResponse(content=html)
-
-app.mount("/api/download-assets", StaticFiles(directory=str(DOWNLOAD_SITE_DIR)), name="download-assets")
-
 app.add_middleware(
     CORSMiddleware,
     allow_credentials=True,
