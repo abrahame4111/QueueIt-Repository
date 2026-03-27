@@ -62,13 +62,24 @@ QueueIt is a smart music queueing system for venues (hostels, bars, etc.) that l
 
 ## Backlog / Remaining Tasks
 
-### P1 - Medium Priority
-- Enhanced onboarding with interactive tutorial (highlight actual UI elements)
-- Admin settings page (change password, manage venue info)
-
 ### P2 - Nice to Have
 - Analytics dashboard (most requested songs, peak hours)
 - Multiple venue support
 - Song voting/priority system
 - Advanced background animations (particle systems)
 - Clarify Android/iOS native app vs PWA approach
+
+## Changelog
+
+### March 25, 2026
+- **Fixed**: Spotify search `400 Invalid limit` — changed limit to 10 for dev mode
+- **Fixed**: Now Playing card hidden when Spotify not connected — SpotifyPlayer always shows song info now
+- **Fixed**: Now Playing card not updating — removed stale comparison logic in AdminDashboard
+- **Fixed**: Spotify redirect URI changed from preview URL to `queueit.live/admin`
+- **Fixed**: PWA service worker cache bumped to v2
+- **Fixed**: `queue/clear` now clears ALL entries including playing
+- **Added**: Admin Settings (change password, venue name, replay tutorial)
+- **Added**: Enhanced spotlight onboarding tutorial
+- **Added**: Mac DMG installer linked to download page
+- **Refactored**: Backend split from 672-line monolith into modular routes
+- **Removed**: Obsolete `/app/download-website/` directory
