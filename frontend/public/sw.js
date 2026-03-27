@@ -1,7 +1,5 @@
-const CACHE_NAME = 'queueit-v2';
+const CACHE_NAME = 'queueit-v3';
 const PRECACHE_URLS = [
-  '/',
-  '/admin',
   '/manifest.json',
   '/icon-192.png',
   '/icon-512.png'
@@ -31,8 +29,30 @@ self.addEventListener('fetch', (event) => {
     );
     return;
   }
-  // Cache-first for static assets
+
+  // Network-first for HTML navigation (pages) — ensures fresh content after deploy
+  if (event.request.mode === 'navigate') {
+    event.respondWith(
+      fetch(event.request)
+        .then((response) => {
+          const clone = response.clone();
+          caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+          return response;
+        })
+        .catch(() => caches.match(event.request))
+    );
+    return;
+  }
+
+  // Cache-first for static assets (JS/CSS/images with hashed filenames)
   event.respondWith(
-    caches.match(event.request).then((cached) => cached || fetch(event.request))
+    caches.match(event.request).then((cached) => {
+      if (cached) return cached;
+      return fetch(event.request).then((response) => {
+        const clone = response.clone();
+        caches.open(CACHE_NAME).then((cache) => cache.put(event.request, clone));
+        return response;
+      });
+    })
   );
 });
