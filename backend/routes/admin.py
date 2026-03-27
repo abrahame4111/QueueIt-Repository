@@ -11,12 +11,12 @@ router = APIRouter(prefix="/api")
 # Download files config - update these URLs when moving to GitHub Releases
 DOWNLOAD_FILES = {
     "windows": {
-        "url": os.environ.get("WINDOWS_DOWNLOAD_URL", "https://customer-assets.emergentagent.com/job_9c6655a5-05ad-4cc4-9871-fac4b6808ff6/artifacts/holfx7kt_QueueIt%20Setup%201.0.0.exe"),
+        "url": os.environ.get("WINDOWS_DOWNLOAD_URL", "https://github.com/abrahame4111/QueueIt-Repository/releases/download/v1.0.0/QueueIt.Setup.1.0.0.exe"),
         "filename": "queueit_setup.exe",
         "content_type": "application/octet-stream",
     },
     "mac": {
-        "url": os.environ.get("MAC_DOWNLOAD_URL", "https://customer-assets.emergentagent.com/job_03179c1a-c1e0-4037-a646-0831b4343a5e/artifacts/2cdxlpcy_QueueIt-1.0.0-universal.dmg"),
+        "url": os.environ.get("MAC_DOWNLOAD_URL", "https://github.com/abrahame4111/QueueIt-Repository/releases/download/v1.0.0/QueueIt.Setup.v1.0.0.dmg"),
         "filename": "queueit_setup.dmg",
         "content_type": "application/octet-stream",
     },
