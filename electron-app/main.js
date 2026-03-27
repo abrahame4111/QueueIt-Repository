@@ -30,12 +30,77 @@ function createWindow() {
     createMenu();
   });
 
+  // Show branded offline page if site fails to load or shows old cached version
+  mainWindow.webContents.on('did-fail-load', () => {
+    mainWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(OFFLINE_HTML)}`);
+  });
+
+  mainWindow.webContents.on('did-finish-load', () => {
+    // Detect Emergent sleep mode (old "Hostel Beats" or "Frontend Preview Only")
+    mainWindow.webContents.executeJavaScript(`
+      document.title.includes('Hostel') || 
+      document.body.innerText.includes('Frontend Preview Only') ||
+      document.body.innerText.includes('HOSTEL BEATS') ||
+      document.body.innerText.includes('Wake up servers')
+    `).then((isOffline) => {
+      if (isOffline) {
+        mainWindow.loadURL('data:text/html;charset=utf-8,' + encodeURIComponent(OFFLINE_HTML));
+      }
+    }).catch(() => {});
+  });
+
   // Let Spotify OAuth happen INSIDE the Electron window.
   // Do NOT open it externally — the redirect_uri points back to our app URL,
   // so the ?code= will land back in this window and be handled by React.
 
   mainWindow.on('closed', () => { mainWindow = null; });
 }
+
+const OFFLINE_HTML = `<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>QueueIt - Offline</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=JetBrains+Mono:wght@400;600&display=swap');
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      background: #0a0a0a; color: #fff; font-family: 'JetBrains Mono', monospace;
+      display: flex; align-items: center; justify-content: center; height: 100vh;
+      overflow: hidden;
+    }
+    .container { text-align: center; max-width: 500px; padding: 40px; }
+    .logo { font-family: 'Orbitron', sans-serif; font-size: 48px; font-weight: 900; margin-bottom: 8px; }
+    .logo span:first-child { color: #00f0ff; }
+    .logo span:last-child { color: #ff2a6d; }
+    .status { color: #ff2a6d; font-size: 12px; letter-spacing: 3px; text-transform: uppercase; margin-bottom: 40px; }
+    .message { color: #666; font-size: 14px; line-height: 1.8; margin-bottom: 40px; }
+    .retry {
+      background: transparent; border: 1px solid #00f0ff; color: #00f0ff;
+      padding: 14px 40px; font-family: 'Orbitron', sans-serif; font-size: 13px;
+      font-weight: 700; letter-spacing: 2px; cursor: pointer; text-transform: uppercase;
+      transition: all 0.2s;
+    }
+    .retry:hover { background: #00f0ff; color: #0a0a0a; box-shadow: 0 0 30px #00f0ff40; }
+    .pulse { width: 8px; height: 8px; background: #ff2a6d; display: inline-block; margin-right: 8px; animation: pulse 2s infinite; }
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.3; } }
+    .border-line { height: 1px; background: linear-gradient(90deg, transparent, #00f0ff30, transparent); margin: 30px 0; }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div class="logo"><span>QUEUE</span><span>IT</span></div>
+    <div class="status"><span class="pulse"></span>servers offline</div>
+    <div class="border-line"></div>
+    <p class="message">
+      The QueueIt servers are currently sleeping.<br>
+      Wake them up from the Emergent dashboard,<br>
+      or try again in a moment.
+    </p>
+    <button class="retry" onclick="window.location.href='https://queueit.live/admin'">RETRY CONNECTION</button>
+  </div>
+</body>
+</html>`;
 
 function runInPage(js) {
   if (mainWindow && mainWindow.webContents) {
