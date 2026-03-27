@@ -18,16 +18,16 @@ redirect_uri = os.environ.get('SPOTIFY_REDIRECT_URI', 'http://localhost:3000/adm
 
 @router.get("/spotify/auth-url")
 async def get_spotify_auth_url(admin: bool = Depends(verify_admin)):
+    from urllib.parse import urlencode
     scope = "user-read-playback-state user-modify-playback-state streaming user-read-currently-playing"
-    auth_url = (
-        f"https://accounts.spotify.com/authorize?"
-        f"client_id={spotify_client_id}&"
-        f"response_type=code&"
-        f"redirect_uri={redirect_uri}&"
-        f"scope={scope}&"
-        f"show_dialog=true"
-    )
-    return {"auth_url": auth_url}
+    params = urlencode({
+        "client_id": spotify_client_id,
+        "response_type": "code",
+        "redirect_uri": redirect_uri,
+        "scope": scope,
+        "show_dialog": "true"
+    })
+    return {"auth_url": f"https://accounts.spotify.com/authorize?{params}"}
 
 
 @router.post("/spotify/callback")
