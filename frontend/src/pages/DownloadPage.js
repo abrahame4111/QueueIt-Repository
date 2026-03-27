@@ -3,8 +3,9 @@ import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Download, QrCode, Music, List, Smartphone, Monitor, Zap, ArrowRight } from 'lucide-react';
 
-const WINDOWS_URL = 'https://customer-assets.emergentagent.com/job_9c6655a5-05ad-4cc4-9871-fac4b6808ff6/artifacts/holfx7kt_QueueIt%20Setup%201.0.0.exe';
-const MAC_URL = 'https://customer-assets.emergentagent.com/job_03179c1a-c1e0-4037-a646-0831b4343a5e/artifacts/2cdxlpcy_QueueIt-1.0.0-universal.dmg';
+const BACKEND = process.env.REACT_APP_BACKEND_URL;
+const WINDOWS_URL = `${BACKEND}/api/download/windows`;
+const MAC_URL = `${BACKEND}/api/download/mac`;
 
 const DownloadPage = () => {
   const [os, setOs] = useState('Unknown');
