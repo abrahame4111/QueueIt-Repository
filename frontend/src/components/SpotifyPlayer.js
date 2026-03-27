@@ -301,32 +301,30 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
 
   const progressPercentage = songDuration > 0 ? (playbackProgress / songDuration) * 100 : 0;
 
-  // Not connected to Spotify
-  if (!spotifyToken) {
-    return (
-      <div className="cyber-card hud-corners p-8 text-center" data-testid="spotify-connect">
-        <Music2 className="w-16 h-16 mx-auto mb-4 text-[var(--cyan)]" />
-        <h3 className="font-cyber text-2xl font-bold text-white mb-2">
-          CONNECT SPOTIFY
-        </h3>
-        <p className="text-[var(--text-muted)] font-mono text-sm mb-6">
-          Link your Spotify Premium to control playback
-        </p>
-        <button onClick={onSpotifyLogin} className="neon-button h-14 px-8 mx-auto" data-testid="spotify-login-button">
-          <span className="flex items-center gap-3">
-            <Music2 className="w-5 h-5" />
-            INITIALIZE SPOTIFY
-          </span>
-        </button>
-        <p className="text-xs text-[var(--text-muted)] font-mono mt-4 opacity-50">
-          Requires Spotify Premium
-        </p>
-      </div>
-    );
-  }
-
   // No song in queue
   if (!currentSong) {
+    if (!spotifyToken) {
+      return (
+        <div className="cyber-card hud-corners p-8 text-center" data-testid="spotify-connect">
+          <Music2 className="w-16 h-16 mx-auto mb-4 text-[var(--cyan)]" />
+          <h3 className="font-cyber text-2xl font-bold text-white mb-2">
+            CONNECT SPOTIFY
+          </h3>
+          <p className="text-[var(--text-muted)] font-mono text-sm mb-6">
+            Link your Spotify Premium to control playback
+          </p>
+          <button onClick={onSpotifyLogin} className="neon-button h-14 px-8 mx-auto" data-testid="spotify-login-button">
+            <span className="flex items-center gap-3">
+              <Music2 className="w-5 h-5" />
+              INITIALIZE SPOTIFY
+            </span>
+          </button>
+          <p className="text-xs text-[var(--text-muted)] font-mono mt-4 opacity-50">
+            Requires Spotify Premium
+          </p>
+        </div>
+      );
+    }
     return (
       <div className="cyber-card p-6 text-center" data-testid="no-song-playing">
         <Music2 className="w-12 h-12 mx-auto mb-3 text-[var(--text-muted)] opacity-30" />
@@ -336,30 +334,36 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
     );
   }
 
-  // Now playing card
+  // Now playing card (always shown when a song exists)
   return (
     <div className="cyber-card breathe-border p-5" data-testid="now-playing-card">
       <div className="flex gap-4 items-center mb-4">
         <div className="relative w-20 h-20 flex-shrink-0">
           <img src={currentSong.song.album_art || 'https://via.placeholder.com/80'} alt={currentSong.song.album} className="w-full h-full object-cover" />
-          <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-            <Button onClick={handlePlayPause} disabled={isTransitioning} size="sm"
-              className="w-10 h-10 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-black p-0 rounded-none disabled:opacity-50"
-              data-testid="play-pause-button">
-              {isTransitioning ? <Loader2 className="w-5 h-5 animate-spin" /> : isPlaying ? <Pause className="w-5 h-5" fill="currentColor" /> : <Play className="w-5 h-5 ml-0.5" fill="currentColor" />}
-            </Button>
-          </div>
+          {spotifyToken && (
+            <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
+              <Button onClick={handlePlayPause} disabled={isTransitioning} size="sm"
+                className="w-10 h-10 bg-[var(--primary)] hover:bg-[var(--primary-hover)] text-black p-0 rounded-none disabled:opacity-50"
+                data-testid="play-pause-button">
+                {isTransitioning ? <Loader2 className="w-5 h-5 animate-spin" /> : isPlaying ? <Pause className="w-5 h-5" fill="currentColor" /> : <Play className="w-5 h-5 ml-0.5" fill="currentColor" />}
+              </Button>
+            </div>
+          )}
         </div>
         <div className="flex-1 min-w-0">
           <div className="flex items-center gap-2 mb-1">
-            {deviceStatus === 'active' ? <CheckCircle className="w-4 h-4 text-green-500" /> : deviceStatus === 'checking' ? <Loader2 className="w-4 h-4 text-[var(--text-muted)] animate-spin" /> : <AlertCircle className="w-4 h-4 text-orange-500" />}
-            <span className="font-mono text-[10px] text-[var(--cyan)] uppercase tracking-[0.15em] font-bold">{isPlaying ? 'NOW PLAYING' : 'PAUSED'}</span>
+            {spotifyToken ? (
+              deviceStatus === 'active' ? <CheckCircle className="w-4 h-4 text-green-500" /> : deviceStatus === 'checking' ? <Loader2 className="w-4 h-4 text-[var(--text-muted)] animate-spin" /> : <AlertCircle className="w-4 h-4 text-orange-500" />
+            ) : (
+              <div className="w-2 h-2 bg-[var(--cyan)] shadow-[0_0_6px_var(--cyan)] animate-pulse" />
+            )}
+            <span className="font-mono text-[10px] text-[var(--cyan)] uppercase tracking-[0.15em] font-bold">{isPlaying ? 'NOW PLAYING' : 'NOW PLAYING'}</span>
           </div>
-          <h3 className="text-xl font-bold text-white truncate">{currentSong.song.name}</h3>
-          <p className="text-[var(--text-muted)] text-sm truncate font-mono">{currentSong.song.artist}</p>
+          <h3 className="text-xl font-bold text-white truncate" data-testid="now-playing-title">{currentSong.song.name}</h3>
+          <p className="text-[var(--text-muted)] text-sm truncate font-mono" data-testid="now-playing-artist">{currentSong.song.artist}</p>
           <p className="text-xs text-[var(--text-muted)] mt-1 font-mono opacity-50">REQ: {currentSong.requested_by || 'ANONYMOUS'}</p>
         </div>
-        {devices.length > 0 && devices[0].is_active && (
+        {spotifyToken && devices.length > 0 && devices[0].is_active && (
           <div className="text-right hidden sm:block">
             <p className="font-mono text-[10px] text-[var(--text-muted)] mb-1">DEVICE</p>
             <p className="text-sm text-white font-semibold truncate max-w-[150px]">{devices[0].name}</p>
@@ -367,7 +371,7 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
           </div>
         )}
       </div>
-      {songDuration > 0 && (
+      {spotifyToken && songDuration > 0 && (
         <div className="space-y-1">
           <div className="relative h-1 bg-white/10 overflow-hidden">
             <div className="absolute h-full bg-[var(--cyan)] transition-all duration-1000" style={{ width: `${progressPercentage}%`, boxShadow: 'var(--glow-cyan)' }} />
@@ -378,7 +382,14 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
           </div>
         </div>
       )}
-      {deviceStatus === 'error' && (
+      {!spotifyToken && (
+        <div className="mt-3 pt-3 border-t border-[var(--border)]">
+          <button onClick={onSpotifyLogin} className="w-full border border-[var(--border)] text-[var(--text-muted)] hover:text-white hover:bg-white/5 py-2 font-mono text-xs uppercase tracking-wider transition-colors" data-testid="connect-spotify-inline">
+            <span className="flex items-center justify-center gap-2"><Music2 className="w-3 h-3" /> Connect Spotify for playback</span>
+          </button>
+        </div>
+      )}
+      {spotifyToken && deviceStatus === 'error' && (
         <div className="mt-4 pt-4 border-t border-[var(--border)]">
           <div className="flex items-start gap-2 text-orange-500 text-xs font-mono">
             <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />
@@ -386,7 +397,7 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
           </div>
         </div>
       )}
-      {deviceStatus === 'inactive' && (
+      {spotifyToken && deviceStatus === 'inactive' && (
         <div className="mt-4 pt-4 border-t border-[var(--border)]">
           <div className="flex items-start gap-2 text-yellow-500 text-xs font-mono">
             <AlertCircle className="w-4 h-4 flex-shrink-0 mt-0.5" />

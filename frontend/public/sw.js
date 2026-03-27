@@ -1,4 +1,4 @@
-const CACHE_NAME = 'queueit-v1';
+const CACHE_NAME = 'queueit-v2';
 const PRECACHE_URLS = [
   '/',
   '/admin',
