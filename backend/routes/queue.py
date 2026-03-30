@@ -2,6 +2,9 @@ from fastapi import APIRouter, HTTPException, Depends
 from models import QueueItem, QueueItemCreate
 from database import db
 from auth import verify_admin
+from models import Song
+from datetime import timezone
+import uuid
 from datetime import datetime
 import logging
 
@@ -110,3 +113,49 @@ async def play_next(item_id: str, admin: bool = Depends(verify_admin)):
         return {"success": True, "message": "Song moved to play next"}
     except Exception as e:
         raise HTTPException(status_code=400, detail=str(e))
+
+
+@router.post("/queue/sync-spotify")
+async def sync_spotify_track(body: dict, admin: bool = Depends(verify_admin)):
+    """Sync the queue with what's actually playing on Spotify."""
+    track = body.get("track")
+    if not track or not track.get("spotify_uri"):
+        return {"success": False, "message": "No track data"}
+
+    spotify_uri = track["spotify_uri"]
+
+    # Check if this track is already the current playing song
+    current = await db.queue.find_one({"status": "playing"})
+    if current and current.get("song", {}).get("spotify_uri") == spotify_uri:
+        return {"success": True, "message": "Already in sync", "changed": False}
+
+    # Mark current playing as played
+    if current:
+        await db.queue.update_one({"_id": current["_id"]}, {"$set": {"status": "played"}})
+
+    # Check if this track is queued — if so, promote it to playing
+    queued = await db.queue.find_one({"status": "queued", "song.spotify_uri": spotify_uri})
+    if queued:
+        await db.queue.update_one({"_id": queued["_id"]}, {"$set": {"status": "playing"}})
+        logger.info(f"Sync: Promoted queued song to playing - {queued['song']['name']}")
+        return {"success": True, "message": "Promoted queued song", "changed": True}
+
+    # Not in queue — create a new entry from Spotify data
+    new_item = {
+        "id": str(uuid.uuid4()),
+        "song": {
+            "id": track.get("id", ""),
+            "name": track.get("name", "Unknown"),
+            "artist": track.get("artist", "Unknown"),
+            "album": track.get("album", ""),
+            "duration_ms": track.get("duration_ms", 0),
+            "album_art": track.get("album_art"),
+            "spotify_uri": spotify_uri,
+        },
+        "requested_by": "Spotify",
+        "requested_at": datetime.now(timezone.utc).isoformat(),
+        "status": "playing",
+    }
+    await db.queue.insert_one(new_item)
+    logger.info(f"Sync: Created new playing entry from Spotify - {track.get('name')}")
+    return {"success": True, "message": "Synced from Spotify", "changed": True}

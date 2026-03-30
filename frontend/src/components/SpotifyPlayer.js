@@ -18,6 +18,7 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
   const pollIntervalRef = useRef(null);
   const lastSongIdRef = useRef(null);
   const lastPlayedUriRef = useRef(null);
+  const lastSyncedUriRef = useRef(null);
   const currentSongRef = useRef(currentSong);
   
   // Keep currentSongRef in sync with currentSong prop
@@ -126,63 +127,58 @@ const SpotifyPlayer = ({ currentSong, token, spotifyToken, onSpotifyLogin, onPla
       setPlaybackProgress(state.progress_ms || 0);
       setSongDuration(state.item.duration_ms || 0);
       
-      // Check if current playing track matches our queue
-      // Use ref to get the latest currentSong value
-      const latestCurrentSong = currentSongRef.current;
+      // Detect track change on Spotify and sync
       const currentSpotifyUri = state.item?.uri;
+      const latestCurrentSong = currentSongRef.current;
       const queuedUri = latestCurrentSong?.song?.spotify_uri;
       
-      if (currentSpotifyUri === queuedUri) {
-        // Perfect match, reset retry count and update last played
-        if (lastPlayedUriRef.current !== queuedUri) {
-          lastPlayedUriRef.current = queuedUri;
-        }
-        setRetryCount(0);
-      } else if (currentSpotifyUri && queuedUri && currentSpotifyUri !== queuedUri && !isTransitioning) {
-        // Mismatch detected - ONLY sync if:
-        // 1. This is not what we just commanded to play
-        // 2. We haven't exceeded retry limit
-        // 3. Enough time has passed since last play command (prevent rapid-fire)
-        
-        const isRecentlyPlayed = lastPlayedUriRef.current === queuedUri;
-        const isRecentlyCommandedSpotify = lastPlayedUriRef.current === currentSpotifyUri;
-        
-        if (!isRecentlyPlayed && !isRecentlyCommandedSpotify) {
-          console.log('Track mismatch detected:', {
-            spotifyPlaying: state.item?.name,
-            queuedSong: latestCurrentSong?.song?.name,
-            queuedUri: queuedUri,
-            lastPlayedUri: lastPlayedUriRef.current,
-            spotifyUri: currentSpotifyUri,
-            retryCount: retryCount
-          });
+      if (currentSpotifyUri && currentSpotifyUri !== queuedUri && !isTransitioning) {
+        // Spotify is playing a different track than our queue
+        // Only sync if we haven't already synced this URI
+        if (lastSyncedUriRef.current !== currentSpotifyUri) {
+          lastSyncedUriRef.current = currentSpotifyUri;
+          lastPlayedUriRef.current = currentSpotifyUri;
           
-          // DISABLED: Only allow manual sync, no automatic retry to prevent loops
-          // User can manually click play if needed
-          console.log('⚠️ Sync disabled to prevent loops. Use manual play if needed.');
-        } else {
-          // This is expected during transitions
-          console.log('Mismatch expected during transition, ignoring...');
+          const trackData = {
+            id: state.item.id,
+            name: state.item.name,
+            artist: state.item.artists?.map(a => a.name).join(', ') || 'Unknown',
+            album: state.item.album?.name || '',
+            duration_ms: state.item.duration_ms || 0,
+            album_art: state.item.album?.images?.[0]?.url || null,
+            spotify_uri: currentSpotifyUri,
+          };
+          
+          try {
+            const syncRes = await axios.post(`${API}/queue/sync-spotify`, 
+              { track: trackData },
+              { headers: { Authorization: `Bearer ${token}` } }
+            );
+            if (syncRes.data.changed) {
+              console.log('Synced from Spotify:', trackData.name);
+            }
+          } catch (err) {
+            console.error('Sync failed:', err);
+          }
         }
+      } else if (currentSpotifyUri === queuedUri) {
+        // In sync — update refs
+        lastSyncedUriRef.current = currentSpotifyUri;
+        lastPlayedUriRef.current = currentSpotifyUri;
+        setRetryCount(0);
       }
       
-      // Auto-advance when song ends (within last 2 seconds but not in last 500ms to avoid duplicate triggers)
+      // Auto-advance when song ends (within last 2 seconds)
       const duration = state.item.duration_ms || 0;
       const progress = state.progress_ms || 0;
       
       if (duration > 0 && progress >= duration - 2000 && progress < duration - 500) {
         if (!isTransitioning) {
-          console.log('Song ending soon, will skip to next track...');
           setIsTransitioning(true);
-          // Skip the current song in backend, fetchData will update currentSong, 
-          // which will trigger the auto-play useEffect above
           if (onPlayNext) {
             onPlayNext();
           }
-          // Reset transitioning state after a delay
-          setTimeout(() => {
-            setIsTransitioning(false);
-          }, 3000);
+          setTimeout(() => setIsTransitioning(false), 3000);
         }
       }
     } catch (error) {
