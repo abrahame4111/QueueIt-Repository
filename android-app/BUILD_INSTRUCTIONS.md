@@ -22,7 +22,7 @@ This folder contains instructions to create an Android APK for the Hostel Music 
 **PWA Builder** can convert your web app to APK automatically:
 
 1. Go to: https://www.pwabuilder.com/
-2. Enter your URL: `https://queue-debug-2.preview.emergentagent.com/admin`
+2. Enter your URL: `https://neon-queue.preview.emergentagent.com/admin`
 3. Click "Start"
 4. Click "Package for stores"
 5. Select "Android"
@@ -45,7 +45,7 @@ Google's official method to create Android apps from websites.
 npm install -g @bubblewrap/cli
 
 # Initialize project
-bubblewrap init --manifest https://queue-debug-2.preview.emergentagent.com/manifest.json
+bubblewrap init --manifest https://neon-queue.preview.emergentagent.com/manifest.json
 
 # Build APK
 bubblewrap build
@@ -130,7 +130,7 @@ import android.view.KeyEvent;
 
 public class MainActivity extends Activity {
     private WebView webView;
-    private static final String ADMIN_URL = "https://queue-debug-2.preview.emergentagent.com/admin";
+    private static final String ADMIN_URL = "https://neon-queue.preview.emergentagent.com/admin";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -232,7 +232,7 @@ npx cap open android
 User installs Hermit from Play Store, then:
 - Open Hermit
 - Add "Lite App"
-- Enter URL: `https://queue-debug-2.preview.emergentagent.com/admin`
+- Enter URL: `https://neon-queue.preview.emergentagent.com/admin`
 - Creates home screen icon
 - Works like native app
 

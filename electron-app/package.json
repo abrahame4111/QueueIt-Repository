@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "QueueIt - The smart music queue system for your venue",
   "main": "main.js",
-  "homepage": "https://queue-debug-2.preview.emergentagent.com",
+  "homepage": "https://neon-queue.preview.emergentagent.com",
   "author": {
     "name": "QueueIt"
   },

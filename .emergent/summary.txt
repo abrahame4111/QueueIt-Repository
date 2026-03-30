@@ -1,169 +1,140 @@
-<analysis>**original_problem_statement:**
-The user's initial project was a music queueing system, dhumjam, for a hostel. This has since evolved into a full product launch for an app named QueueIt.
+<analysis>**original_problem_statement**: 
+Build a music queueing system called QueueIt for hostels, bars, and cafés. Customers scan a QR code to request songs, and admins manage the queue via a dashboard. Needs a complete visual overhaul to a cyberpunk 2077 aesthetic (without using the word cyberpunk), a custom domain (), a PWA for mobile admin, desktop installers (Mac/Win), and onboarding tutorials.
 
-The current product requirements include:
-1.  **Full Rebrand:** A complete visual overhaul to a cyberpunk 2077 aesthetic across the entire application, including logos, fonts, colors, and animations. The explicit word cyberpunk has been removed from all user-facing text.
-2.  **Custom Domain:** The application should be accessible via the user's domain, .
-3.  **URL Structure:**
-    *    & : A marketing/landing page.
-    *   : The customer-facing song request page.
-    *   : The admin console.
-4.  **Desktop Application:** Native installers for Mac () and Windows () that point to the live admin console.
-5.  **Mobile Application:** A Progressive Web App (PWA) for the admin console that can be installed on mobile devices.
-6.  **Onboarding:** An interactive tutorial for new admins on both desktop and mobile.
-7.  **QR Code Generator:** An in-app tool for admins to generate a QR code that links customers to the  page.
-8.  **Post-Download Page:** A Thank You page shown after a user initiates a download, with installation instructions.
+PRODUCT REQUIREMENTS:
+1. Rebranded Cyberpunk aesthetic across all user interfaces.
+2. Custom domain support with proper routing.
+3. Desktop applications (Electron wrapper for  and ).
+4. Mobile PWA support.
+5. In-app QR Code generator.
+6. Spotify integration for playback and queue management.
 
-**User's preferred language**: English
+**User's preferred language**: English (INSTRUCT next agent to respond in English)
 
-**what currently exists?**
-- A full-stack application (React, FastAPI, MongoDB) that has been completely rebranded with a custom cyberpunk theme.
-- The UI, including the landing page, customer portal, and admin dashboard, reflects the new design system with custom fonts, logos, and animations.
-- The URL structure has been implemented within the React application using .
-- A PWA is fully configured, allowing the admin console to be installed on mobile devices.
-- An Electron app structure exists, with updated URLs pointing to . The build process is handled by the user on their own machine.
-- The user has successfully built the Windows  installer, which has been linked to the landing page.
-- All Made with Emergent branding has been removed or hidden.
-- The QR code generator now correctly points to .
-- A Thank You page is shown after a download is triggered.
+**what currently exists?** 
+A fully functional, rebranded full-stack application (React frontend, FastAPI backend, MongoDB). The backend has been refactored into modular routes. It includes an admin dashboard with Spotify playback control, a customer-facing song request portal (), and a marketing/download page. It supports PWA installation and has a dynamic Spotify OAuth flow. A new auto-sync feature aligns the app's Now Playing state with native Spotify app track changes. A proxy download system serves Windows and Mac installers hosted on GitHub.
 
-**Last working item**:
-The agent was debugging a critical issue where the song search feature stopped working. The user reported that search and queue systems were failing. The agent's investigation revealed that the Spotify API was returning a  error, but the root cause was not yet fixed.
+**Last working item**: 
+- **Last item agent was working**: Fixing two UI bugs on the Customer Page (): 1. Search results flickering due to  triggering on every polling interval. 2. The Now Playing album art image breaking/not loading properly on the search page. The agent applied the code fix (replaced  with standard  for the  to prevent re-animation, and fixed the image source) but hasn't tested it yet.
+- **Status**: USER VERIFICATION PENDING / TESTING PENDING (Code implemented, needs visual verification).
+- **Agent Testing Done**: N
+- **Which testing method agent to use?**: screenshot tool (to verify the customer page search results no longer flicker and the image loads).
+- **User Testing Done**: N
 
--   **Last item agent was working**: Debugging the Spotify song search functionality which is returning a  error.
--   **Status**: IN PROGRESS
--   **Agent Testing Done**: N
--   **Which testing method agent to use?**: backend testing agent or  to isolate and test the  search call.
--   **User Testing Done**: N
+**All Pending/In progress Issue list**: 
+Issue 1: Customer Page Search Results Flickering & Broken Image (P0)
+- Attempted fixes: Agent changed  to a standard  for  to stop re-rendering animations on 5-second polling intervals and fixed the album art image reference in .
+- Next debug checklist: 
+  1. Open the  page.
+  2. Perform a search. 
+  3. Wait for 5-10 seconds to ensure the search results do not flicker/disappear and return.
+  4. Verify the Now Playing card on the customer page displays the correct album art.
+- Why fix this issue and what will be achieved with the fix?: Provides a stable UI for customers; prevents jarring layout shifts while they are trying to request a song.
+- Status: TESTING PENDING
+- Is recurring issue? N
+- Should Test frontend/backend/both after fix?: Frontend
+- Blocked on other issue: None
 
-**All Pending/In progress Issue list**:
--   **Issue 1**: Song search and queue system is not working. (P0 - HIGHEST PRIORITY)
+**In progress Task List**: 
+None currently in progress besides testing the last issue.
 
-**Issues Detail**:
--   **Issue 1**:
-     -   **Description**: The song search feature, a core part of the application, is failing. It returns 0 results because the backend call to the Spotify API results in a  error. This breaks the entire song request workflow.
-     -   **Attempted fixes**: The agent confirmed the  was true and logged the error from , identifying the  message. The agent was attempting to check the  library version when the last session ended.
-     -   **Next debug checklist**:
-         1.  Examine  to find the exact version of the  library.
-         2.  Based on the version, consult the official  documentation to verify the correct parameters for the  function. The error strongly suggests the  parameter is either incorrect, deprecated, or has new constraints in the installed version.
-         3.  Examine the call in  around line 144: .
-         4.  Construct a minimal test case using  to isolate the  call and test different parameter combinations.
-     -   **Why fix this issue and what will be achieved with the fix?**: This is a critical bug that makes the main feature of the application unusable. Fixing it will restore the core functionality.
-     -   **Status**:  IN PROGRESS
-     -   **Is recurring issue?**: N
-     -   **Should Test frontend/backend/both after fix?**: backend
-     -   **Blocked on other issue**: None
+**Upcoming and Future Tasks**:
+Upcoming Tasks:
+- (P1) Analytics dashboard: Show most requested songs, peak request hours, and total plays.
+- (P2) Song voting/priority system: Allow customers to vote on queued songs to move them up.
+- (P3) Multiple venue support: Allow a single deployment to handle different queues for different physical locations.
+Future Tasks:
+- (P4) Add more advanced animations (e.g., background particle systems).
 
-**In progress Task List**:
-There are no other tasks in progress. The current bug is the sole focus.
+**Completed work in this session**:
+- Refactored  into modular route files (, , , ) (DONE).
+- Fixed Spotify search  bug by capping limit at 10 for Dev Mode (DONE).
+- Fixed Now Playing card not updating correctly due to stale DB state and frontend comparison logic (DONE).
+- Created enhanced Admin Onboarding Tutorial with mobile optimizations (DONE).
+- Added Admin Settings panel (Venue Name, Change Password, Logout) (DONE).
+- Implemented backend proxy for  and  downloads to bypass browser security warnings (DONE).
+- Fixed Spotify login bugs by using dynamically generated  based on frontend origin, and URL-encoding scope spaces (DONE).
+- Updated Service Worker to v3 with a Network-first strategy for HTML to fix aggressive PWA caching (DONE).
+- Implemented Spotify Auto-Sync () to update the app's state if a user changes the song natively via the Spotify app (DONE).
+- Added branded offline/sleep screen fallback for the Electron app (DONE).
 
-**Upcoming and Future Tasks**
-**Upcoming Tasks:**
--   **(P1) Link Mac DMG Installer:** The user needs to build the  file on their Mac using the provided  source code. Once they upload the installer, the agent must link it to the Download for macOS button on the landing page.
--   **(P2) Clarify Android/iOS Native Apps:** The user requested download buttons for Android/iOS. The agent has linked these to PWA installation instructions. The next agent should confirm if this PWA solution is sufficient or if the user wants native app wrappers (e.g., Capacitor).
+**Earlier issues found/mentioned but not fixed**:
+None.
 
-**Future Tasks:**
--   Analytics dashboard with cyberpunk data visualizations.
--   Song voting/priority system.
--   Multiple venue support.
--   Add more advanced animations (e.g., particle systems) to the background.
+**Known issue recurrence from previous fork**:
+- Issue recurrence in previous fork: Inability to build Windows/Mac installers natively in the Linux container.
+- Recurrence count: 2
+- Status: RESOLVED (Workaround finalized: Agent zips the  folder for the user, and user builds it locally, then uploads to GitHub Releases).
 
-**Completed work in this session**
--   **Complete Cyberpunk Rebrand:** The entire application (admin, customer, landing page) was rebuilt with a Cyberpunk 2077 aesthetic, including new logos, fonts, colors, and animations via Framer Motion.
--   **URL & Routing Overhaul:** Migrated the app to a new URL structure (, , , ) within the React app. The obsolete static  was replaced.
--   **White-Labeling:** Removed all Made with Emergent branding and footer text from the UI.
--   **Mobile PWA Onboarding:** Implemented a new, mobile-specific onboarding tutorial that instructs users how to install the PWA on Android and iOS.
--   **Electron App Hardcoding:** Updated the Electron app's source code to point to the production domain () instead of the preview URL.
--   **Production URL Fixes:** Updated the QR code generator to use  to ensure it works in production.
--   **Windows Installer Integration:** Linked the user-provided  installer to the correct download buttons on the landing page.
--   **Installer Build Process:** Provided the user with a downloadable  of the  source to resolve file-missing issues and guided them on running the build commands.
--   **DNS & Deployment Support:** Guided the user through DNS propagation issues ( / ) and how to configure CNAME records.
--   **Post-Download Page:** Created a Thanks for downloading page with installation instructions.
-
-**Earlier issues found/mentioned but not fixed**
--   **Issue 1**: Inability to build Windows (.exe) and Mac (.dmg) installers from the Linux-based development environment.
-    -   **Debug checklist**: This is a known environmental constraint. The established workaround is to provide the user with the complete source code in a zip file () and instruct them to run the build commands (, ) on their own machine. This approach is now the accepted solution.
-    -   **Why to solve this issue and what will be achieved with this?**: N/A - Workaround is in place.
-    -   **Should Test frontend/backend/both after fix**: N/A
-    -   **Is recurring issue?**: Y
-
-**Code Architecture**
+**Code Architecture**:
 
 
-**Key Technical Concepts**
--   **Backend**: FastAPI, Motor
--   **Frontend**: React, TailwindCSS, Framer Motion
--   **Database**: MongoDB
--   **API Integration**: Spotify Web API (OAuth 2.0)
--   **Desktop**: Electron.js (built by user)
--   **Mobile**: PWA (Progressive Web App)
+**Key Technical Concepts**:
+- Frontend: React, TailwindCSS, Framer Motion
+- Backend: FastAPI, Motor (Async MongoDB), httpx
+- Database: MongoDB
+- Desktop/Mobile: Electron.js, PWA (Service Workers)
 
-**key DB schema**
--   **queue**: 
--   **spotify_tokens**: 
+**key DB schema**:
+- : 
+- : 
+- : 
 
-**changes in tech stack**
--    was added for UI animations.
+**changes in tech stack**:
+- Added  to backend  to support the proxy download feature.
 
-**All files of reference**
--   : Contains the search function with the  bug.
--   : Defines the new routing structure.
--   : The new landing page.
--   : Main admin interface.
--   : Customer request interface.
--   : Hardcoded to use .
--   : Updated to point to .
--   : Contains the design system for the cyberpunk theme.
+**All files of reference**:
+- : Rewritten to mount routers.
+- : Contains the new  endpoint.
+- : Needs testing for the recent flickering/image fixes.
+- : Updated to fix caching; critical for PWA behavior.
 
 **Areas that need refactoring**:
--   The  directory is now obsolete as its functionality has been integrated into . It should be deleted to prevent confusion.
--    has grown very large (over 600 lines). It should be refactored into smaller, modular route files (e.g., , , etc.) for better maintainability.
+- Frontend components (, , ) are quite large and contain a lot of nested logic. Could benefit from custom hooks (e.g., , ).
 
-**key api endpoints**
--   : (GET) **CURRENTLY BROKEN**.
--   : (POST) Add a song.
--   : (GET) Get Spotify authorization URL.
+**key api endpoints**:
+-  (POST): Syncs current playing song from Spotify native app.
+-  &  (GET): Proxies github release binaries.
+-  (GET): Dynamic redirect uri injection.
 
-**Critical Info for New Agent**
--   **Top Priority is the Search Bug**: The application's core search functionality is broken due to a  error from the Spotify API. You must investigate  and the installed  version to fix this. This is a blocker.
--   **Production Domain is Hardcoded**: The live domain  is now hardcoded in several places (QR code generator, Electron app) for production use. Backend API calls correctly use the environment variable. Do not change this unless requested.
--   **User Builds Installers**: The user is responsible for building the Electron  and  installers on their own machines. Your role is to provide the correct and complete source code, typically in a  file.
--   **Obsolete  Folder**: The  folder is no longer in use. It has been replaced by a React component. It can be safely deleted.
+**Critical Info for New Agent**:
+- **DO NOT attempt to build the Electron  or .** The user handles this locally and uploads them to a public GitHub repo. The backend proxy downloads them from there.
+- **Service Worker Caching**: The app uses a service worker (). When making JS/CSS changes, be mindful that PWA users might need a cache clear or SW version bump if network-first strategy fails them.
+- **Spotify Dev Mode Constraints**: Searches limit is capped at 10. Only explicitly whitelisted users in the Spotify Developer Dashboard can authorize the app.
+- **Dynamic Redirect URI**: The Spotify auth URL now dynamically checks the  to generate the  so it works equally well on  and the preview URLs. Do not hardcode this again.
 
-**documents and test reports created in this job**
--   
--   
--   
--   
--    (Source code for user)
+**documents and test reports created in this job**:
+- 
+- 
+- 
 
-**Last 10 User Messages and any pending HUMAN messages**
-1.  **User**: *Reports that search and queue system are not working.* (Status: Pending fix)
-2.  **Agent**: *Starts debugging the issue.*
-3.  **User**: *Asks for mobile onboarding instructions.* (Status: Completed)
-4.  **Agent**: *Implements and verifies mobile onboarding.*
-5.  **User**: *Asks if the mobile PWA version is ready.* (Status: Completed)
-6.  **Agent**: *Confirms PWA is ready and provides installation instructions.*
-7.  **User**: *Provides the built Windows installer.* (Status: Completed)
-8.  **Agent**: *Links the  to the download buttons.*
-9.  **User**: *Reports being unable to build on Windows/Mac due to missing files.* (Status: Resolved by providing a zip)
-10. **User**: *States that the QR generator shows the old URL.* (Status: Completed)
+**Last 10 User Messages and any pending HUMAN messages**:
+1. *User*: Login isn't working for my friend... (Status: Resolved - Agent explained Spotify dev mode user constraints)
+2. *User*: why is the old hostel beats page showing here... (Status: Resolved - Agent fixed Electron offline page fallback)
+3. *User*: the initialize spotify button is not working in the app... (Status: Resolved - Agent fixed unencoded spaces in Spotify URL)
+4. *User*: redirect_uri: Not matching configuration error message (Status: Resolved - Agent helped user configure Spotify Dashboard)
+5. *User*: where are the admin controls that we added before? (Status: Resolved - Agent explained where to find them/cache issue)
+6. *User*: give direct link to the latest electron app (Status: Resolved - Agent provided zip link)
+7. *User*: spotify login is failing. also every time the app is installed for the first time the onboarding should display. Fix the onboarding... (Status: Resolved - Agent fixed dynamic redirect_uri and onboarding layout)
+8. *User*: add a feature that even if the song is switched on spotify the application listens for changes and updates... (Status: Resolved - Agent implemented auto-sync endpoint)
+9. *User*: yes (Status: Acknowledged)
+10. *User*: stop reloading the songs in the search results. it disappears and comes back which looks bad. also the now playing song in the search page does not load an image succesfully. (Status: **Pending Testing** - Agent applied code fix, needs verification).
 
 **Project Health Check:**
--   **Broken**: The song search functionality is non-operational due to a  API error. This is a critical regression.
--   **Mocked**: None.
+- Broken: Nothing severely broken. The customer search UI needs verification for the recent flicker fix.
+- Mocked: None.
 
-**3rd Party Integrations**
--   Spotify Web API — requires User API Key.
+**3rd Party Integrations**:
+- Spotify Web API — requires User API Key.
 
-**Testing status**
--   **Testing agent used after significant changes**: YES. Used multiple times to verify the PWA, mobile UI, and cyberpunk rebrand.
--   **Troubleshoot agent used after agent stuck in loop**: NO
--   **Test files created**: [ , ,  ]
--   **Known regressions**: Song search is a new and critical regression.
+**Testing status**:
+- Testing agent used after significant changes: YES (Used for iterations 5 and 6, both achieved 100% pass rates).
+- Troubleshoot agent used after agent stuck in loop: NO
+- Test files created: , 
+- Known regressions: None currently.
 
 **Credentials to test flow:**
-The user provided a new Spotify Client ID and Secret during the session, which have been updated in .
+Spotify Client ID and Secret are loaded in . Administrator password defaults to .
 
-**What agent forgot to execute**
--   The agent did not delete the now-obsolete  directory after migrating its functionality into the React application. This should be done to keep the codebase clean.</analysis>
+**What agent forgot to execute**:
+The agent implemented the code fix for the Customer UI (search results flickering and broken Now Playing image) in , but hit the context limit before being able to run the  or backend tests to verify it actually resolved the visual bug.</analysis>

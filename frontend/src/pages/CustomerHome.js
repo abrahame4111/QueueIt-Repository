@@ -30,7 +30,20 @@ const CustomerHome = () => {
   const fetchPlaylistTracks = async (id) => { setLoading(true); try { const r = await axios.get(`${API}/songs/playlist/${id}`); setPlaylistTracks(r.data.songs); setSelectedPlaylist(id); } catch { toast.error('Failed to load playlist'); } finally { setLoading(false); } };
   const searchSongs = async () => { if (!searchQuery.trim()) return; setLoading(true); try { const r = await axios.get(`${API}/songs/search?q=${encodeURIComponent(searchQuery)}`); setSearchResults(r.data.songs); } catch { toast.error('Search failed'); } finally { setLoading(false); } };
   const fetchQueue = async () => { try { const r = await axios.get(`${API}/queue`); setQueue(r.data.queue); } catch {} };
-  const fetchCurrentSong = async () => { try { const r = await axios.get(`${API}/queue/current`); setCurrentSong(r.data.current); } catch {} };
+  const fetchCurrentSong = async () => { 
+    try { 
+      const r = await axios.get(`${API}/queue/current`); 
+      const fetched = r.data.current;
+      setCurrentSong(prev => {
+        if (!fetched && !prev) return null;
+        if (!fetched) return null;
+        if (!prev) return fetched;
+        // Only update if song actually changed (prevents re-render flicker)
+        if (prev.song?.spotify_uri === fetched.song?.spotify_uri) return prev;
+        return fetched;
+      });
+    } catch {} 
+  };
 
   const addToQueue = async (song) => {
     try {
@@ -42,9 +55,8 @@ const CustomerHome = () => {
 
   const fmt = (ms) => { const m = Math.floor(ms / 60000); const s = ((ms % 60000) / 1000).toFixed(0); return `${m}:${s.padStart(2, '0')}`; };
 
-  const SongCard = ({ song, delay = 0 }) => (
-    <motion.div
-      initial={{ opacity: 0, x: -8 }} animate={{ opacity: 1, x: 0 }} transition={{ delay: delay * 0.03 }}
+  const SongCard = ({ song }) => (
+    <div
       className="song-card group"
       data-testid={`song-card-${song.id}`}
       style={{ display: 'grid', gridTemplateColumns: '40px 1fr 56px', gap: '10px', alignItems: 'center', width: '100%' }}
@@ -57,7 +69,7 @@ const CustomerHome = () => {
       <button onClick={() => addToQueue(song)} className="neon-button text-[10px] font-bold h-8 px-1" data-testid={`add-to-queue-${song.id}`}>
         <span><Zap className="w-3 h-3 inline" /> ADD</span>
       </button>
-    </motion.div>
+    </div>
   );
 
   const queuedSongs = queue.filter(i => i.status === 'queued');
