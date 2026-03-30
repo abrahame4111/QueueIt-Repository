@@ -13,17 +13,17 @@ router = APIRouter(prefix="/api")
 
 spotify_client_id = os.environ.get('SPOTIFY_CLIENT_ID')
 spotify_client_secret = os.environ.get('SPOTIFY_CLIENT_SECRET')
-redirect_uri = os.environ.get('SPOTIFY_REDIRECT_URI', 'http://localhost:3000/admin')
 
 
 @router.get("/spotify/auth-url")
-async def get_spotify_auth_url(admin: bool = Depends(verify_admin)):
+async def get_spotify_auth_url(admin: bool = Depends(verify_admin), redirect_uri: Optional[str] = None):
     from urllib.parse import urlencode
+    final_redirect = redirect_uri or os.environ.get('SPOTIFY_REDIRECT_URI', 'https://queueit.live/admin')
     scope = "user-read-playback-state user-modify-playback-state streaming user-read-currently-playing"
     params = urlencode({
         "client_id": spotify_client_id,
         "response_type": "code",
-        "redirect_uri": redirect_uri,
+        "redirect_uri": final_redirect,
         "scope": scope,
         "show_dialog": "true"
     })
@@ -31,11 +31,12 @@ async def get_spotify_auth_url(admin: bool = Depends(verify_admin)):
 
 
 @router.post("/spotify/callback")
-async def spotify_callback(code: str, admin: bool = Depends(verify_admin)):
+async def spotify_callback(code: str, admin: bool = Depends(verify_admin), redirect_uri: Optional[str] = None):
+    final_redirect = redirect_uri or os.environ.get('SPOTIFY_REDIRECT_URI', 'https://queueit.live/admin')
     response = http_requests.post("https://accounts.spotify.com/api/token", data={
         'grant_type': 'authorization_code',
         'code': code,
-        'redirect_uri': redirect_uri,
+        'redirect_uri': final_redirect,
         'client_id': spotify_client_id,
         'client_secret': spotify_client_secret
     })

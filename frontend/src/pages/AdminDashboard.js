@@ -48,14 +48,17 @@ const AdminDashboard = () => {
 
   const handleSpotifyLogin = async () => {
     try {
-      const res = await axios.get(`${API}/spotify/auth-url`, { headers: { Authorization: `Bearer ${token}` } });
+      const res = await axios.get(`${API}/spotify/auth-url`, { 
+        headers: { Authorization: `Bearer ${token}` },
+        params: { redirect_uri: window.location.origin + '/admin' }
+      });
       window.location.href = res.data.auth_url;
     } catch { toast.error('Failed to initiate Spotify login'); }
   };
 
   const handleSpotifyCallback = async (code, authToken) => {
     try {
-      const res = await axios.post(`${API}/spotify/callback?code=${code}`, {}, { headers: { Authorization: `Bearer ${authToken}` } });
+      const res = await axios.post(`${API}/spotify/callback?code=${code}&redirect_uri=${encodeURIComponent(window.location.origin + '/admin')}`, {}, { headers: { Authorization: `Bearer ${authToken}` } });
       if (res.data.success) { setSpotifyToken(res.data.access_token); toast.success('Connected to Spotify!'); window.history.replaceState({}, document.title, '/admin'); }
     } catch { toast.error('Failed to connect to Spotify'); }
   };
