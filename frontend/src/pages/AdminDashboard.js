@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, SkipForward, Trash2, Play, Music, List, QrCode, LogOut, Settings, Music2, Zap, Radio, Lock, MapPin, Save, Eye, EyeOff, RotateCcw } from 'lucide-react';
+import { LogIn, SkipForward, Trash2, Play, Music, List, QrCode, LogOut, Settings, Music2, Zap, Radio, Lock, MapPin, Save, Eye, EyeOff, RotateCcw, BarChart3 } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -9,6 +9,7 @@ import { ScrollArea } from '@/components/ui/scroll-area';
 import SpotifyPlayer from '@/components/SpotifyPlayer';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 import OnboardingTutorial from '@/components/OnboardingTutorial';
+import AnalyticsDashboard from '@/components/AnalyticsDashboard';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -271,6 +272,15 @@ const AdminDashboard = () => {
         {/* QR */}
         <div className="mt-6" data-testid="qr-generator"><QRCodeGenerator /></div>
 
+        {/* Analytics */}
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-4">
+            <BarChart3 className="w-5 h-5 text-[var(--primary)]" />
+            <span className="font-cyber text-lg font-bold text-white">ANALYTICS</span>
+          </div>
+          <AnalyticsDashboard token={token} />
+        </div>
+
         {/* Settings (Desktop) */}
         <div className="mt-6">
           <div className="flex items-center gap-2 mb-4">
@@ -373,6 +383,14 @@ const AdminDashboard = () => {
                 data-testid="mobile-qr-tab"><QRCodeGenerator /></motion.div>
             )}
 
+            {activeTab === 'analytics' && (
+              <motion.div key="analytics" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+                data-testid="mobile-analytics-tab">
+                <h2 className="font-cyber text-lg font-bold text-white mb-4">ANALYTICS</h2>
+                <AnalyticsDashboard token={token} />
+              </motion.div>
+            )}
+
             {activeTab === 'settings' && (
               <motion.div key="settings" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
                 className="space-y-4" data-testid="mobile-settings-tab">
@@ -385,10 +403,11 @@ const AdminDashboard = () => {
 
         {/* Bottom Tab Bar */}
         <nav className="fixed bottom-0 left-0 right-0 z-50 glass-panel safe-area-bottom" data-testid="mobile-tab-bar">
-          <div className="grid grid-cols-4 h-16">
+          <div className="grid grid-cols-5 h-16">
             {[
               { id: 'player', icon: Play, label: 'PLAYER' },
               { id: 'queue', icon: List, label: 'QUEUE', badge: queuedSongs.length },
+              { id: 'analytics', icon: BarChart3, label: 'STATS' },
               { id: 'qr', icon: QrCode, label: 'QR' },
               { id: 'settings', icon: Settings, label: 'SYS' },
             ].map(tab => (

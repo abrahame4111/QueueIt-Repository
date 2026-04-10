@@ -3,6 +3,7 @@ from models import QueueItem, QueueItemCreate
 from database import db
 from auth import verify_admin
 from models import Song
+from routes.analytics import log_event
 from datetime import timezone
 import uuid
 from datetime import datetime
@@ -41,12 +42,16 @@ async def add_to_queue(item: QueueItemCreate):
     doc['requested_at'] = doc['requested_at'].isoformat()
     result = await db.queue.insert_one(doc)
 
+    # Log the request event for analytics
+    await log_event(item.song.model_dump(), "request", item.requested_by)
+
     current = await db.queue.find_one({"status": "playing"})
     if not current:
         await db.queue.update_one(
             {"_id": result.inserted_id},
             {"$set": {"status": "playing"}}
         )
+        await log_event(item.song.model_dump(), "play", item.requested_by)
 
     # Cleanup old played entries (keep last 20)
     played_count = await db.queue.count_documents({"status": "played"})
@@ -70,6 +75,7 @@ async def skip_song(admin: bool = Depends(verify_admin)):
     if next_song:
         logger.info(f"Skip: Setting as playing - {next_song.get('song', {}).get('name')}")
         await db.queue.update_one({"_id": next_song['_id']}, {"$set": {"status": "playing"}})
+        await log_event(next_song.get("song", {}), "play", next_song.get("requested_by"))
         next_song['_id'] = str(next_song['_id'])
         return {"success": True, "next_song": next_song}
 
@@ -137,6 +143,7 @@ async def sync_spotify_track(body: dict, admin: bool = Depends(verify_admin)):
     queued = await db.queue.find_one({"status": "queued", "song.spotify_uri": spotify_uri})
     if queued:
         await db.queue.update_one({"_id": queued["_id"]}, {"$set": {"status": "playing"}})
+        await log_event(queued["song"], "play", queued.get("requested_by"))
         logger.info(f"Sync: Promoted queued song to playing - {queued['song']['name']}")
         return {"success": True, "message": "Promoted queued song", "changed": True}
 
@@ -157,5 +164,6 @@ async def sync_spotify_track(body: dict, admin: bool = Depends(verify_admin)):
         "status": "playing",
     }
     await db.queue.insert_one(new_item)
+    await log_event(new_item["song"], "play", "Spotify")
     logger.info(f"Sync: Created new playing entry from Spotify - {track.get('name')}")
     return {"success": True, "message": "Synced from Spotify", "changed": True}
