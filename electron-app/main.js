@@ -170,7 +170,8 @@ function createMenu() {
               (function() {
                 var btn = document.querySelector('[data-testid="spotify-login-button"]');
                 if (btn) { btn.click(); return; }
-                fetch(window.location.origin + '/api/spotify/auth-url', {
+                var redirectUri = encodeURIComponent(window.location.origin + '/admin');
+                fetch(window.location.origin + '/api/spotify/auth-url?redirect_uri=' + redirectUri, {
                   headers: { 'Authorization': 'Bearer ' + localStorage.getItem('admin_token') }
                 })
                 .then(r => r.json())
@@ -206,11 +207,12 @@ function createMenu() {
                 var token = localStorage.getItem('admin_token');
                 if (!token) { alert('Please login as admin first'); return; }
                 if (!confirm('This will log you out and let you sign in with a different Spotify account.')) return;
+                var redirectUri = encodeURIComponent(window.location.origin + '/admin');
                 fetch(window.location.origin + '/api/spotify/logout', {
                   method: 'POST',
                   headers: { 'Authorization': 'Bearer ' + token }
                 })
-                .then(() => fetch(window.location.origin + '/api/spotify/auth-url', {
+                .then(() => fetch(window.location.origin + '/api/spotify/auth-url?redirect_uri=' + redirectUri, {
                   headers: { 'Authorization': 'Bearer ' + token }
                 }))
                 .then(r => r.json())
