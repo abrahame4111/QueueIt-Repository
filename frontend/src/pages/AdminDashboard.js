@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, SkipForward, Trash2, Play, Music, List, QrCode, LogOut, Settings, Music2, Zap, Radio, Lock, MapPin, Save, Eye, EyeOff, RotateCcw, BarChart3 } from 'lucide-react';
+import { LogIn, SkipForward, Trash2, Play, Music, List, QrCode, LogOut, Settings, Music2, Zap, Radio, Lock, MapPin, Save, Eye, EyeOff, RotateCcw, BarChart3, Package } from 'lucide-react';
 import { toast } from 'sonner';
+import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -15,6 +16,7 @@ const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
 
 const AdminDashboard = () => {
+  const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [password, setPassword] = useState('');
   const [token, setToken] = useState('');
@@ -270,7 +272,14 @@ const AdminDashboard = () => {
         </div>
 
         {/* QR */}
-        <div className="mt-6" data-testid="qr-generator"><QRCodeGenerator /></div>
+        <div className="mt-6" data-testid="qr-generator">
+          <QRCodeGenerator />
+          <button onClick={() => navigate('/admin/starter-kit')}
+            className="mt-3 w-full border border-[var(--primary)]/40 text-[var(--primary)] hover:bg-[var(--primary)]/10 py-3 font-mono text-xs uppercase tracking-wider transition-colors duration-200"
+            data-testid="open-starter-kit">
+            <span className="flex items-center justify-center gap-2"><Package className="w-4 h-4" /> OPEN STARTER KIT — STICKERS, POSTERS, BROCHURE</span>
+          </button>
+        </div>
 
         {/* Analytics */}
         <div className="mt-6">
@@ -380,7 +389,14 @@ const AdminDashboard = () => {
 
             {activeTab === 'qr' && (
               <motion.div key="qr" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
-                data-testid="mobile-qr-tab"><QRCodeGenerator /></motion.div>
+                data-testid="mobile-qr-tab">
+                <QRCodeGenerator />
+                <button onClick={() => navigate('/admin/starter-kit')}
+                  className="mt-3 w-full border border-[var(--primary)]/40 text-[var(--primary)] hover:bg-[var(--primary)]/10 py-3 font-mono text-xs uppercase tracking-wider transition-colors duration-200"
+                  data-testid="mobile-open-starter-kit">
+                  <span className="flex items-center justify-center gap-2"><Package className="w-4 h-4" /> STARTER KIT</span>
+                </button>
+              </motion.div>
             )}
 
             {activeTab === 'analytics' && (
