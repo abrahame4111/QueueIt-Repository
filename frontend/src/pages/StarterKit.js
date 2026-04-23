@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { QRCodeSVG } from 'qrcode.react';
-import { Printer, ArrowLeft, Sticker, CreditCard, FileText, BookOpen } from 'lucide-react';
+import { Printer, ArrowLeft, Sticker, CreditCard, FileText, BookOpen, Download } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 
 const CUSTOMER_URL = 'https://queueit.live/request';
@@ -39,9 +39,18 @@ const openPrintWindow = (html, title, pageSize = 'A4', orientation = 'portrait')
   w.document.write(`<!DOCTYPE html><html><head><title>${title}</title>
     <style>${printStyles}
     @page { size: ${pageSize} ${orientation}; margin: 0; }
-    </style></head><body>${html}</body></html>`);
+    .print-toolbar { display: flex; align-items: center; justify-content: center; gap: 12px; padding: 12px; background: #111; border-bottom: 2px solid #FCE300; font-family: 'JetBrains Mono', monospace; }
+    .print-toolbar button { background: #FCE300; color: #0a0a0a; border: none; padding: 8px 20px; font-family: 'Orbitron', sans-serif; font-weight: 700; font-size: 11px; letter-spacing: 2px; cursor: pointer; text-transform: uppercase; }
+    .print-toolbar button:hover { background: #fff44f; }
+    .print-toolbar span { color: #666; font-size: 10px; letter-spacing: 1px; }
+    @media print { .print-toolbar { display: none !important; } }
+    </style></head><body>
+    <div class="print-toolbar">
+      <button onclick="window.print()">SAVE AS PDF / PRINT</button>
+      <span>Use "Save as PDF" in the print dialog to download</span>
+    </div>
+    ${html}</body></html>`);
   w.document.close();
-  setTimeout(() => w.print(), 500);
 };
 
 /* ═══════════════════════════════════════════
@@ -452,21 +461,27 @@ const StarterKit = () => {
         {/* Material Cards */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {materials.map((m) => (
-            <button
+            <div
               key={m.id}
-              onClick={m.action}
               className="group bg-[#111] border border-[#222] hover:border-[#00f0ff] p-6 text-left transition-all duration-300 relative overflow-hidden"
-              data-testid={`print-${m.id}`}
+              data-testid={`card-${m.id}`}
             >
               <div className="absolute top-0 left-0 right-0 h-[2px] bg-[#FCE300] opacity-0 group-hover:opacity-100 transition-opacity" />
               <div className="flex items-start justify-between mb-4">
                 <m.icon className="w-6 h-6 text-[#FCE300]" />
-                <Printer className="w-4 h-4 text-[#555] group-hover:text-[#00f0ff] transition-colors" />
               </div>
               <h3 className="font-cyber text-sm font-bold text-white tracking-wide mb-1">{m.label}</h3>
-              <p className="font-mono text-[10px] text-[#666] tracking-wider">{m.desc}</p>
+              <p className="font-mono text-[10px] text-[#666] tracking-wider mb-4">{m.desc}</p>
+              <button
+                onClick={m.action}
+                className="w-full flex items-center justify-center gap-2 bg-[#FCE300] text-[#0a0a0a] py-2.5 font-cyber text-xs font-bold tracking-wider hover:bg-[#fff44f] transition-colors"
+                data-testid={`print-${m.id}`}
+              >
+                <Download className="w-3.5 h-3.5" />
+                DOWNLOAD PDF
+              </button>
               <div className="absolute bottom-0 left-0 right-0 h-[2px] bg-[#00f0ff] opacity-0 group-hover:opacity-100 transition-opacity" style={{ boxShadow: '0 0 8px #00f0ff' }} />
-            </button>
+            </div>
           ))}
         </div>
 
