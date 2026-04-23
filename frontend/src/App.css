@@ -1,18 +1,18 @@
-@import url('https://fonts.googleapis.com/css2?family=Unbounded:wght@700;900&family=JetBrains+Mono:wght@400;500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500;700&family=Rajdhani:wght@400;500;600;700&display=swap');
 
 :root {
   --bg: #050505;
   --surface: #0a0a0c;
   --surface-elevated: #121216;
-  --primary: #FCEE0A;
-  --primary-hover: #FFF55A;
+  --primary: #FCE300;
+  --primary-hover: #FFF44F;
   --cyan: #00F0FF;
   --accent: #FF003C;
   --text: #FFFFFF;
   --text-muted: #A0AEC0;
   --border: rgba(0, 240, 255, 0.2);
   --glow-cyan: 0 0 10px rgba(0, 240, 255, 0.5);
-  --glow-primary: 0 0 10px rgba(252, 238, 10, 0.5);
+  --glow-primary: 0 0 10px rgba(252, 227, 0, 0.5);
   --glow-accent: 0 0 10px rgba(255, 0, 60, 0.5);
 }
 
@@ -26,7 +26,7 @@ html {
 body {
   margin: 0;
   padding: 0;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Rajdhani', sans-serif;
   background-color: var(--bg);
   color: var(--text);
   overflow-x: hidden;
@@ -44,9 +44,9 @@ body {
 }
 
 /* ─── Custom Fonts ─── */
-.font-cyber { font-family: 'Unbounded', sans-serif; }
+.font-cyber { font-family: 'Orbitron', sans-serif; }
 .font-mono { font-family: 'JetBrains Mono', monospace; }
-.font-ui { font-family: 'IBM Plex Sans', sans-serif; }
+.font-ui { font-family: 'Rajdhani', sans-serif; }
 
 /* ─── Scanline Overlay ─── */
 .scanlines {
@@ -79,7 +79,7 @@ body {
   cursor: pointer;
   clip-path: polygon(8px 0%, 100% 0%, calc(100% - 8px) 100%, 0% 100%);
   transition: transform 0.2s, box-shadow 0.2s;
-  font-family: 'IBM Plex Sans', sans-serif;
+  font-family: 'Rajdhani', sans-serif;
 }
 
 .neon-button:hover {
