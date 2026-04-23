@@ -42,7 +42,7 @@ const DownloadPage = () => {
       <nav className="fixed top-0 left-0 right-0 z-50 glass-panel">
         <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 no-underline">
-            <img src="/queueit-icon.png" alt="" className="w-7 h-7" />
+            <img src="/queueit-icon.png?v=2" alt="" className="w-7 h-7" />
             <LogoBanner size="sm" variant="dark" />
           </a>
           <div className="hidden md:flex items-center gap-8">

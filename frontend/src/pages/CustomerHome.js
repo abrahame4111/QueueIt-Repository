@@ -89,7 +89,7 @@ const CustomerHome = () => {
         <div className="absolute inset-0 flex items-center justify-center px-4">
           <motion.div initial={{ opacity: 0, y: -10 }} animate={{ opacity: 1, y: 0 }} className="text-center">
             <div className="flex justify-center mb-3">
-              <img src="/queueit-icon.png" alt="" className="w-14 h-14 sm:w-16 sm:h-16" />
+              <img src="/queueit-icon.png?v=2" alt="" className="w-14 h-14 sm:w-16 sm:h-16" />
             </div>
             <div className="flex justify-center mb-2">
               <LogoBanner size="lg" variant="dark" />

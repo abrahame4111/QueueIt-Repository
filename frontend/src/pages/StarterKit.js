@@ -431,7 +431,7 @@ const StarterKit = () => {
             </div>
           </div>
           <div className="flex items-center gap-2">
-            <img src="/queueit-icon.png" alt="" className="w-8 h-8" />
+            <img src="/queueit-icon.png?v=2" alt="" className="w-8 h-8" />
           </div>
         </div>
       </div>

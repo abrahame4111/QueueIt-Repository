@@ -138,7 +138,7 @@ const AdminDashboard = () => {
           <div className="cyber-card hud-corners p-8">
             {/* Logo */}
             <div className="flex flex-col items-center gap-3 mb-6">
-              <img src="/queueit-icon.png" alt="" className="w-16 h-16" />
+              <img src="/queueit-icon.png?v=2" alt="" className="w-16 h-16" />
               <LogoBanner size="lg" variant="dark" />
             </div>
             <div className="text-center mb-8">
@@ -180,7 +180,7 @@ const AdminDashboard = () => {
         {/* Header */}
         <div className="flex justify-between items-center mb-8">
           <div className="flex items-center gap-4">
-            <img src="/queueit-icon.png" alt="" className="w-10 h-10" />
+            <img src="/queueit-icon.png?v=2" alt="" className="w-10 h-10" />
             <div>
               <LogoBanner size="md" variant="dark" />
               <p className="text-[var(--text-muted)] font-mono text-xs uppercase tracking-[0.2em]">Control Terminal</p>
@@ -308,7 +308,7 @@ const AdminDashboard = () => {
         <div className="sticky top-0 z-40 glass-panel px-4 py-3">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
-              <img src="/queueit-icon.png" alt="" className="w-7 h-7" />
+              <img src="/queueit-icon.png?v=2" alt="" className="w-7 h-7" />
               <LogoBanner size="xs" variant="dark" />
             </div>
             <div className="flex items-center gap-2">
