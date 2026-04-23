@@ -5,6 +5,7 @@ import { Search, Music, List, Play, Clock, Zap } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
+import LogoBanner from '@/components/LogoBanner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -90,9 +91,9 @@ const CustomerHome = () => {
             <div className="flex justify-center mb-3">
               <img src="/queueit-icon.png" alt="" className="w-14 h-14 sm:w-16 sm:h-16" />
             </div>
-            <h1 className="font-cyber text-3xl sm:text-4xl md:text-5xl font-bold text-white tracking-tight mb-1 glitch-text" data-text="QUEUEIT">
-              QUEUE<span className="text-[var(--primary)]">IT</span>
-            </h1>
+            <div className="flex justify-center mb-2">
+              <LogoBanner size="lg" variant="dark" />
+            </div>
             <p className="font-mono text-[var(--text-muted)] uppercase tracking-[0.25em] text-[10px] sm:text-xs">Request. Queue. Vibe.</p>
           </motion.div>
         </div>

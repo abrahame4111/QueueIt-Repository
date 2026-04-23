@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion } from 'framer-motion';
 import { Download, QrCode, Music, List, Smartphone, Monitor, Zap, ArrowRight } from 'lucide-react';
+import LogoBanner from '@/components/LogoBanner';
 
 const BACKEND = process.env.REACT_APP_BACKEND_URL;
 const WINDOWS_URL = `${BACKEND}/api/download/windows`;
@@ -42,7 +43,7 @@ const DownloadPage = () => {
         <div className="max-w-[1200px] mx-auto px-6 h-16 flex items-center justify-between">
           <a href="/" className="flex items-center gap-2 no-underline">
             <img src="/queueit-icon.png" alt="" className="w-7 h-7" />
-            <span className="font-cyber text-lg font-bold text-white">QUEUE<span className="text-[var(--primary)]">IT</span></span>
+            <LogoBanner size="sm" variant="dark" />
           </a>
           <div className="hidden md:flex items-center gap-8">
             <a href="#features" className="font-mono text-xs text-[var(--text-muted)] uppercase tracking-[0.1em] no-underline hover:text-[var(--cyan)] transition-colors">Features</a>

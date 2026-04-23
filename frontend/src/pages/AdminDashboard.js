@@ -11,6 +11,7 @@ import SpotifyPlayer from '@/components/SpotifyPlayer';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 import OnboardingTutorial from '@/components/OnboardingTutorial';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
+import LogoBanner from '@/components/LogoBanner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 const API = `${BACKEND_URL}/api`;
@@ -136,8 +137,9 @@ const AdminDashboard = () => {
         <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.5 }} className="w-full max-w-md relative">
           <div className="cyber-card hud-corners p-8">
             {/* Logo */}
-            <div className="flex justify-center mb-6">
-              <img src="/queueit-logo.png" alt="QueueIt" className="h-20 object-contain" />
+            <div className="flex flex-col items-center gap-3 mb-6">
+              <img src="/queueit-icon.png" alt="" className="w-16 h-16" />
+              <LogoBanner size="lg" variant="dark" />
             </div>
             <div className="text-center mb-8">
               <p className="text-[var(--text-muted)] font-mono text-xs uppercase tracking-[0.2em]">Admin Access Terminal</p>
@@ -180,9 +182,7 @@ const AdminDashboard = () => {
           <div className="flex items-center gap-4">
             <img src="/queueit-icon.png" alt="" className="w-10 h-10" />
             <div>
-              <h1 className="font-cyber text-3xl font-bold tracking-tight text-white">
-                QUEUE<span className="text-[var(--primary)]">IT</span>
-              </h1>
+              <LogoBanner size="md" variant="dark" />
               <p className="text-[var(--text-muted)] font-mono text-xs uppercase tracking-[0.2em]">Control Terminal</p>
             </div>
           </div>
@@ -309,7 +309,7 @@ const AdminDashboard = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2">
               <img src="/queueit-icon.png" alt="" className="w-7 h-7" />
-              <span className="font-cyber text-base font-bold text-white">QUEUE<span className="text-[var(--primary)]">IT</span></span>
+              <LogoBanner size="xs" variant="dark" />
             </div>
             <div className="flex items-center gap-2">
               <div className="flex items-center gap-1.5 border border-[var(--border)] px-2.5 py-1">
