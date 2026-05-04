@@ -62,10 +62,18 @@
       ]
     },
     "nsis": {
-      "oneClick": false,
-      "allowToChangeInstallationDirectory": true,
+      "oneClick": true,
+      "perMachine": false,
+      "allowElevation": true,
       "createDesktopShortcut": true,
-      "createStartMenuShortcut": true
+      "createStartMenuShortcut": true,
+      "installerIcon": "assets/icon.png",
+      "uninstallerIcon": "assets/icon.png",
+      "installerSidebar": "assets/installerSidebar.bmp",
+      "uninstallerSidebar": "assets/uninstallerSidebar.bmp",
+      "installerHeader": "assets/installerHeader.bmp",
+      "runAfterFinish": true,
+      "deleteAppDataOnUninstall": true
     }
   }
 }

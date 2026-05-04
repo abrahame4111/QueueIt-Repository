@@ -5,8 +5,49 @@ const ADMIN_URL = 'https://queueit.live/admin';
 const CUSTOMER_URL = 'https://queueit.live/request';
 
 let mainWindow;
+let splashWindow;
+
+const SPLASH_HTML = `<!DOCTYPE html>
+<html><head>
+<link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@700;900&family=JetBrains+Mono:wght@400&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+body { width:100vw; height:100vh; background:#0a0a0a; display:flex; flex-direction:column; align-items:center; justify-content:center; overflow:hidden; font-family:'JetBrains Mono',monospace; -webkit-app-region:drag; }
+.top-line { position:fixed; top:0; left:0; right:0; height:3px; background:#FCE300; }
+.bot-line { position:fixed; bottom:0; left:0; right:0; height:3px; background:#00f0ff; box-shadow:0 0 12px #00f0ff; }
+.logo { font-family:'Orbitron',sans-serif; font-weight:900; font-size:36px; letter-spacing:6px; margin-bottom:8px; }
+.logo .q { color:#FCE300; }
+.logo .it { background:#00f0ff; color:#0a0a0a; padding:0 6px; }
+.status { color:#666; font-size:11px; letter-spacing:3px; margin-bottom:24px; text-transform:uppercase; }
+.bar-wrap { width:240px; height:4px; background:#1a1a1a; overflow:hidden; position:relative; }
+.bar { height:100%; background:#00f0ff; box-shadow:0 0 8px #00f0ff; animation:load 2s ease-in-out infinite; }
+@keyframes load { 0%{width:0;left:0} 50%{width:60%} 100%{width:100%} }
+.ver { color:#333; font-size:9px; letter-spacing:2px; margin-top:16px; }
+</style></head><body>
+<div class="top-line"></div>
+<div class="logo"><span class="q">QUEUE</span><span class="it">IT</span></div>
+<p class="status">Loading...</p>
+<div class="bar-wrap"><div class="bar"></div></div>
+<p class="ver">v1.0.0</p>
+<div class="bot-line"></div>
+</body></html>`;
 
 function createWindow() {
+  // Create splash screen first
+  splashWindow = new BrowserWindow({
+    width: 420,
+    height: 300,
+    frame: false,
+    transparent: false,
+    alwaysOnTop: true,
+    resizable: false,
+    icon: path.join(__dirname, 'assets/icon.png'),
+    backgroundColor: '#0a0a0a',
+    webPreferences: { nodeIntegration: false, contextIsolation: true }
+  });
+  splashWindow.loadURL(`data:text/html;charset=utf-8,${encodeURIComponent(SPLASH_HTML)}`);
+  splashWindow.center();
+
   mainWindow = new BrowserWindow({
     width: 1400,
     height: 900,
@@ -27,6 +68,10 @@ function createWindow() {
 
   mainWindow.once('ready-to-show', () => {
     mainWindow.show();
+    if (splashWindow && !splashWindow.isDestroyed()) {
+      splashWindow.close();
+      splashWindow = null;
+    }
     createMenu();
   });
 
