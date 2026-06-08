@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { LogIn, SkipForward, Trash2, Play, Music, List, QrCode, LogOut, Settings, Music2, Zap, Radio, Lock, MapPin, Save, Eye, EyeOff, RotateCcw, BarChart3, Package } from 'lucide-react';
+import { LogIn, SkipForward, Trash2, Play, Music, List, QrCode, LogOut, Settings, Music2, Zap, Radio, Lock, MapPin, Save, Eye, EyeOff, RotateCcw, BarChart3, Package, SlidersHorizontal } from 'lucide-react';
 import { toast } from 'sonner';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
@@ -11,6 +11,7 @@ import SpotifyPlayer from '@/components/SpotifyPlayer';
 import QRCodeGenerator from '@/components/QRCodeGenerator';
 import OnboardingTutorial from '@/components/OnboardingTutorial';
 import AnalyticsDashboard from '@/components/AnalyticsDashboard';
+import VenueFilters from '@/components/VenueFilters';
 import LogoBanner from '@/components/LogoBanner';
 
 const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -281,6 +282,17 @@ const AdminDashboard = () => {
           </button>
         </div>
 
+        {/* Venue Filters */}
+        <div className="mt-6">
+          <div className="flex items-center gap-2 mb-4">
+            <SlidersHorizontal className="w-5 h-5 text-[var(--primary)]" />
+            <span className="font-cyber text-lg font-bold text-white">VENUE FILTERS</span>
+          </div>
+          <div className="cyber-card hud-corners p-4">
+            <VenueFilters token={token} />
+          </div>
+        </div>
+
         {/* Analytics */}
         <div className="mt-6">
           <div className="flex items-center gap-2 mb-4">
@@ -407,6 +419,14 @@ const AdminDashboard = () => {
               </motion.div>
             )}
 
+            {activeTab === 'filters' && (
+              <motion.div key="filters" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
+                data-testid="mobile-filters-tab">
+                <h2 className="font-cyber text-lg font-bold text-white mb-4">VENUE FILTERS</h2>
+                <VenueFilters token={token} />
+              </motion.div>
+            )}
+
             {activeTab === 'settings' && (
               <motion.div key="settings" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} transition={{ duration: 0.2 }}
                 className="space-y-4" data-testid="mobile-settings-tab">
@@ -419,10 +439,11 @@ const AdminDashboard = () => {
 
         {/* Bottom Tab Bar */}
         <nav className="fixed bottom-0 left-0 right-0 z-50 glass-panel safe-area-bottom" data-testid="mobile-tab-bar">
-          <div className="grid grid-cols-5 h-16">
+          <div className="grid grid-cols-6 h-16">
             {[
               { id: 'player', icon: Play, label: 'PLAYER' },
               { id: 'queue', icon: List, label: 'QUEUE', badge: queuedSongs.length },
+              { id: 'filters', icon: SlidersHorizontal, label: 'FILTER' },
               { id: 'analytics', icon: BarChart3, label: 'STATS' },
               { id: 'qr', icon: QrCode, label: 'QR' },
               { id: 'settings', icon: Settings, label: 'SYS' },

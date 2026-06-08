@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 import { motion, AnimatePresence } from 'framer-motion';
-import { Search, Music, List, Play, Clock, Zap } from 'lucide-react';
+import { Search, Music, List, Play, Clock, Zap, Shield } from 'lucide-react';
 import { toast } from 'sonner';
 import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
@@ -20,16 +20,31 @@ const CustomerHome = () => {
   const [currentSong, setCurrentSong] = useState(null);
   const [loading, setLoading] = useState(false);
   const [activeTab, setActiveTab] = useState('search');
+  const [venueFilters, setVenueFilters] = useState(null);
+  const [activeGenre, setActiveGenre] = useState(null);
 
   useEffect(() => {
-    fetchPlaylists(); fetchQueue(); fetchCurrentSong();
+    fetchPlaylists(); fetchQueue(); fetchCurrentSong(); fetchFilters();
     const interval = setInterval(() => { fetchQueue(); fetchCurrentSong(); }, 5000);
     return () => clearInterval(interval);
   }, []);
 
+  const fetchFilters = async () => { try { const r = await axios.get(`${API}/filters`); setVenueFilters(r.data); } catch {} };
   const fetchPlaylists = async () => { try { const r = await axios.get(`${API}/songs/playlists`); setPlaylists(r.data.playlists); } catch {} };
   const fetchPlaylistTracks = async (id) => { setLoading(true); try { const r = await axios.get(`${API}/songs/playlist/${id}`); setPlaylistTracks(r.data.songs); setSelectedPlaylist(id); } catch { toast.error('Failed to load playlist'); } finally { setLoading(false); } };
-  const searchSongs = async () => { if (!searchQuery.trim()) return; setLoading(true); try { const r = await axios.get(`${API}/songs/search?q=${encodeURIComponent(searchQuery)}`); setSearchResults(r.data.songs); } catch { toast.error('Search failed'); } finally { setLoading(false); } };
+  const searchSongs = async () => {
+    if (!searchQuery.trim()) return;
+    setLoading(true);
+    try {
+      let url = `${API}/songs/search?q=${encodeURIComponent(searchQuery)}`;
+      if (venueFilters?.mode === 'strict' && activeGenre) {
+        url += `&genre=${encodeURIComponent(activeGenre)}`;
+      }
+      const r = await axios.get(url);
+      setSearchResults(r.data.songs);
+    } catch { toast.error('Search failed'); }
+    finally { setLoading(false); }
+  };
   const fetchQueue = async () => { try { const r = await axios.get(`${API}/queue`); setQueue(r.data.queue); } catch {} };
   const fetchCurrentSong = async () => { 
     try { 
@@ -148,6 +163,41 @@ const CustomerHome = () => {
           {/* Search */}
           {activeTab === 'search' && (
             <motion.div key="search" initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }} className="max-w-full">
+              {/* Venue mood indicator */}
+              {venueFilters && venueFilters.preset !== 'open' && (
+                <div className="flex items-center gap-2 mb-3" data-testid="venue-mood-bar">
+                  {venueFilters.mode === 'strict' && <Shield className="w-3 h-3 text-[var(--accent)]" />}
+                  <span className="font-mono text-[9px] text-[var(--text-muted)] uppercase tracking-wider">
+                    {venueFilters.label} Vibe
+                    {venueFilters.mode === 'strict' && ' — Filtered'}
+                  </span>
+                </div>
+              )}
+
+              {/* Genre filter chips */}
+              {venueFilters && venueFilters.genres?.length > 0 && (
+                <div className="mb-3 overflow-x-auto no-scrollbar" data-testid="genre-chips">
+                  <div className="flex gap-1.5 pb-1">
+                    <button
+                      onClick={() => setActiveGenre(null)}
+                      className={`shrink-0 px-2.5 py-1 font-mono text-[9px] tracking-wider uppercase border transition-all ${
+                        !activeGenre ? 'border-[var(--cyan)] bg-[var(--cyan)]/10 text-[var(--cyan)]' : 'border-[#222] text-[#555]'
+                      }`}
+                    >ALL</button>
+                    {venueFilters.genres.map(g => (
+                      <button
+                        key={g}
+                        onClick={() => setActiveGenre(activeGenre === g ? null : g)}
+                        className={`shrink-0 px-2.5 py-1 font-mono text-[9px] tracking-wider uppercase border transition-all ${
+                          activeGenre === g ? 'border-[var(--cyan)] bg-[var(--cyan)]/10 text-[var(--cyan)]' : 'border-[#222] text-[#555]'
+                        }`}
+                        data-testid={`customer-genre-${g.replace(/\s/g, '-')}`}
+                      >{g}</button>
+                    ))}
+                  </div>
+                </div>
+              )}
+
               <div className="flex gap-2 mb-4">
                 <Input
                   placeholder="// SEARCH TRACKS..."

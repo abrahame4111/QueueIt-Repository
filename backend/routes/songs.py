@@ -1,6 +1,7 @@
 from fastapi import APIRouter, HTTPException
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+from database import db
 import os
 
 router = APIRouter(prefix="/api")
@@ -16,11 +17,16 @@ else:
 
 
 @router.get("/songs/search")
-async def search_songs(q: str):
+async def search_songs(q: str, genre: str = None):
     if not sp:
         raise HTTPException(status_code=500, detail="Spotify not configured")
     try:
-        results = sp.search(q=q, limit=10, type='track')
+        # Build search query — add genre hint if provided
+        search_q = q
+        if genre:
+            search_q = f"{q} genre:{genre}"
+
+        results = sp.search(q=search_q, limit=10, type='track')
         songs = []
         for item in results['tracks']['items']:
             songs.append({

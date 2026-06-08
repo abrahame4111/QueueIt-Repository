@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from starlette.middleware.cors import CORSMiddleware
 from database import client
-from routes import admin, queue, songs, spotify, analytics
+from routes import admin, queue, songs, spotify, analytics, filters
 import os
 import logging
 
@@ -13,6 +13,7 @@ app.include_router(queue.router)
 app.include_router(songs.router)
 app.include_router(spotify.router)
 app.include_router(analytics.router)
+app.include_router(filters.router)
 
 
 @app.get("/api/")
