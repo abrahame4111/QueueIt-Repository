@@ -63,10 +63,16 @@ const CustomerHome = () => {
 
   const addToQueue = async (song) => {
     try {
-      await axios.post(`${API}/queue/add`, { song, requested_by: 'Guest' });
+      await axios.post(`${API}/queue/add`, { song, requested_by: 'Guest', filter_genre: activeGenre || null });
       toast.success('Song queued!', { description: `${song.name} by ${song.artist}` });
       fetchQueue(); fetchCurrentSong();
-    } catch { toast.error('Failed to add song'); }
+    } catch (e) {
+      if (e.response?.status === 403) {
+        toast.error('Song not allowed', { description: e.response.data?.detail || 'This song doesn\'t match the venue vibe' });
+      } else {
+        toast.error('Failed to add song');
+      }
+    }
   };
 
   const fmt = (ms) => { const m = Math.floor(ms / 60000); const s = ((ms % 60000) / 1000).toFixed(0); return `${m}:${s.padStart(2, '0')}`; };

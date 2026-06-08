@@ -8,9 +8,43 @@ from datetime import timezone
 import uuid
 from datetime import datetime
 import logging
+import spotipy
+from spotipy.oauth2 import SpotifyClientCredentials
+import os
 
 logger = logging.getLogger(__name__)
 router = APIRouter(prefix="/api")
+
+# Spotify client for genre lookups
+_sp_client_id = os.environ.get('SPOTIFY_CLIENT_ID')
+_sp_client_secret = os.environ.get('SPOTIFY_CLIENT_SECRET')
+if _sp_client_id and _sp_client_secret:
+    _sp_auth = SpotifyClientCredentials(client_id=_sp_client_id, client_secret=_sp_client_secret)
+    _sp = spotipy.Spotify(auth_manager=_sp_auth)
+else:
+    _sp = None
+
+
+async def check_genre_filter(song_id: str, filter_genre: str = None) -> tuple:
+    """Check if a song passes the venue genre filter. Returns (allowed, reason)."""
+    filters = await db.venue_filters.find_one({"key": "active"}, {"_id": 0})
+    if not filters or filters.get("mode") != "strict":
+        return True, ""
+    
+    allowed_genres = [g.lower() for g in filters.get("genres", [])]
+    if not allowed_genres:
+        return True, ""
+    
+    # In strict mode, a valid genre filter must be provided
+    if not filter_genre:
+        preset_label = filters.get("label", "current venue")
+        return False, f"This venue is in {preset_label} mode. Please select a genre filter before requesting songs."
+    
+    if filter_genre.lower() not in allowed_genres:
+        preset_label = filters.get("label", "current venue")
+        return False, f"'{filter_genre}' isn't allowed in {preset_label} mode. Try: {', '.join(allowed_genres[:4])}"
+    
+    return True, ""
 
 
 @router.get("/queue")
@@ -37,6 +71,12 @@ async def get_current_song():
 
 @router.post("/queue/add")
 async def add_to_queue(item: QueueItemCreate):
+    # Enforce genre filter in strict mode
+    filter_genre = item.filter_genre if hasattr(item, 'filter_genre') else None
+    allowed, reason = await check_genre_filter(item.song.id, filter_genre)
+    if not allowed:
+        raise HTTPException(status_code=403, detail=reason)
+
     queue_item = QueueItem(song=item.song, requested_by=item.requested_by)
     doc = queue_item.model_dump()
     doc['requested_at'] = doc['requested_at'].isoformat()

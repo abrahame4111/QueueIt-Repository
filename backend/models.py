@@ -28,6 +28,7 @@ class QueueItem(BaseModel):
 class QueueItemCreate(BaseModel):
     song: Song
     requested_by: Optional[str] = None
+    filter_genre: Optional[str] = None
 
 
 class AdminLogin(BaseModel):
