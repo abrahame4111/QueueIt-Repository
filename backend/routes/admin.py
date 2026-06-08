@@ -59,6 +59,21 @@ async def admin_login(credentials: AdminLogin):
         raise HTTPException(status_code=401, detail="Invalid password")
 
 
+@router.post("/admin/reset-password")
+async def reset_password(credentials: AdminLogin):
+    """Master reset - uses ADMIN_PASSWORD env var as the reset key."""
+    master_key = os.environ.get('ADMIN_PASSWORD', 'hostel2024')
+    if credentials.password != master_key:
+        raise HTTPException(status_code=401, detail="Invalid master key")
+    await db.settings.update_one(
+        {"key": "admin_password"},
+        {"$set": {"key": "admin_password", "value": master_key}},
+        upsert=True
+    )
+    return {"success": True, "message": f"Password reset to env default", "token": master_key}
+
+
+
 @router.post("/admin/change-password")
 async def change_password(req: ChangePasswordRequest, admin: bool = Depends(verify_admin)):
     current_pw = await get_admin_password()
