@@ -1,59 +1,58 @@
 # QueueIt - Product Requirements Document
 
 ## Overview
-QueueIt is a smart music queueing system for venues (hostels, bars, cafes). Guests scan a QR code to request songs, admins control playback via Spotify. Full Cyberpunk 2077 aesthetic (yellow/black/neon-blue).
-
-## URL Structure
-- `queueit.live/` — Landing/download page
-- `queueit.live/request` — Customer song request portal
-- `queueit.live/admin` — Admin dashboard
-- `queueit.live/admin/starter-kit` — Print materials generator
-- `queueit.live/downloads/thanks` — Post-download page
+QueueIt is a smart music queueing system for venues (hostels, bars, cafes, restaurants, clubs). Guests scan a QR code to request songs, admins control playback via Spotify. Full Cyberpunk 2077 aesthetic (yellow/black/neon-blue).
 
 ## Tech Stack
 - **Frontend**: React, TailwindCSS, Framer Motion, Shadcn/UI
 - **Backend**: FastAPI (modular routes), Motor (async MongoDB)
 - **Database**: MongoDB
 - **API**: Spotify Web API (OAuth 2.0 + Client Credentials)
-- **Desktop**: Electron.js (user-built installers)
-- **Mobile**: PWA (Progressive Web App)
+- **Desktop**: Electron.js (one-click NSIS installer with branded splash)
+- **Mobile**: PWA (Service Workers v4)
 - **Fonts**: Orbitron (headings), JetBrains Mono (code), Rajdhani (body)
 - **Colors**: #FCE300 (yellow), #00F0FF (cyan), #FF003C (accent), #0a0a0a (dark)
 
 ## Code Architecture
 ```
-/app/backend/
-  server.py, database.py, models.py, auth.py
-  routes/: admin.py, queue.py, songs.py, spotify.py, analytics.py
+/app/backend/routes/
+  admin.py       # Login, settings, password reset, download proxy
+  queue.py       # Queue CRUD + cleanup + analytics logging
+  songs.py       # Spotify search (with genre filter support)
+  spotify.py     # OAuth, playback, devices
+  analytics.py   # Analytics endpoints + event logging
+  filters.py     # Venue filter presets, mode toggle, genre/mood management
 
 /app/frontend/src/
-  pages/: AdminDashboard.js, CustomerHome.js, DownloadPage.js, PostDownloadPage.js, StarterKit.js
-  components/: AnalyticsDashboard.js, OnboardingTutorial.js, QRCodeGenerator.js, SpotifyPlayer.js
+  pages/: AdminDashboard, CustomerHome, DownloadPage, PostDownloadPage, StarterKit
+  components/: AnalyticsDashboard, VenueFilters, LogoBanner, OnboardingTutorial, QRCodeGenerator, SpotifyPlayer
 ```
 
 ## Key DB Collections
-- `queue`: Song queue items (status: queued/playing/played)
+- `queue`: Song queue items
 - `spotify_tokens`: OAuth tokens
 - `settings`: Key-value settings (admin_password, venue_name)
-- `analytics_log`: Permanent event log for analytics
+- `analytics_log`: Permanent event log
+- `venue_filters`: Active filter config (mode, preset, genres, moods, energy)
 
-## Completed Features (All Tested)
-- Cyberpunk 2077 UI rebrand with custom Orbitron font and yellow/black/cyan palette
-- New logo + icon redesign (yellow bg, dark bg, square icon, PWA icons, Electron icon)
-- Song search via Spotify API
+## Completed Features
+- Cyberpunk 2077 UI with Orbitron font and yellow/black/cyan palette
+- New logo/icon redesign (yellow bg Q icon, LogoBanner React component)
+- Song search via Spotify API with genre filtering
 - Queue management (add, skip, remove, clear, play-next)
-- Admin authentication (DB-backed, changeable password)
-- Admin settings (venue name, Spotify connection, system info, replay tutorial)
+- Admin auth (DB-backed, changeable, resettable)
+- Admin settings (venue name, Spotify, system info, replay tutorial)
 - Interactive onboarding tutorial
 - QR code generator
-- PWA support (service worker v3 — network-first)
-- Desktop Electron app with offline fallback
+- PWA support (service worker v4)
+- Desktop Electron app (one-click installer, branded splash screen)
 - Download proxy via GitHub Releases
 - Auto-sync with native Spotify track changes
 - Analytics Dashboard (stats, top songs, hourly/daily charts, recent activity)
-- Starter Kit print materials (stickers, standing cards, A4 posters, tri-fold brochure)
+- Starter Kit (stickers, standing cards, A4 posters, tri-fold brochure with download buttons)
+- **Venue Filters**: 5 presets (Fine Dining, Club, Cafe, Bar, Open), strict/open mode, genre/mood chips, customer-facing filter bar
 
 ## Backlog
 - **P1**: Song voting/priority system
 - **P2**: Multiple venue support, SEO meta tags
-- **P3**: Advanced background animations (particles)
+- **P3**: Advanced background animations
